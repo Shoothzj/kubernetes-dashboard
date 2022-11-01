@@ -37,6 +37,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @SpringBootApplication
 public class Main {
@@ -67,7 +68,7 @@ public class Main {
     ApiClient createApiClient(@Autowired K8sConfig k8sConfig) throws IOException {
         ApiClient apiClient = ClientBuilder.kubeconfig(
                 KubeConfig.loadKubeConfig(
-                        new FileReader(k8sConfig.kubeConfig)))
+                        new FileReader(k8sConfig.kubeConfig, StandardCharsets.UTF_8)))
                 .build();
         Configuration.setDefaultApiClient(apiClient);
         return apiClient;
