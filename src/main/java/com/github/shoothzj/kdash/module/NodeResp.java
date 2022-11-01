@@ -17,17 +17,20 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.config;
+package com.github.shoothzj.kdash.module;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
+import lombok.Getter;
+import lombok.Setter;
 
-@Component
-@Configuration
-public class K8sConfig {
+@Setter
+@Getter
+public class NodeResp {
 
-    @Value("K8S_KUBE_CONFIG_PATH:")
-    public String kubeConfig;
+    private String nodeName;
+    private String nodeCreationTimestamp;
+    private String nodeAge;
+    private String nodeKubeletVersion;
+    private String nodeOsImage;
+    private String nodeArchitecture;
 
 }
