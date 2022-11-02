@@ -19,14 +19,22 @@
 
 package com.github.shoothzj.kdash.service;
 
-import com.github.shoothzj.kdash.module.NodeResp;
+import com.github.shoothzj.kdash.module.GetNodeResp;
+import com.github.shoothzj.kdash.module.CreateDeploymentReq;
 import io.kubernetes.client.openapi.ApiClient;
+import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
+import io.kubernetes.client.openapi.models.V1Container;
+import io.kubernetes.client.openapi.models.V1Deployment;
+import io.kubernetes.client.openapi.models.V1DeploymentSpec;
+import io.kubernetes.client.openapi.models.V1LabelSelector;
 import io.kubernetes.client.openapi.models.V1Node;
 import io.kubernetes.client.openapi.models.V1NodeList;
 import io.kubernetes.client.openapi.models.V1NodeStatus;
 import io.kubernetes.client.openapi.models.V1NodeSystemInfo;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
+import io.kubernetes.client.openapi.models.V1PodSpec;
+import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,49 +43,102 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class KubernetesService {
 
     private CoreV1Api k8sClient;
+    private AppsV1Api appsV1Api;
 
     public KubernetesService(@Autowired ApiClient apiClient) {
         this.k8sClient = new CoreV1Api(apiClient);
+        this.appsV1Api = new AppsV1Api(apiClient);
     }
 
-    public List<NodeResp> getNodes() throws Exception {
+    public List<GetNodeResp> getNodes() throws Exception {
         V1NodeList listNode = k8sClient.listNode("true", null,
                 null, null, null, null, null,
                 null, 30, false);
-        List<NodeResp> nodeResps = new ArrayList<>();
+        List<GetNodeResp> getNodeResps = new ArrayList<>();
         for (V1Node item : listNode.getItems()) {
             V1ObjectMeta metadata = item.getMetadata();
             V1NodeStatus status = item.getStatus();
-            NodeResp nodeResp = new NodeResp();
+            GetNodeResp getNodeResp = new GetNodeResp();
             if (metadata != null) {
-                nodeResp.setNodeName(metadata.getName());
+                getNodeResp.setNodeName(metadata.getName());
                 OffsetDateTime timestamp = metadata.getCreationTimestamp();
                 assert timestamp != null;
                 String date = timestamp.format(DateTimeFormatter.ISO_LOCAL_TIME);
-                nodeResp.setNodeCreationTimestamp(date);
+                getNodeResp.setNodeCreationTimestamp(date);
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 LocalDateTime localDateTime = LocalDateTime.parse(date.replace("T", " "), formatter);
                 long startTimeMillis = localDateTime.toInstant(ZoneOffset.of("+8")).toEpochMilli();
                 long hour = (System.currentTimeMillis() - startTimeMillis) / 3600_000;
                 String nodeAge = String.format("%dd%dh", hour / 24, hour % 24);
-                nodeResp.setNodeAge(nodeAge);
+                getNodeResp.setNodeAge(nodeAge);
             }
 
             if (status != null) {
                 V1NodeSystemInfo nodeInfo = status.getNodeInfo();
                 assert nodeInfo != null;
-                nodeResp.setNodeKubeletVersion(nodeInfo.getKubeletVersion());
-                nodeResp.setNodeOsImage(nodeInfo.getOsImage());
-                nodeResp.setNodeArchitecture(nodeInfo.getArchitecture());
+                getNodeResp.setNodeKubeletVersion(nodeInfo.getKubeletVersion());
+                getNodeResp.setNodeOsImage(nodeInfo.getOsImage());
+                getNodeResp.setNodeArchitecture(nodeInfo.getArchitecture());
             }
-            nodeResps.add(nodeResp);
+            getNodeResps.add(getNodeResp);
         }
-        return nodeResps;
+        return getNodeResps;
+    }
+
+    public void createNamespacedDeployment(CreateDeploymentReq createDeploymentReq) throws Exception {
+        // metadata
+        V1ObjectMeta v1ObjectMeta = new V1ObjectMeta();
+        v1ObjectMeta.setName(createDeploymentReq.getDeploymentName());
+        v1ObjectMeta.setNamespace(createDeploymentReq.getNamespace());
+        HashMap<String, String> labels = new HashMap<>();
+        labels.put("app", createDeploymentReq.getDeploymentName());
+        v1ObjectMeta.setLabels(labels);
+        // spec
+        V1DeploymentSpec spec = new V1DeploymentSpec();
+        // spec replicas
+        spec.setReplicas(createDeploymentReq.getReplicas());
+        // spec selector
+        spec.setSelector(createV1LabelSelector(createDeploymentReq));
+        // spec template
+        V1PodTemplateSpec templateSpec = new V1PodTemplateSpec();
+        // spec template spec
+        V1PodSpec v1PodSpec = new V1PodSpec();
+        // spec template spec containers
+        v1PodSpec.setContainers(createContainers(createDeploymentReq));
+        templateSpec.setSpec(v1PodSpec);
+        spec.setTemplate(templateSpec);
+
+        V1Deployment deployment = new V1Deployment()
+                .apiVersion("apps/v1")
+                .kind("Deployment")
+                .metadata(v1ObjectMeta)
+                .spec(spec);
+
+        appsV1Api.createNamespacedDeployment(createDeploymentReq.getNamespace(), deployment,
+                "true", null, null, null);
+    }
+
+    public List<V1Container> createContainers(CreateDeploymentReq createDeploymentReq) {
+        List<V1Container> containers = new ArrayList<>();
+        V1Container container = new V1Container();
+        container.setImage(createDeploymentReq.getImage());
+        containers.add(container);
+        return containers;
+    }
+
+    public V1LabelSelector createV1LabelSelector(CreateDeploymentReq createDeploymentReq) {
+        V1LabelSelector labelSelector = new V1LabelSelector();
+        Map<String, String> matchLabels = new HashMap<>();
+        matchLabels.put("app", createDeploymentReq.getMatchLabelName());
+        labelSelector.setMatchLabels(matchLabels);
+        return labelSelector;
     }
 }

@@ -19,11 +19,15 @@
 
 package com.github.shoothzj.kdash.controller;
 
-import com.github.shoothzj.kdash.module.NodeResp;
+import com.github.shoothzj.kdash.module.GetNodeResp;
 import com.github.shoothzj.kdash.service.KubernetesService;
+import com.github.shoothzj.kdash.module.CreateDeploymentReq;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,6 +35,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/kubernetes/api")
+@Slf4j
 public class KubernetesController {
 
     public KubernetesService kubernetesService;
@@ -40,11 +45,22 @@ public class KubernetesController {
     }
 
     @RequestMapping("/nodes")
-    public ResponseEntity<List<NodeResp>> getNodes() {
+    public ResponseEntity<List<GetNodeResp>> getNodes() {
         try {
             return new ResponseEntity<>(kubernetesService.getNodes(), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/deployments")
+    public ResponseEntity<Void> createDeployment(@RequestBody CreateDeploymentReq createDeploymentReq) {
+        try {
+            kubernetesService.createNamespacedDeployment(createDeploymentReq);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (Exception e) {
+            log.error("create deployment fail. ", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

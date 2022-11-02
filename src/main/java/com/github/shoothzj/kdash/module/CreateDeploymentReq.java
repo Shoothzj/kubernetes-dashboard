@@ -19,18 +19,16 @@
 
 package com.github.shoothzj.kdash.module;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Setter
-@Getter
-public class NodeResp {
-
-    private String nodeName;
-    private String nodeCreationTimestamp;
-    private String nodeAge;
-    private String nodeKubeletVersion;
-    private String nodeOsImage;
-    private String nodeArchitecture;
+@Data
+public class CreateDeploymentReq {
+    private String namespace;
+    private String deploymentName;
+    private Integer replicas;
+    private String metadataLabelsApp;
+    private String image;
+    private String portName;
+    private String matchLabelName;
 
 }
