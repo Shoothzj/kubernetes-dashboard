@@ -17,18 +17,20 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.vo;
+package com.github.shoothzj.kdash.module;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-public class DeploymentDTO {
-    private String namespace;
-    private String deploymentName;
-    private Integer replicas;
-    private String metadataLabelsApp;
-    private String image;
-    private String portName;
-    private String matchLabelName;
+@Setter
+@Getter
+public class GetNodeResp {
+
+    private String nodeName;
+    private String nodeCreationTimestamp;
+    private String nodeAge;
+    private String nodeKubeletVersion;
+    private String nodeOsImage;
+    private String nodeArchitecture;
 
 }
