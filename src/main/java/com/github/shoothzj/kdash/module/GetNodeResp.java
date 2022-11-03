@@ -27,10 +27,15 @@ import lombok.Setter;
 public class GetNodeResp {
 
     private String nodeName;
+
     private String nodeCreationTimestamp;
+
     private String nodeAge;
+
     private String nodeKubeletVersion;
+
     private String nodeOsImage;
+
     private String nodeArchitecture;
 
 }

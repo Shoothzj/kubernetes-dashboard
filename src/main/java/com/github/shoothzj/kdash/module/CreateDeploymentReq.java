@@ -25,11 +25,15 @@ import java.util.Map;
 
 @Data
 public class CreateDeploymentReq {
+
     private String namespace;
+
     private String deploymentName;
-    private Integer replicas;
-    private String metadataLabelsApp;
+
+    private int replicas;
+
     private String image;
+
     private Map<String, String> env;
 
 }

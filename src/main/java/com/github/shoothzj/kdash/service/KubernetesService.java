@@ -45,8 +45,8 @@ import java.util.List;
 @Service
 public class KubernetesService {
 
-    private CoreV1Api k8sClient;
-    private AppsV1Api appsV1Api;
+    private final CoreV1Api k8sClient;
+    private final AppsV1Api appsV1Api;
 
     public KubernetesService(@Autowired ApiClient apiClient) {
         this.k8sClient = new CoreV1Api(apiClient);
@@ -66,7 +66,7 @@ public class KubernetesService {
                 getNodeResp.setNodeName(metadata.getName());
                 OffsetDateTime timestamp = metadata.getCreationTimestamp();
                 assert timestamp != null;
-                String date = timestamp.format(DateTimeFormatter.ISO_LOCAL_TIME);
+                String date = timestamp.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
                 getNodeResp.setNodeCreationTimestamp(date);
             }
 
