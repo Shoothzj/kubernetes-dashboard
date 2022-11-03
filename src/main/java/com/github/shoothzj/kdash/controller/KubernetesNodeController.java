@@ -20,15 +20,12 @@
 package com.github.shoothzj.kdash.controller;
 
 import com.github.shoothzj.kdash.module.GetNodeResp;
-import com.github.shoothzj.kdash.service.KubernetesService;
-import com.github.shoothzj.kdash.module.CreateDeploymentReq;
+import com.github.shoothzj.kdash.service.KubernetesNodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,22 +34,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/kubernetes")
 @Slf4j
-public class KubernetesController {
+public class KubernetesNodeController {
 
-    public KubernetesService kubernetesService;
+    public KubernetesNodeService kubernetesNodeService;
 
-    public KubernetesController(@Autowired KubernetesService kubernetesService) {
-        this.kubernetesService = kubernetesService;
+    public KubernetesNodeController(@Autowired KubernetesNodeService kubernetesNodeService) {
+        this.kubernetesNodeService = kubernetesNodeService;
     }
 
     @GetMapping("/nodes")
     public ResponseEntity<List<GetNodeResp>> getNodes() throws Exception {
-        return new ResponseEntity<>(kubernetesService.getNodes(), HttpStatus.OK);
+        return new ResponseEntity<>(kubernetesNodeService.getNodes(), HttpStatus.OK);
     }
 
-    @PostMapping("/deployments")
-    public ResponseEntity<Void> createDeployment(@RequestBody CreateDeploymentReq req) throws Exception {
-        kubernetesService.createNamespacedDeployment(req);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
 }
