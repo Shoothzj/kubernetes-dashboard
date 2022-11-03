@@ -31,6 +31,8 @@ import io.kubernetes.client.openapi.models.V1DeploymentSpec;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1PodSpec;
 import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
+import io.kubernetes.client.openapi.models.V1Scale;
+import io.kubernetes.client.openapi.models.V1ScaleSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -92,11 +94,13 @@ public class KubernetesDeployService {
     }
 
     public void scaleDeployment (String namespace, ScaleDeploymentReq req) throws ApiException {
-        V1Deployment v1Deployment = new V1Deployment();
-        V1DeploymentSpec spec = new V1DeploymentSpec();
-        spec.setReplicas(req.getReplicasNum());
-        v1Deployment.setSpec(spec);
-        appsV1Api.replaceNamespacedDeployment(req.getDeployment(), namespace, v1Deployment, "true",
+        V1Scale v1Scale = new V1Scale();
+        v1Scale.setApiVersion("apps/v1");
+        v1Scale.setKind("Scale");
+        V1ScaleSpec v1ScaleSpec = new V1ScaleSpec();
+        v1ScaleSpec.setReplicas(req.getReplicas());
+        v1Scale.setSpec(v1ScaleSpec);
+        appsV1Api.replaceNamespacedDeploymentScale(req.getDeployName(), namespace, v1Scale, "true",
                 null, null, null);
     }
 }

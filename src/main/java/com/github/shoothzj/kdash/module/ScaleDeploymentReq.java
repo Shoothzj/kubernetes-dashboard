@@ -19,10 +19,17 @@
 
 package com.github.shoothzj.kdash.module;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 public class ScaleDeploymentReq {
-    private String deployment;
-    private int replicasNum;
+
+    private String deployName;
+
+    private int replicas;
+
+    public ScaleDeploymentReq() {
+    }
 }

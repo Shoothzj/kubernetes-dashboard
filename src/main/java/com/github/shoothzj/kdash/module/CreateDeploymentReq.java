@@ -19,11 +19,13 @@
 
 package com.github.shoothzj.kdash.module;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Map;
 
-@Data
+@Setter
+@Getter
 public class CreateDeploymentReq {
 
     private String namespace;
@@ -36,4 +38,6 @@ public class CreateDeploymentReq {
 
     private Map<String, String> env;
 
+    public CreateDeploymentReq() {
+    }
 }

@@ -28,24 +28,24 @@ public class KubernetesDeployController {
         this.deployService = deployService;
     }
 
-    @PostMapping("/deployments")
+    @PostMapping("/namespace/{namespace}/deployments")
     public ResponseEntity<Void> createDeployment(@RequestBody CreateDeploymentReq req) throws Exception {
         deployService.createNamespacedDeployment(req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/deployment/{namespace}")
+    @DeleteMapping("/namespace/{namespace}/deployment")
     public ResponseEntity<Void> deleteDeploy(@PathVariable String namespace,
                                              @RequestBody DeleteDeploymentReq req) throws ApiException {
         deployService.deleteDeploy(namespace, req);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/deployment/{namespace}")
+    @PutMapping("/namespace/{namespace}/deployment")
     public ResponseEntity<Void> scaleDeployment(@PathVariable String namespace,
                                                 @RequestBody ScaleDeploymentReq req) throws ApiException {
         deployService.scaleDeployment(namespace, req);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
