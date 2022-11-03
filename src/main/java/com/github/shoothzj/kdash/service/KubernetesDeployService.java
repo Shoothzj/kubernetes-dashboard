@@ -19,6 +19,7 @@
 
 package com.github.shoothzj.kdash.service;
 
+import com.github.shoothzj.kdash.module.ScaleDeploymentReq;
 import com.github.shoothzj.kdash.module.CreateDeploymentReq;
 import com.github.shoothzj.kdash.module.DeleteDeploymentReq;
 import com.github.shoothzj.kdash.util.KubernetesUtil;
@@ -88,5 +89,14 @@ public class KubernetesDeployService {
     public void deleteDeploy(String namespace, DeleteDeploymentReq req) throws ApiException {
         appsV1Api.deleteNamespacedDeployment(req.getDeployName(), namespace, "true",
                 null, 30, false, null, null);
+    }
+
+    public void scaleDeployment (String namespace, ScaleDeploymentReq req) throws ApiException {
+        V1Deployment v1Deployment = new V1Deployment();
+        V1DeploymentSpec spec = new V1DeploymentSpec();
+        spec.setReplicas(req.getReplicasNum());
+        v1Deployment.setSpec(spec);
+        appsV1Api.replaceNamespacedDeployment(req.getDeployment(), namespace, v1Deployment, "true",
+                null, null, null);
     }
 }
