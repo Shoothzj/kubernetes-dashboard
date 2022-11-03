@@ -21,6 +21,8 @@ package com.github.shoothzj.kdash.module;
 
 import lombok.Data;
 
+import java.util.Map;
+
 @Data
 public class CreateDeploymentReq {
     private String namespace;
@@ -28,6 +30,6 @@ public class CreateDeploymentReq {
     private Integer replicas;
     private String metadataLabelsApp;
     private String image;
-    private String portName;
+    private Map<String, String> env;
 
 }

@@ -90,7 +90,7 @@ public class KubernetesService {
         return getNodeResps;
     }
 
-    public void createNamespacedDeployment(CreateDeploymentReq createDeploymentReq) throws Exception {
+    public void createNamespacedDeployment(CreateDeploymentReq req) throws Exception {
         // deploy
         V1Deployment deployment = new V1Deployment();
         deployment.setApiVersion("apps/v1");
@@ -99,9 +99,9 @@ public class KubernetesService {
         {
             // metadata
             V1ObjectMeta metadata = new V1ObjectMeta();
-            metadata.setName(createDeploymentReq.getDeploymentName());
-            metadata.setNamespace(createDeploymentReq.getNamespace());
-            metadata.setLabels(KubernetesUtil.label(createDeploymentReq.getDeploymentName()));
+            metadata.setName(req.getDeploymentName());
+            metadata.setNamespace(req.getNamespace());
+            metadata.setLabels(KubernetesUtil.label(req.getDeploymentName()));
             deployment.setMetadata(metadata);
         }
 
@@ -109,21 +109,21 @@ public class KubernetesService {
             // spec
             V1DeploymentSpec deploySpec = new V1DeploymentSpec();
             // spec replicas
-            deploySpec.setReplicas(createDeploymentReq.getReplicas());
+            deploySpec.setReplicas(req.getReplicas());
             // spec selector
-            deploySpec.setSelector(KubernetesUtil.labelSelector(createDeploymentReq.getDeploymentName()));
+            deploySpec.setSelector(KubernetesUtil.labelSelector(req.getDeploymentName()));
             // spec template
             V1PodTemplateSpec templateSpec = new V1PodTemplateSpec();
             // spec template spec
             V1PodSpec v1PodSpec = new V1PodSpec();
             // spec template spec containers
-            v1PodSpec.setContainers(KubernetesUtil.singleContainerList(createDeploymentReq.getImage()));
+            v1PodSpec.setContainers(KubernetesUtil.singleContainerList(req.getImage(), req.getEnv()));
             templateSpec.setSpec(v1PodSpec);
             deploySpec.setTemplate(templateSpec);
             deployment.setSpec(deploySpec);
         }
 
-        appsV1Api.createNamespacedDeployment(createDeploymentReq.getNamespace(), deployment,
+        appsV1Api.createNamespacedDeployment(req.getNamespace(), deployment,
                 "true", null, null, null);
     }
 

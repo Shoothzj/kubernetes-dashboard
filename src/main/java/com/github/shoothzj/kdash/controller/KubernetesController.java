@@ -46,22 +46,13 @@ public class KubernetesController {
     }
 
     @GetMapping("/nodes")
-    public ResponseEntity<List<GetNodeResp>> getNodes() {
-        try {
-            return new ResponseEntity<>(kubernetesService.getNodes(), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<List<GetNodeResp>> getNodes() throws Exception {
+        return new ResponseEntity<>(kubernetesService.getNodes(), HttpStatus.OK);
     }
 
     @PostMapping("/deployments")
-    public ResponseEntity<Void> createDeployment(@RequestBody CreateDeploymentReq createDeploymentReq) {
-        try {
-            kubernetesService.createNamespacedDeployment(createDeploymentReq);
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (Exception e) {
-            log.error("create deployment fail. ", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<Void> createDeployment(@RequestBody CreateDeploymentReq req) throws Exception {
+        kubernetesService.createNamespacedDeployment(req);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
