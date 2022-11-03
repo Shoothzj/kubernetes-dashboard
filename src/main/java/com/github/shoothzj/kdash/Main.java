@@ -19,7 +19,7 @@
 
 package com.github.shoothzj.kdash;
 
-import com.github.shoothzj.kdash.config.K8sConfig;
+import com.github.shoothzj.kdash.config.KubernetesConfig;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.Configuration;
 import io.kubernetes.client.util.ClientBuilder;
@@ -65,10 +65,10 @@ public class Main {
     }
 
     @Bean
-    ApiClient createApiClient(@Autowired K8sConfig k8sConfig) throws IOException {
+    ApiClient createApiClient(@Autowired KubernetesConfig kubernetesConfig) throws IOException {
         ApiClient apiClient = ClientBuilder.kubeconfig(
                         KubeConfig.loadKubeConfig(
-                                new FileReader(k8sConfig.kubeConfig, StandardCharsets.UTF_8)))
+                                new FileReader(kubernetesConfig.kubeConfig, StandardCharsets.UTF_8)))
                 .build();
         Configuration.setDefaultApiClient(apiClient);
         return apiClient;

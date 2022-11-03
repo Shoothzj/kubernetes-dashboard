@@ -29,6 +29,5 @@ public class CreateDeploymentReq {
     private String metadataLabelsApp;
     private String image;
     private String portName;
-    private String matchLabelName;
 
 }

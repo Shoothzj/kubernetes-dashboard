@@ -25,9 +25,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Configuration
-public class K8sConfig {
+public class KubernetesConfig {
 
-    @Value("K8S_KUBE_CONFIG_PATH:")
+    @Value("${K8S_KUBE_CONFIG_PATH:}")
     public String kubeConfig;
 
 }

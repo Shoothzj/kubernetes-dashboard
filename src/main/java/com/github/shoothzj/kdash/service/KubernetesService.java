@@ -19,15 +19,14 @@
 
 package com.github.shoothzj.kdash.service;
 
-import com.github.shoothzj.kdash.module.GetNodeResp;
 import com.github.shoothzj.kdash.module.CreateDeploymentReq;
+import com.github.shoothzj.kdash.module.GetNodeResp;
+import com.github.shoothzj.kdash.util.KubernetesUtil;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
-import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1Deployment;
 import io.kubernetes.client.openapi.models.V1DeploymentSpec;
-import io.kubernetes.client.openapi.models.V1LabelSelector;
 import io.kubernetes.client.openapi.models.V1Node;
 import io.kubernetes.client.openapi.models.V1NodeList;
 import io.kubernetes.client.openapi.models.V1NodeStatus;
@@ -43,9 +42,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class KubernetesService {
@@ -94,51 +91,40 @@ public class KubernetesService {
     }
 
     public void createNamespacedDeployment(CreateDeploymentReq createDeploymentReq) throws Exception {
-        // metadata
-        V1ObjectMeta v1ObjectMeta = new V1ObjectMeta();
-        v1ObjectMeta.setName(createDeploymentReq.getDeploymentName());
-        v1ObjectMeta.setNamespace(createDeploymentReq.getNamespace());
-        HashMap<String, String> labels = new HashMap<>();
-        labels.put("app", createDeploymentReq.getDeploymentName());
-        v1ObjectMeta.setLabels(labels);
-        // spec
-        V1DeploymentSpec spec = new V1DeploymentSpec();
-        // spec replicas
-        spec.setReplicas(createDeploymentReq.getReplicas());
-        // spec selector
-        spec.setSelector(createV1LabelSelector(createDeploymentReq));
-        // spec template
-        V1PodTemplateSpec templateSpec = new V1PodTemplateSpec();
-        // spec template spec
-        V1PodSpec v1PodSpec = new V1PodSpec();
-        // spec template spec containers
-        v1PodSpec.setContainers(createContainers(createDeploymentReq));
-        templateSpec.setSpec(v1PodSpec);
-        spec.setTemplate(templateSpec);
+        // deploy
+        V1Deployment deployment = new V1Deployment();
+        deployment.setApiVersion("apps/v1");
+        deployment.setKind("Deployment");
 
-        V1Deployment deployment = new V1Deployment()
-                .apiVersion("apps/v1")
-                .kind("Deployment")
-                .metadata(v1ObjectMeta)
-                .spec(spec);
+        {
+            // metadata
+            V1ObjectMeta metadata = new V1ObjectMeta();
+            metadata.setName(createDeploymentReq.getDeploymentName());
+            metadata.setNamespace(createDeploymentReq.getNamespace());
+            metadata.setLabels(KubernetesUtil.label(createDeploymentReq.getDeploymentName()));
+            deployment.setMetadata(metadata);
+        }
+
+        {
+            // spec
+            V1DeploymentSpec deploySpec = new V1DeploymentSpec();
+            // spec replicas
+            deploySpec.setReplicas(createDeploymentReq.getReplicas());
+            // spec selector
+            deploySpec.setSelector(KubernetesUtil.labelSelector(createDeploymentReq.getDeploymentName()));
+            // spec template
+            V1PodTemplateSpec templateSpec = new V1PodTemplateSpec();
+            // spec template spec
+            V1PodSpec v1PodSpec = new V1PodSpec();
+            // spec template spec containers
+            v1PodSpec.setContainers(KubernetesUtil.singleContainerList(createDeploymentReq.getImage()));
+            templateSpec.setSpec(v1PodSpec);
+            deploySpec.setTemplate(templateSpec);
+            deployment.setSpec(deploySpec);
+        }
 
         appsV1Api.createNamespacedDeployment(createDeploymentReq.getNamespace(), deployment,
                 "true", null, null, null);
     }
 
-    public List<V1Container> createContainers(CreateDeploymentReq createDeploymentReq) {
-        List<V1Container> containers = new ArrayList<>();
-        V1Container container = new V1Container();
-        container.setImage(createDeploymentReq.getImage());
-        containers.add(container);
-        return containers;
-    }
-
-    public V1LabelSelector createV1LabelSelector(CreateDeploymentReq createDeploymentReq) {
-        V1LabelSelector labelSelector = new V1LabelSelector();
-        Map<String, String> matchLabels = new HashMap<>();
-        matchLabels.put("app", createDeploymentReq.getMatchLabelName());
-        labelSelector.setMatchLabels(matchLabels);
-        return labelSelector;
-    }
 }
