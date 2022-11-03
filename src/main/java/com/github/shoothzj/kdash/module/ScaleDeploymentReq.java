@@ -22,22 +22,14 @@ package com.github.shoothzj.kdash.module;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Map;
-
 @Setter
 @Getter
-public class CreateDeploymentReq {
+public class ScaleDeploymentReq {
 
-    private String namespace;
-
-    private String deploymentName;
+    private String deployName;
 
     private int replicas;
 
-    private String image;
-
-    private Map<String, String> env;
-
-    public CreateDeploymentReq() {
+    public ScaleDeploymentReq() {
     }
 }

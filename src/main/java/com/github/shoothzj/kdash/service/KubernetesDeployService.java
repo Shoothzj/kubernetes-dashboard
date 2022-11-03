@@ -19,6 +19,7 @@
 
 package com.github.shoothzj.kdash.service;
 
+import com.github.shoothzj.kdash.module.ScaleDeploymentReq;
 import com.github.shoothzj.kdash.module.CreateDeploymentReq;
 import com.github.shoothzj.kdash.module.DeleteDeploymentReq;
 import com.github.shoothzj.kdash.util.KubernetesUtil;
@@ -30,6 +31,8 @@ import io.kubernetes.client.openapi.models.V1DeploymentSpec;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1PodSpec;
 import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
+import io.kubernetes.client.openapi.models.V1Scale;
+import io.kubernetes.client.openapi.models.V1ScaleSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -88,5 +91,16 @@ public class KubernetesDeployService {
     public void deleteDeploy(String namespace, DeleteDeploymentReq req) throws ApiException {
         appsV1Api.deleteNamespacedDeployment(req.getDeployName(), namespace, "true",
                 null, 30, false, null, null);
+    }
+
+    public void scaleDeployment (String namespace, ScaleDeploymentReq req) throws ApiException {
+        V1Scale v1Scale = new V1Scale();
+        v1Scale.setApiVersion("apps/v1");
+        v1Scale.setKind("Scale");
+        V1ScaleSpec v1ScaleSpec = new V1ScaleSpec();
+        v1ScaleSpec.setReplicas(req.getReplicas());
+        v1Scale.setSpec(v1ScaleSpec);
+        appsV1Api.replaceNamespacedDeploymentScale(req.getDeployName(), namespace, v1Scale, "true",
+                null, null, null);
     }
 }
