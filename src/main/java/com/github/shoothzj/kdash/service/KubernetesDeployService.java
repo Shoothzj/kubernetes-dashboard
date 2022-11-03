@@ -20,8 +20,10 @@
 package com.github.shoothzj.kdash.service;
 
 import com.github.shoothzj.kdash.module.CreateDeploymentReq;
+import com.github.shoothzj.kdash.module.DeleteDeploymentReq;
 import com.github.shoothzj.kdash.util.KubernetesUtil;
 import io.kubernetes.client.openapi.ApiClient;
+import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.models.V1Deployment;
 import io.kubernetes.client.openapi.models.V1DeploymentSpec;
@@ -83,4 +85,8 @@ public class KubernetesDeployService {
                 "true", null, null, null);
     }
 
+    public void deleteDeploy(String namespace, DeleteDeploymentReq req) throws ApiException {
+        appsV1Api.deleteNamespacedDeployment(req.getDeployName(), namespace, "true",
+                null, 30, false, null, null);
+    }
 }
