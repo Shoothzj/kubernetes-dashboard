@@ -20,66 +20,24 @@
 package com.github.shoothzj.kdash.service;
 
 import com.github.shoothzj.kdash.module.CreateDeploymentReq;
-import com.github.shoothzj.kdash.module.GetNodeResp;
 import com.github.shoothzj.kdash.util.KubernetesUtil;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
-import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1Deployment;
 import io.kubernetes.client.openapi.models.V1DeploymentSpec;
-import io.kubernetes.client.openapi.models.V1Node;
-import io.kubernetes.client.openapi.models.V1NodeList;
-import io.kubernetes.client.openapi.models.V1NodeStatus;
-import io.kubernetes.client.openapi.models.V1NodeSystemInfo;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1PodSpec;
 import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
-public class KubernetesService {
+public class KubernetesDeployService {
 
-    private final CoreV1Api k8sClient;
     private final AppsV1Api appsV1Api;
 
-    public KubernetesService(@Autowired ApiClient apiClient) {
-        this.k8sClient = new CoreV1Api(apiClient);
+    public KubernetesDeployService(@Autowired ApiClient apiClient) {
         this.appsV1Api = new AppsV1Api(apiClient);
-    }
-
-    public List<GetNodeResp> getNodes() throws Exception {
-        V1NodeList listNode = k8sClient.listNode("true", null,
-                null, null, null, null, null,
-                null, 30, false);
-        List<GetNodeResp> getNodeResps = new ArrayList<>();
-        for (V1Node item : listNode.getItems()) {
-            V1ObjectMeta metadata = item.getMetadata();
-            V1NodeStatus status = item.getStatus();
-            GetNodeResp getNodeResp = new GetNodeResp();
-            if (metadata != null) {
-                getNodeResp.setNodeName(metadata.getName());
-                OffsetDateTime timestamp = metadata.getCreationTimestamp();
-                assert timestamp != null;
-                String date = timestamp.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-                getNodeResp.setNodeCreationTimestamp(date);
-            }
-
-            if (status != null) {
-                V1NodeSystemInfo nodeInfo = status.getNodeInfo();
-                assert nodeInfo != null;
-                getNodeResp.setNodeKubeletVersion(nodeInfo.getKubeletVersion());
-                getNodeResp.setNodeOsImage(nodeInfo.getOsImage());
-                getNodeResp.setNodeArchitecture(nodeInfo.getArchitecture());
-            }
-            getNodeResps.add(getNodeResp);
-        }
-        return getNodeResps;
     }
 
     public void createNamespacedDeployment(CreateDeploymentReq req) throws Exception {
@@ -106,6 +64,12 @@ public class KubernetesService {
             deploySpec.setSelector(KubernetesUtil.labelSelector(req.getDeploymentName()));
             // spec template
             V1PodTemplateSpec templateSpec = new V1PodTemplateSpec();
+            {
+                // template metadata
+                V1ObjectMeta templateMetadata = new V1ObjectMeta();
+                templateMetadata.setLabels(KubernetesUtil.label(req.getDeploymentName()));
+                templateSpec.setMetadata(templateMetadata);
+            }
             // spec template spec
             V1PodSpec v1PodSpec = new V1PodSpec();
             // spec template spec containers
