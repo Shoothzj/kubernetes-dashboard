@@ -37,9 +37,7 @@ import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,12 +68,6 @@ public class KubernetesService {
                 assert timestamp != null;
                 String date = timestamp.format(DateTimeFormatter.ISO_LOCAL_TIME);
                 getNodeResp.setNodeCreationTimestamp(date);
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                LocalDateTime localDateTime = LocalDateTime.parse(date.replace("T", " "), formatter);
-                long startTimeMillis = localDateTime.toInstant(ZoneOffset.of("+8")).toEpochMilli();
-                long hour = (System.currentTimeMillis() - startTimeMillis) / 3600_000;
-                String nodeAge = String.format("%dd%dh", hour / 24, hour % 24);
-                getNodeResp.setNodeAge(nodeAge);
             }
 
             if (status != null) {

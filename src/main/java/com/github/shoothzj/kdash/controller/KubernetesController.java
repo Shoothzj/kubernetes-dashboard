@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/kubernetes/api")
+@RequestMapping("/api/kubernetes")
 @Slf4j
 public class KubernetesController {
 
