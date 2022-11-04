@@ -68,7 +68,7 @@ public class KubernetesDeployController {
         return new ResponseEntity<>(deployService.getNamespaceDeployments(namespace), HttpStatus.OK);
     }
 
-    @PutMapping("/namespace/{namespace}/deployments")
+    @PutMapping("/namespace/{namespace}/deployments/scale")
     public ResponseEntity<Void> scaleDeployment(@PathVariable String namespace,
                                                 @RequestBody ScaleDeploymentReq req) throws ApiException {
         deployService.scaleDeploy(namespace, req);

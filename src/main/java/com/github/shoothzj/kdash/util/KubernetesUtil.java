@@ -64,7 +64,11 @@ public class KubernetesUtil {
         if (env == null) {
             return new HashMap<>();
         }
-        return env.stream().collect(Collectors.toMap(V1EnvVar::getName, V1EnvVar::getValue));
+        Map<String, String> map = new HashMap<>();
+        for (V1EnvVar v1EnvVar : env) {
+            map.put(v1EnvVar.getName(), v1EnvVar.getValue());
+        }
+        return map;
     }
 
 }
