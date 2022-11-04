@@ -17,21 +17,25 @@
 # under the License.
 #
 
-name: spot bugs
+name: "license check"
+
 on:
   pull_request:
     branches:
       - main
 
 jobs:
-  spotbugs:
+  license-check:
+    name: License Check
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Maven Central Repository
-        uses: actions/setup-java@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Check license header
+        uses: apache/skywalking-eyes@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          java-version: '17'
-          distribution: 'temurin'
-      - name: spotbugs
-        run: mvn -B -DskipTests clean verify spotbugs:spotbugs
+          config: .licenserc.yaml

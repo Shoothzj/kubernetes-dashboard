@@ -17,17 +17,40 @@
  * under the License.
  */
 
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package com.github.shoothzj.kdash.service;
 
-import com.github.shoothzj.kdash.module.ScaleDeploymentReq;
+import com.github.shoothzj.kdash.module.ContainerInfo;
 import com.github.shoothzj.kdash.module.CreateDeploymentReq;
-import com.github.shoothzj.kdash.module.DeleteDeploymentReq;
+import com.github.shoothzj.kdash.module.GetDeploymentResp;
+import com.github.shoothzj.kdash.module.ScaleDeploymentReq;
 import com.github.shoothzj.kdash.util.KubernetesUtil;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
+import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1Deployment;
+import io.kubernetes.client.openapi.models.V1DeploymentList;
 import io.kubernetes.client.openapi.models.V1DeploymentSpec;
+import io.kubernetes.client.openapi.models.V1DeploymentStatus;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1PodSpec;
 import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
@@ -35,6 +58,11 @@ import io.kubernetes.client.openapi.models.V1Scale;
 import io.kubernetes.client.openapi.models.V1ScaleSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class KubernetesDeployService {
@@ -45,7 +73,7 @@ public class KubernetesDeployService {
         this.appsV1Api = new AppsV1Api(apiClient);
     }
 
-    public void createNamespacedDeployment(CreateDeploymentReq req) throws Exception {
+    public void createNamespacedDeploy(CreateDeploymentReq req) throws Exception {
         // deploy
         V1Deployment deployment = new V1Deployment();
         deployment.setApiVersion("apps/v1");
@@ -88,12 +116,59 @@ public class KubernetesDeployService {
                 "true", null, null, null);
     }
 
-    public void deleteDeploy(String namespace, DeleteDeploymentReq req) throws ApiException {
-        appsV1Api.deleteNamespacedDeployment(req.getDeployName(), namespace, "true",
+    public void deleteDeploy(String namespace, String deployName) throws ApiException {
+        appsV1Api.deleteNamespacedDeployment(deployName, namespace, "true",
                 null, 30, false, null, null);
     }
 
-    public void scaleDeployment (String namespace, ScaleDeploymentReq req) throws ApiException {
+    public List<GetDeploymentResp> getNamespaceDeployments(String namespace) throws ApiException {
+        V1DeploymentList v1DeploymentList = appsV1Api.listNamespacedDeployment(namespace, "true",
+                null, null, null, null,
+                null, null, null, null, null);
+        List<GetDeploymentResp> result = new ArrayList<>();
+        for (V1Deployment deploy : v1DeploymentList.getItems()) {
+            result.add(convert(deploy));
+        }
+        return result;
+    }
+
+    private GetDeploymentResp convert(V1Deployment deploy) {
+        GetDeploymentResp getDeploymentResp = new GetDeploymentResp();
+        V1ObjectMeta metadata = deploy.getMetadata();
+        if (metadata != null) {
+            getDeploymentResp.setDeployName(metadata.getName());
+            OffsetDateTime timestamp = metadata.getCreationTimestamp();
+            if (timestamp != null) {
+                getDeploymentResp.setCreationTimestamp(timestamp.format(DateTimeFormatter.ISO_DATE_TIME));
+            }
+        }
+        V1DeploymentStatus status = deploy.getStatus();
+        if (status != null) {
+            getDeploymentResp.setReplicas(status.getReplicas() == null ? 0 : status.getReplicas());
+            getDeploymentResp.setAvailableReplicas(status.getAvailableReplicas() == null
+                    ? 0 : status.getAvailableReplicas());
+        }
+        V1DeploymentSpec spec = deploy.getSpec();
+        if (spec != null) {
+            V1PodSpec v1PodSpec = spec.getTemplate().getSpec();
+            if (v1PodSpec == null) {
+                return getDeploymentResp;
+            }
+            List<V1Container> containers = v1PodSpec.getContainers();
+            List<ContainerInfo> containerInfoList = new ArrayList<>(containers.size());
+            for (V1Container container : containers) {
+                ContainerInfo containerInfo = new ContainerInfo();
+                containerInfo.setImage(container.getImage());
+                containerInfo.setEnv(KubernetesUtil.envToMap(container.getEnv()));
+                containerInfo.setPorts(container.getPorts());
+                containerInfoList.add(containerInfo);
+            }
+            getDeploymentResp.setContainerInfoList(containerInfoList);
+        }
+        return getDeploymentResp;
+    }
+
+    public void scaleDeploy(String namespace, ScaleDeploymentReq req) throws ApiException {
         V1Scale v1Scale = new V1Scale();
         v1Scale.setApiVersion("apps/v1");
         v1Scale.setKind("Scale");

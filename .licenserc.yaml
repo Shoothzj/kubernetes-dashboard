@@ -17,21 +17,11 @@
 # under the License.
 #
 
-name: spot bugs
-on:
-  pull_request:
-    branches:
-      - main
-
-jobs:
-  spotbugs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Maven Central Repository
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-      - name: spotbugs
-        run: mvn -B -DskipTests clean verify spotbugs:spotbugs
+header:
+  license:
+    spdx-id: Apache-2.0
+    copyright-owner: Apache Software Foundation
+  paths-ignore:
+    - '**/*.md'
+    - 'LICENSE'
+    - '.gitignore'
