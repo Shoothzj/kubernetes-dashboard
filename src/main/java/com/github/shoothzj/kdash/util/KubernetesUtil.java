@@ -23,6 +23,7 @@ import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1EnvVar;
 import io.kubernetes.client.openapi.models.V1LabelSelector;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +58,13 @@ public class KubernetesUtil {
         }).collect(Collectors.toList()));
         containers.add(container);
         return containers;
+    }
+
+    public static Map<String, String> envToMap(@Nullable List<V1EnvVar> env) {
+        if (env == null) {
+            return new HashMap<>();
+        }
+        return env.stream().collect(Collectors.toMap(V1EnvVar::getName, V1EnvVar::getValue));
     }
 
 }

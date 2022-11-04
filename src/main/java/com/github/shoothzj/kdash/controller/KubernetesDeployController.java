@@ -19,9 +19,9 @@
 
 package com.github.shoothzj.kdash.controller;
 
-import com.github.shoothzj.kdash.module.ScaleDeploymentReq;
 import com.github.shoothzj.kdash.module.CreateDeploymentReq;
-import com.github.shoothzj.kdash.module.DeleteDeploymentReq;
+import com.github.shoothzj.kdash.module.GetDeploymentResp;
+import com.github.shoothzj.kdash.module.ScaleDeploymentReq;
 import com.github.shoothzj.kdash.service.KubernetesDeployService;
 import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
@@ -29,12 +29,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/kubernetes")
@@ -49,21 +52,26 @@ public class KubernetesDeployController {
 
     @PostMapping("/namespace/{namespace}/deployments")
     public ResponseEntity<Void> createDeployment(@RequestBody CreateDeploymentReq req) throws Exception {
-        deployService.createNamespacedDeployment(req);
+        deployService.createNamespacedDeploy(req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/namespace/{namespace}/deployment")
+    @DeleteMapping("/namespace/{namespace}/deployments/{deployName}")
     public ResponseEntity<Void> deleteDeploy(@PathVariable String namespace,
-                                             @RequestBody DeleteDeploymentReq req) throws ApiException {
-        deployService.deleteDeploy(namespace, req);
+                                             @PathVariable String deployName) throws ApiException {
+        deployService.deleteDeploy(namespace, deployName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/namespace/{namespace}/deployment")
+    @GetMapping("/namespace/{namespace}/deployments")
+    public ResponseEntity<List<GetDeploymentResp>> getDeployList(@PathVariable String namespace) throws ApiException {
+        return new ResponseEntity<>(deployService.getNamespaceDeployments(namespace), HttpStatus.OK);
+    }
+
+    @PutMapping("/namespace/{namespace}/deployments")
     public ResponseEntity<Void> scaleDeployment(@PathVariable String namespace,
                                                 @RequestBody ScaleDeploymentReq req) throws ApiException {
-        deployService.scaleDeployment(namespace, req);
+        deployService.scaleDeploy(namespace, req);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
