@@ -23,5 +23,6 @@ header:
     copyright-owner: Apache Software Foundation
   paths-ignore:
     - '**/*.md'
+    - '**/*.json'
     - 'LICENSE'
     - '.gitignore'

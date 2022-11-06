@@ -17,17 +17,12 @@
  * under the License.
  */
 
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import { BrowserRouter as Router } from 'react-router-dom';
-import App from './App';
+package com.github.shoothzj.kdash.module.chaosmesh;
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <Router basename="/" location="/">
-      <App />
-    </Router>
-  </React.StrictMode>,
-);
+public class ChaosMeshConst {
+
+    public static final String CHAOS_MESH_GROUP = "chaos-mesh.org";
+
+    public static final String CHAOS_MESH_CRD_VERSION = "v1alpha1";
+
+}
