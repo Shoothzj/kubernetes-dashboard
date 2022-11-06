@@ -21,6 +21,8 @@ autofix: false
 
 ignore:
   - .git/
+  - "**.json"
+  - "**.svg"
 
 rules:
   end-of-file:

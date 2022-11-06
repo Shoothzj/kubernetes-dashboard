@@ -17,17 +17,43 @@
  * under the License.
  */
 
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import { BrowserRouter as Router } from 'react-router-dom';
-import App from './App';
+package com.github.shoothzj.kdash.module.chaosmesh;
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <Router basename="/" location="/">
-      <App />
-    </Router>
-  </React.StrictMode>,
-);
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+import java.util.Map;
+
+@Setter
+@Getter
+@ToString
+public class BaseChaos<T> {
+
+    public enum ChaosKind {
+        PodChaos,
+        NetworkChaos,
+        StressChaos,
+        IOChaos,
+        DNSChaos,
+        TimeChaos,
+        JVMChaos,
+        HTTPChaos,
+        Schedule,
+        Workflow,
+    }
+
+    private ChaosKind kind;
+
+    private Map<String, String> metaData;
+
+    private ChaosSpec<T> spec;
+
+    public BaseChaos(ChaosKind kind) {
+        this.kind = kind;
+    }
+
+    private BaseChaos() {
+    }
+
+}

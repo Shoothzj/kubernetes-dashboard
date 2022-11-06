@@ -17,17 +17,41 @@
  * under the License.
  */
 
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import { BrowserRouter as Router } from 'react-router-dom';
-import App from './App';
+package com.github.shoothzj.kdash.module.chaosmesh;
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <Router basename="/" location="/">
-      <App />
-    </Router>
-  </React.StrictMode>,
-);
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@ToString
+public class ChaosSpec<T> {
+
+    public static class SelectMode {
+
+        public static final String RANDOM_ONE = "one";
+
+        public static final String ALL = "all";
+
+        public static final String FIXED_NUMBER = "fixed";
+
+        public static final String FIXED_PERCENT = "fixed-percent";
+
+        public static final String RANDOM_MAX_PERCENT = "random-max-percent";
+
+    }
+
+    private T action;
+
+    private String mode;
+
+    private String value;
+
+    private ChaosSelector selector;
+
+    private String duration;
+
+    public ChaosSpec() {
+    }
+}
