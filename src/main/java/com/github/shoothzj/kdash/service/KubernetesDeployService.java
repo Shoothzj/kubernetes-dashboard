@@ -170,11 +170,14 @@ public class KubernetesDeployService {
 
     public void scaleDeploy(String namespace, ScaleDeploymentReq req) throws ApiException {
         V1Scale v1Scale = new V1Scale();
-        v1Scale.setApiVersion("apps/v1");
-        v1Scale.setKind("Scale");
         V1ScaleSpec v1ScaleSpec = new V1ScaleSpec();
         v1ScaleSpec.setReplicas(req.getReplicas());
         v1Scale.setSpec(v1ScaleSpec);
+        V1ObjectMeta objectMeta = new V1ObjectMeta();
+        objectMeta.setName(req.getDeployName());
+        objectMeta.setNamespace(namespace);
+        objectMeta.setLabels(KubernetesUtil.label(req.getDeployName()));
+        v1Scale.setMetadata(objectMeta);
         appsV1Api.replaceNamespacedDeploymentScale(req.getDeployName(), namespace, v1Scale, "true",
                 null, null, null);
     }
