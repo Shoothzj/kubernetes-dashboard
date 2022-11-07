@@ -98,10 +98,10 @@ public class KubernetesDeployService {
             // spec template
             V1PodTemplateSpec templateSpec = new V1PodTemplateSpec();
             {
-                // template metadata
-                V1ObjectMeta templateMetadata = new V1ObjectMeta();
-                templateMetadata.setLabels(KubernetesUtil.label(req.getDeploymentName()));
-                templateSpec.setMetadata(templateMetadata);
+                // object metadata
+                V1ObjectMeta objectMeta = new V1ObjectMeta();
+                objectMeta.setLabels(KubernetesUtil.label(req.getDeploymentName()));
+                templateSpec.setMetadata(objectMeta);
             }
             // spec template spec
             V1PodSpec v1PodSpec = new V1PodSpec();
