@@ -24,5 +24,8 @@ header:
   paths-ignore:
     - '**/*.md'
     - '**/*.json'
+    - '**/*.svg'
     - 'LICENSE'
     - '.gitignore'
+    - 'portal/.prettierrc'
+    - 'portal/public/robots.txt'

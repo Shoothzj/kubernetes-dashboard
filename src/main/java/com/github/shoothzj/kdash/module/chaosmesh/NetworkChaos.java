@@ -19,7 +19,6 @@
 
 package com.github.shoothzj.kdash.module.chaosmesh;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
