@@ -39,9 +39,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/kubernetes")
-@Slf4j
 public class KubernetesDeployController {
 
     public KubernetesDeployService deployService;

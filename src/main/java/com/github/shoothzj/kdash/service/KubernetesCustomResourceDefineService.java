@@ -19,10 +19,17 @@
 
 package com.github.shoothzj.kdash.service;
 
+import com.github.shoothzj.kdash.module.GetCustomResourceDefinitionResp;
 import io.kubernetes.client.openapi.ApiClient;
+import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.ApiextensionsV1Api;
+import io.kubernetes.client.openapi.models.V1CustomResourceDefinition;
+import io.kubernetes.client.openapi.models.V1CustomResourceDefinitionList;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class KubernetesCustomResourceDefineService {
@@ -31,6 +38,29 @@ public class KubernetesCustomResourceDefineService {
 
     public KubernetesCustomResourceDefineService(@Autowired ApiClient apiClient) {
         this.apiextensionsV1Api = new ApiextensionsV1Api(apiClient);
+    }
+
+    public void createCustomResourceDefinition() throws ApiException {
+        V1CustomResourceDefinition customResourceDefinition = new V1CustomResourceDefinition();
+        apiextensionsV1Api.createCustomResourceDefinition(customResourceDefinition,
+                "true", null, null, null);
+    }
+
+    public List<GetCustomResourceDefinitionResp> getCustomResourceDefinitionList() throws ApiException {
+        V1CustomResourceDefinitionList definitionList = apiextensionsV1Api.listCustomResourceDefinition("true",
+                null, null, null, null, null, null,
+                null, 30, false);
+        List<V1CustomResourceDefinition> definitionListItems = definitionList.getItems();
+        return definitionListItems.stream().map(this::convert).toList();
+    }
+    
+    private GetCustomResourceDefinitionResp convert(V1CustomResourceDefinition v1CustomResourceDefinition) {
+        GetCustomResourceDefinitionResp resp = new GetCustomResourceDefinitionResp();
+        V1ObjectMeta metadata = v1CustomResourceDefinition.getMetadata();
+        if (metadata != null) {
+            resp.setName(metadata.getName());
+        }
+        return resp;
     }
 
 }

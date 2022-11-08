@@ -19,10 +19,10 @@
 
 package com.github.shoothzj.kdash.controller;
 
-import com.github.shoothzj.kdash.module.GetNodeResp;
-import com.github.shoothzj.kdash.service.KubernetesNodeService;
+import com.github.shoothzj.kdash.module.GetCustomResourceDefinitionResp;
+import com.github.shoothzj.kdash.service.KubernetesCustomResourceDefineService;
+import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,17 +34,17 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/kubernetes")
-public class KubernetesNodeController {
+public class KubernetesCustomResourceDefineController {
 
-    public KubernetesNodeService kubernetesNodeService;
+    private final KubernetesCustomResourceDefineService customResourceDefineService;
 
-    public KubernetesNodeController(@Autowired KubernetesNodeService kubernetesNodeService) {
-        this.kubernetesNodeService = kubernetesNodeService;
+    public KubernetesCustomResourceDefineController(KubernetesCustomResourceDefineService customResourceDefineService) {
+        this.customResourceDefineService = customResourceDefineService;
     }
 
-    @GetMapping("/nodes")
-    public ResponseEntity<List<GetNodeResp>> getNodes() throws Exception {
-        return new ResponseEntity<>(kubernetesNodeService.getNodes(), HttpStatus.OK);
+    @GetMapping("/custom-resource-definitions")
+    public ResponseEntity<List<GetCustomResourceDefinitionResp>> getCustomResourceDefinitionList() throws ApiException {
+        return new ResponseEntity<>(customResourceDefineService.getCustomResourceDefinitionList(), HttpStatus.OK);
     }
 
 }
