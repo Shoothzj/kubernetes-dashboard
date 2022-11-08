@@ -24,18 +24,10 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class GetNodeResp {
+public class GetCustomResourceDefinitionResp {
 
-    private String nodeName;
+    private String name;
 
-    private String nodeCreationTimestamp;
-
-    private String nodeAge;
-
-    private String nodeKubeletVersion;
-
-    private String nodeOsImage;
-
-    private String nodeArchitecture;
-
+    public GetCustomResourceDefinitionResp() {
+    }
 }
