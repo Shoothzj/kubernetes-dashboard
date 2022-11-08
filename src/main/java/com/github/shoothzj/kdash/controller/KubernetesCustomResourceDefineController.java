@@ -19,6 +19,7 @@
 
 package com.github.shoothzj.kdash.controller;
 
+import com.github.shoothzj.kdash.module.CreateCustomResourceDefinitionReq;
 import com.github.shoothzj.kdash.module.GetCustomResourceDefinitionResp;
 import com.github.shoothzj.kdash.service.KubernetesCustomResourceDefineService;
 import io.kubernetes.client.openapi.ApiException;
@@ -26,6 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,6 +43,13 @@ public class KubernetesCustomResourceDefineController {
 
     public KubernetesCustomResourceDefineController(KubernetesCustomResourceDefineService customResourceDefineService) {
         this.customResourceDefineService = customResourceDefineService;
+    }
+
+    @PostMapping("/custom-resource-definitions")
+    public ResponseEntity<Void> createCustomResourceDefinition(
+            @RequestBody CreateCustomResourceDefinitionReq req) throws ApiException {
+        customResourceDefineService.createCustomResourceDefinition(req);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/custom-resource-definitions")

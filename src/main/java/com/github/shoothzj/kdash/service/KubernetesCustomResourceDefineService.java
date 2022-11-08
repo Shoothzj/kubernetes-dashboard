@@ -19,12 +19,18 @@
 
 package com.github.shoothzj.kdash.service;
 
+import com.github.shoothzj.kdash.module.CreateCustomResourceDefinitionReq;
+import com.github.shoothzj.kdash.module.CustomResourceDefinitionNames;
+import com.github.shoothzj.kdash.module.CustomResourceDefinitionVersion;
 import com.github.shoothzj.kdash.module.GetCustomResourceDefinitionResp;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.ApiextensionsV1Api;
 import io.kubernetes.client.openapi.models.V1CustomResourceDefinition;
 import io.kubernetes.client.openapi.models.V1CustomResourceDefinitionList;
+import io.kubernetes.client.openapi.models.V1CustomResourceDefinitionNames;
+import io.kubernetes.client.openapi.models.V1CustomResourceDefinitionSpec;
+import io.kubernetes.client.openapi.models.V1CustomResourceDefinitionVersion;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,8 +46,26 @@ public class KubernetesCustomResourceDefineService {
         this.apiextensionsV1Api = new ApiextensionsV1Api(apiClient);
     }
 
-    public void createCustomResourceDefinition() throws ApiException {
+    public void createCustomResourceDefinition(CreateCustomResourceDefinitionReq req) throws ApiException {
         V1CustomResourceDefinition customResourceDefinition = new V1CustomResourceDefinition();
+        customResourceDefinition.setApiVersion("apiextensions.k8s.io/v1");
+        customResourceDefinition.setKind("CustomResourceDefinition");
+        V1ObjectMeta metadata = new V1ObjectMeta();
+        metadata.setName(req.getName());
+        customResourceDefinition.setMetadata(metadata);
+        V1CustomResourceDefinitionSpec v1CustomResourceDefinitionSpec = new V1CustomResourceDefinitionSpec();
+        v1CustomResourceDefinitionSpec.setGroup(req.getGroup());
+        v1CustomResourceDefinitionSpec.setScope(req.getScope());
+        v1CustomResourceDefinitionSpec.setVersions(req.getVersions().stream().map(this::convert).toList());
+        {
+            V1CustomResourceDefinitionNames customResourceDefinitionNames = new V1CustomResourceDefinitionNames();
+            CustomResourceDefinitionNames names = req.getNames();
+            customResourceDefinitionNames.setPlural(names.getPlural());
+            customResourceDefinitionNames.setSingular(names.getSingular());
+            customResourceDefinitionNames.setKind(names.getKind());
+            v1CustomResourceDefinitionSpec.setNames(customResourceDefinitionNames);
+        }
+        customResourceDefinition.setSpec(v1CustomResourceDefinitionSpec);
         apiextensionsV1Api.createCustomResourceDefinition(customResourceDefinition,
                 "true", null, null, null);
     }
@@ -52,6 +76,14 @@ public class KubernetesCustomResourceDefineService {
                 null, 30, false);
         List<V1CustomResourceDefinition> definitionListItems = definitionList.getItems();
         return definitionListItems.stream().map(this::convert).toList();
+    }
+
+    private V1CustomResourceDefinitionVersion convert(CustomResourceDefinitionVersion version) {
+        V1CustomResourceDefinitionVersion v1CustomResourceDefinitionVersion = new V1CustomResourceDefinitionVersion();
+        v1CustomResourceDefinitionVersion.setName(version.getName());
+        v1CustomResourceDefinitionVersion.setServed(version.isServed());
+        v1CustomResourceDefinitionVersion.setStorage(version.isStorage());
+        return v1CustomResourceDefinitionVersion;
     }
 
     private GetCustomResourceDefinitionResp convert(V1CustomResourceDefinition v1CustomResourceDefinition) {
