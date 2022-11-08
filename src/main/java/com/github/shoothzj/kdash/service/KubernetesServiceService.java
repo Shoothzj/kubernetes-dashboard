@@ -45,6 +45,15 @@ public class KubernetesServiceService {
         this.coreV1Api = new CoreV1Api(apiClient);
     }
 
+    public void createService(String namespace, CreateServiceReq req) throws ApiException {
+    }
+
+    public void deleteService(String namespace, DeleteServiceReq req) throws ApiException {
+        coreV1Api.deleteNamespacedService(req.getServiceName(), namespace, "true",
+                null, null, null,
+                null, null);
+    }
+
     public List<GetServiceResp> getService(String namespaces) throws ApiException {
         V1ServiceList serviceList = coreV1Api.listNamespacedService(namespaces, "true",
                 null, null, null,
@@ -74,11 +83,4 @@ public class KubernetesServiceService {
         return serviceResps;
     }
 
-    public void deleteService(String namespace, DeleteServiceReq req) throws ApiException {
-        coreV1Api.deleteNamespacedService(req.getServiceName(), namespace, "true",
-                null, null, null,
-                null, null);
-    }
-
-    public void createService(String namespace, CreateServiceReq req) throws ApiException{}
 }
