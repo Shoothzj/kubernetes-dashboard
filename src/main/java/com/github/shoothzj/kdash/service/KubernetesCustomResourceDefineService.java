@@ -17,29 +17,20 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module;
+package com.github.shoothzj.kdash.service;
 
-import lombok.Getter;
-import lombok.Setter;
+import io.kubernetes.client.openapi.ApiClient;
+import io.kubernetes.client.openapi.apis.ApiextensionsV1Api;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.Map;
+@Service
+public class KubernetesCustomResourceDefineService {
 
-@Setter
-@Getter
-public class GetServiceResp {
+    private final ApiextensionsV1Api apiextensionsV1Api;
 
-    private String serviceKind;
-
-    private String serviceName;
-
-    private String serviceClusterName;
-
-    private String serviceClusterIP;
-
-    private Map<String, String> serviceLabel;
-
-    private Map<String, String> serviceSelector;
-
-    public GetServiceResp() {
+    public KubernetesCustomResourceDefineService(@Autowired ApiClient apiClient) {
+        this.apiextensionsV1Api = new ApiextensionsV1Api(apiClient);
     }
+
 }

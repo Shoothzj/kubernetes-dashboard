@@ -27,4 +27,7 @@ import lombok.Setter;
 public class DeleteServiceReq {
 
     private String serviceName;
+
+    public DeleteServiceReq() {
+    }
 }

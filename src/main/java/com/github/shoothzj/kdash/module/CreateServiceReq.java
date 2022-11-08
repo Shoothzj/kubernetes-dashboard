@@ -29,10 +29,19 @@ import java.util.Map;
 @Setter
 @Getter
 public class CreateServiceReq {
+
     private String serviceKind;
+
     private String serviceName;
+
     private String serviceClusterName;
+
     private Map<String, String> serviceLabels;
+
     private Map<String, String> serviceSelector;
+
     private List<V1ServicePort> ports;
+
+    public CreateServiceReq() {
+    }
 }

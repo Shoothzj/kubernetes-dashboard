@@ -41,15 +41,17 @@ import java.util.List;
 @RequestMapping("/api/kubernetes")
 public class KubernetesServiceController {
 
-    private KubernetesServiceService kubernetesServiceService;
+    private final KubernetesServiceService kubernetesServiceService;
 
     public KubernetesServiceController(@Autowired KubernetesServiceService kubernetesServiceService) {
         this.kubernetesServiceService = kubernetesServiceService;
     }
 
-    @GetMapping("/namespace/{namespace}/services")
-    public ResponseEntity<List<GetServiceResp>> getService(@PathVariable String namespace) throws ApiException {
-        return new ResponseEntity<>(kubernetesServiceService.getService(namespace), HttpStatus.OK);
+    @PostMapping("/namespace/{namespace}/services")
+    public ResponseEntity<Void> createService(@PathVariable String namespace,
+                                              @RequestBody CreateServiceReq req) throws ApiException{
+        kubernetesServiceService.createService(namespace, req);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/namespace/{namespace}/services")
@@ -59,11 +61,9 @@ public class KubernetesServiceController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/namespace/{namespace}/services")
-    public ResponseEntity<Void> createService(@PathVariable String namespace,
-                                              @RequestBody CreateServiceReq req) throws ApiException{
-        kubernetesServiceService.createService(namespace, req);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    @GetMapping("/namespace/{namespace}/services")
+    public ResponseEntity<List<GetServiceResp>> getService(@PathVariable String namespace) throws ApiException {
+        return new ResponseEntity<>(kubernetesServiceService.getService(namespace), HttpStatus.OK);
     }
 
 }
