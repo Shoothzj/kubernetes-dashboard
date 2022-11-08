@@ -53,7 +53,7 @@ public class KubernetesCustomResourceDefineService {
         List<V1CustomResourceDefinition> definitionListItems = definitionList.getItems();
         return definitionListItems.stream().map(this::convert).toList();
     }
-    
+
     private GetCustomResourceDefinitionResp convert(V1CustomResourceDefinition v1CustomResourceDefinition) {
         GetCustomResourceDefinitionResp resp = new GetCustomResourceDefinitionResp();
         V1ObjectMeta metadata = v1CustomResourceDefinition.getMetadata();
