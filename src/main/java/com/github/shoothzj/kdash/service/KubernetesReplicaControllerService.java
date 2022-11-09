@@ -19,10 +19,27 @@
 
 package com.github.shoothzj.kdash.service;
 
+import com.github.shoothzj.kdash.module.CreateReplicaReq;
+import com.github.shoothzj.kdash.module.GetReplicaResp;
+import com.github.shoothzj.kdash.module.ScaleReplicaReq;
+import com.github.shoothzj.kdash.util.KubernetesUtil;
 import io.kubernetes.client.openapi.ApiClient;
+import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
+import io.kubernetes.client.openapi.models.V1Container;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
+import io.kubernetes.client.openapi.models.V1PodSpec;
+import io.kubernetes.client.openapi.models.V1ReplicationController;
+import io.kubernetes.client.openapi.models.V1ReplicationControllerList;
+import io.kubernetes.client.openapi.models.V1ReplicationControllerSpec;
+import io.kubernetes.client.openapi.models.V1ReplicationControllerStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class KubernetesReplicaControllerService {
@@ -31,5 +48,66 @@ public class KubernetesReplicaControllerService {
 
     public KubernetesReplicaControllerService(@Autowired ApiClient apiClient) {
         this.coreV1Api = new CoreV1Api(apiClient);
+    }
+
+    public void createReplica(String namespace, CreateReplicaReq req) {
+
+    }
+
+    public void deleteReplicas(String namespace, String replicaName) throws ApiException {
+        coreV1Api.deleteNamespacedReplicationController(replicaName, namespace, "true", null,
+                null, null, null, null);
+    }
+
+    public List<GetReplicaResp> getReplicas(String namespace) throws ApiException {
+        List<GetReplicaResp> replicaResps = new ArrayList<>();
+        V1ReplicationControllerList controllerList = coreV1Api.listNamespacedReplicationController(namespace,
+                "true", null, null, null, null,
+                null, null, null, 30, null);
+        for (V1ReplicationController item : controllerList.getItems()) {
+            replicaResps.add(convert(item));
+        }
+        return replicaResps;
+    }
+
+    private GetReplicaResp convert(V1ReplicationController controller) {
+        GetReplicaResp replicaResp = new GetReplicaResp();
+        V1ObjectMeta metadata = controller.getMetadata();
+        if (metadata != null) {
+            replicaResp.setReplicaName(metadata.getName());
+            OffsetDateTime timestamp = metadata.getCreationTimestamp();
+            if (timestamp != null) {
+                replicaResp.setCreationTimestamp(timestamp.format(DateTimeFormatter.ISO_DATE_TIME));
+            }
+        }
+        V1ReplicationControllerStatus status = controller.getStatus();
+        if (status != null) {
+            replicaResp.setReplicas(status.getReplicas() == null ? 0 : status.getReplicas());
+            replicaResp.setAvailableReplicas(status.getAvailableReplicas() == null ? 0 : status.getAvailableReplicas());
+        }
+        V1ReplicationControllerSpec spec = controller.getSpec();
+        if (spec != null) {
+            V1PodSpec v1PodSpec = spec.getTemplate().getSpec();
+            if (v1PodSpec == null) {
+                return replicaResp;
+            }
+            List<V1Container> containers = v1PodSpec.getContainers();
+            replicaResp.setContainerInfoList(KubernetesUtil.containerInfoList(containers));
+        }
+        return replicaResp;
+    }
+
+    public void scaleReplica(String namespace, ScaleReplicaReq req) throws ApiException {
+        V1ReplicationController replicationController = new V1ReplicationController();
+        V1ReplicationControllerSpec v1ScaleSpec = new V1ReplicationControllerSpec();
+        v1ScaleSpec.setReplicas(req.getReplicas());
+        replicationController.setSpec(v1ScaleSpec);
+        V1ObjectMeta objectMeta = new V1ObjectMeta();
+        objectMeta.setName(req.getReplicaName());
+        objectMeta.setNamespace(namespace);
+        objectMeta.setLabels(KubernetesUtil.label(req.getReplicaName()));
+        replicationController.setMetadata(objectMeta);
+        coreV1Api.replaceNamespacedReplicationController(req.getReplicaName(), namespace, replicationController,
+                "true", null, null, null);
     }
 }
