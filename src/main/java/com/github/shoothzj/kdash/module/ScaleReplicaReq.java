@@ -29,4 +29,7 @@ public class ScaleReplicaReq {
     private String replicaName;
 
     private int replicas;
+
+    public ScaleReplicaReq() {
+    }
 }

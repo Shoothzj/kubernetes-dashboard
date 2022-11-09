@@ -37,4 +37,7 @@ public class GetReplicaResp {
     private int availableReplicas;
 
     private List<ContainerInfo> containerInfoList;
+
+    public GetReplicaResp() {
+    }
 }

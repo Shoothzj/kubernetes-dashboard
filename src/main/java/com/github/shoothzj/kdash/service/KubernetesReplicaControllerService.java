@@ -29,6 +29,7 @@ import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1PodSpec;
+import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
 import io.kubernetes.client.openapi.models.V1ReplicationController;
 import io.kubernetes.client.openapi.models.V1ReplicationControllerList;
 import io.kubernetes.client.openapi.models.V1ReplicationControllerSpec;
@@ -51,7 +52,6 @@ public class KubernetesReplicaControllerService {
     }
 
     public void createReplica(String namespace, CreateReplicaReq req) {
-
     }
 
     public void deleteReplicas(String namespace, String replicaName) throws ApiException {
@@ -87,7 +87,11 @@ public class KubernetesReplicaControllerService {
         }
         V1ReplicationControllerSpec spec = controller.getSpec();
         if (spec != null) {
-            V1PodSpec v1PodSpec = spec.getTemplate().getSpec();
+            V1PodTemplateSpec template = spec.getTemplate();
+            if (template == null) {
+                return replicaResp;
+            }
+            V1PodSpec v1PodSpec = template.getSpec();
             if (v1PodSpec == null) {
                 return replicaResp;
             }
