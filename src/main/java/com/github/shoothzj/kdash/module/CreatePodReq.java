@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -17,19 +17,25 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.service;
+package com.github.shoothzj.kdash.module;
 
-import com.github.shoothzj.kdash.config.PrometheusConfig;
-import io.github.protocol.prom.PromApiClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import lombok.Getter;
+import lombok.Setter;
 
-@Service
-public class PrometheusService {
+import java.util.Map;
 
-    private final PromApiClient promApiClient;
+@Setter
+@Getter
+public class CreatePodReq {
 
-    public PrometheusService(@Autowired PrometheusConfig config) {
-        this.promApiClient = PromApiClient.builder().host(config.host).port(config.port).build();
+    private String podName;
+
+    private String image;
+
+    private String imagePullSecret;
+
+    private Map<String, String> env;
+
+    public CreatePodReq() {
     }
 }

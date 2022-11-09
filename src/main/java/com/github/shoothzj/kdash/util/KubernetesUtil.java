@@ -19,6 +19,7 @@
 
 package com.github.shoothzj.kdash.util;
 
+import com.github.shoothzj.kdash.module.ContainerInfo;
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1EnvVar;
 import io.kubernetes.client.openapi.models.V1LabelSelector;
@@ -79,4 +80,17 @@ public class KubernetesUtil {
         result.add(v1LocalObjectReference);
         return result;
     }
+
+    public static List<ContainerInfo> containerInfoList(List<V1Container> containers) {
+        List<ContainerInfo> containerInfoList = new ArrayList<>(containers.size());
+        for (V1Container container : containers) {
+            ContainerInfo containerInfo = new ContainerInfo();
+            containerInfo.setImage(container.getImage());
+            containerInfo.setEnv(KubernetesUtil.envToMap(container.getEnv()));
+            containerInfo.setPorts(container.getPorts());
+            containerInfoList.add(containerInfo);
+        }
+        return containerInfoList;
+    }
+
 }
