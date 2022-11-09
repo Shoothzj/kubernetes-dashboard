@@ -17,41 +17,52 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module.chaosmesh;
+package com.github.shoothzj.kdash.module.chaosmesh.networkchaos;
 
+import com.github.shoothzj.kdash.module.chaosmesh.BaseChaosSpec;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Setter
 @Getter
 @ToString
-public class ChaosSpec<T> {
+public class NetworkChaosSpec extends BaseChaosSpec<NetworkChaosSpec.NetworkChaosAction> {
 
-    public static class SelectMode {
-
-        public static final String RANDOM_ONE = "one";
-
-        public static final String ALL = "all";
-
-        public static final String FIXED_NUMBER = "fixed";
-
-        public static final String FIXED_PERCENT = "fixed-percent";
-
-        public static final String RANDOM_MAX_PERCENT = "random-max-percent";
-
+    public enum NetworkChaosAction {
+        delay,
+        loss,
+        duplicate,
+        corrupt,
+        partition,
+        bandwidth
     }
 
-    private T action;
-
-    private String mode;
-
-    private String value;
-
-    private ChaosSelector selector;
-
-    private String duration;
-
-    public ChaosSpec() {
+    public enum NetworkChaosDirection {
+        to,
+        from,
+        both
     }
+
+    private NetworkChaosDirection direction;
+
+    private List<String> externalTargets;
+
+    private Delay delay;
+
+    private Loss loss;
+
+    private Corrupt corrupt;
+
+    private Duplicate duplicate;
+
+    // for partition action
+    private BaseChaosSpec<NetworkChaosAction> target;
+
+    private Bandwidth bindwidth;
+
+    private String device;
+
 }

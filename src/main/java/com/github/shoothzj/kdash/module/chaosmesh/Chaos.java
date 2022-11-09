@@ -23,37 +23,36 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Map;
-
 @Setter
 @Getter
 @ToString
-public class BaseChaos<T> {
+public class Chaos<T> {
 
-    public enum ChaosKind {
-        PodChaos,
-        NetworkChaos,
-        StressChaos,
-        IOChaos,
-        DNSChaos,
-        TimeChaos,
-        JVMChaos,
-        HTTPChaos,
-        Schedule,
-        Workflow,
+    @Setter
+    @Getter
+    public static class Metadata{
+
+        private String name;
+
+        private String namespace;
+
+        public Metadata(){
+        }
     }
+
+    private String apiVersion = "chaos-mesh.org/v1alpha1";
 
     private ChaosKind kind;
 
-    private Map<String, String> metaData;
+    private Metadata metadata;
 
-    private ChaosSpec<T> spec;
+    private BaseChaosSpec<T> spec;
 
-    public BaseChaos(ChaosKind kind) {
+    public Chaos(ChaosKind kind) {
         this.kind = kind;
     }
 
-    private BaseChaos() {
+    private Chaos() {
     }
 
 }
