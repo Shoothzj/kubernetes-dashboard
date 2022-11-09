@@ -56,7 +56,7 @@ public class KubernetesPodController {
     }
 
     @DeleteMapping("namespaces/{namespace}/pods/{podName}")
-    public ResponseEntity<Void> deleteDeploy(@PathVariable String namespace,
+    public ResponseEntity<Void> deletePod(@PathVariable String namespace,
                                              @PathVariable String podName) throws ApiException {
         kubernetesPodService.deletePod(namespace, podName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
