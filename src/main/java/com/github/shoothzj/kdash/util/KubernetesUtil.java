@@ -22,6 +22,7 @@ package com.github.shoothzj.kdash.util;
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1EnvVar;
 import io.kubernetes.client.openapi.models.V1LabelSelector;
+import io.kubernetes.client.openapi.models.V1LocalObjectReference;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -71,4 +72,11 @@ public class KubernetesUtil {
         return map;
     }
 
+    public static List<V1LocalObjectReference> imagePullSecrets(String imagePullSecret) {
+        List<V1LocalObjectReference> result = new ArrayList<>();
+        V1LocalObjectReference v1LocalObjectReference = new V1LocalObjectReference();
+        v1LocalObjectReference.setName(imagePullSecret);
+        result.add(v1LocalObjectReference);
+        return result;
+    }
 }

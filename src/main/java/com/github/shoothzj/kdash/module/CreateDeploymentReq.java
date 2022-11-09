@@ -36,6 +36,8 @@ public class CreateDeploymentReq {
 
     private String image;
 
+    private String imagePullSecret;
+
     private Map<String, String> env;
 
     public CreateDeploymentReq() {

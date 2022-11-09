@@ -88,6 +88,7 @@ public class KubernetesDeployService {
             V1PodSpec v1PodSpec = new V1PodSpec();
             // spec template spec containers
             v1PodSpec.setContainers(KubernetesUtil.singleContainerList(req.getImage(), req.getEnv()));
+            v1PodSpec.setImagePullSecrets(KubernetesUtil.imagePullSecrets(req.getImagePullSecret()));
             templateSpec.setSpec(v1PodSpec);
             deploySpec.setTemplate(templateSpec);
             deployment.setSpec(deploySpec);

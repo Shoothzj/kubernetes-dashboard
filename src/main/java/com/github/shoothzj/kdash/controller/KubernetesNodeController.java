@@ -36,7 +36,7 @@ import java.util.List;
 @RequestMapping("/api/kubernetes")
 public class KubernetesNodeController {
 
-    public KubernetesNodeService kubernetesNodeService;
+    private final KubernetesNodeService kubernetesNodeService;
 
     public KubernetesNodeController(@Autowired KubernetesNodeService kubernetesNodeService) {
         this.kubernetesNodeService = kubernetesNodeService;

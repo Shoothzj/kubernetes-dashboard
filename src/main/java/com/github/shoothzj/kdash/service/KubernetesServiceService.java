@@ -46,6 +46,22 @@ public class KubernetesServiceService {
     }
 
     public void createService(String namespace, CreateServiceReq req) throws ApiException {
+        final V1Service v1Service = new V1Service();
+        {
+            final V1ObjectMeta v1ObjectMeta = new V1ObjectMeta();
+            v1ObjectMeta.setNamespace(namespace);
+            v1ObjectMeta.setName(req.getServiceName());
+            v1ObjectMeta.setLabels(req.getServiceLabels());
+            v1ObjectMeta.setClusterName(req.getServiceClusterName());
+            v1Service.setMetadata(v1ObjectMeta);
+        }
+        {
+            final V1ServiceSpec v1ServiceSpec = new V1ServiceSpec();
+            v1ServiceSpec.setPorts(req.getPorts());
+            v1ServiceSpec.setSelector(req.getServiceSelector());
+            v1Service.setSpec(v1ServiceSpec);
+        }
+        coreV1Api.createNamespacedService(namespace, v1Service, "true", null, null, null);
     }
 
     public void deleteService(String namespace, DeleteServiceReq req) throws ApiException {
