@@ -30,9 +30,17 @@ import java.util.Map;
 public class GetPodResp {
 
     private String podName;
+
     private String creationTimestamp;
+
     private String hostIp;
+
     private String startTime;
+
     private Map<String, String> nodeSelector;
+
     private List<ContainerInfo> containerInfoList;
+
+    public GetPodResp() {
+    }
 }

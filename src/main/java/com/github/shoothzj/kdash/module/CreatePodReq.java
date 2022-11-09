@@ -29,7 +29,13 @@ import java.util.Map;
 public class CreatePodReq {
 
     private String podName;
+
     private String image;
+
     private String imagePullSecret;
+
     private Map<String, String> env;
+
+    public CreatePodReq() {
+    }
 }
