@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -17,43 +17,24 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module.chaosmesh;
+package com.github.shoothzj.kdash.module.chaosmesh.networkchaos;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
-import java.util.Map;
-
-@Setter
 @Getter
-@ToString
-public class BaseChaos<T> {
+@Setter
+public class Delay {
 
-    public enum ChaosKind {
-        PodChaos,
-        NetworkChaos,
-        StressChaos,
-        IOChaos,
-        DNSChaos,
-        TimeChaos,
-        JVMChaos,
-        HTTPChaos,
-        Schedule,
-        Workflow,
-    }
+    private String latency;
 
-    private ChaosKind kind;
+    private String correlation;
 
-    private Map<String, String> metaData;
+    private String jitter;
 
-    private ChaosSpec<T> spec;
+    private Reorder reorder;
 
-    public BaseChaos(ChaosKind kind) {
-        this.kind = kind;
-    }
-
-    private BaseChaos() {
+    public Delay() {
     }
 
 }

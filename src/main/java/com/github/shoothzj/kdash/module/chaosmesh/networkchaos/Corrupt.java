@@ -17,27 +17,19 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module;
+package com.github.shoothzj.kdash.module.chaosmesh.networkchaos;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Setter
 @Getter
-public class CreateCustomResourceDefinitionReq {
+public class Corrupt {
 
-    private String name;
+    private String corrupt;
 
-    private String group;
+    private String correlation;
 
-    private String scope;
-
-    private CustomResourceDefinitionNames names;
-
-    private List<CustomResourceDefinitionVersion> versions;
-
-    public CreateCustomResourceDefinitionReq() {
+    public Corrupt() {
     }
 }

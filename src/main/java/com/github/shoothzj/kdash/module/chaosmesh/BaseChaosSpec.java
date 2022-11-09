@@ -17,27 +17,27 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module;
+package com.github.shoothzj.kdash.module.chaosmesh;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
+import lombok.ToString;
 
 @Setter
 @Getter
-public class CreateCustomResourceDefinitionReq {
+@ToString
+public abstract class BaseChaosSpec<T> {
 
-    private String name;
+    private T action;
 
-    private String group;
+    private String mode;
 
-    private String scope;
+    private String value;
 
-    private CustomResourceDefinitionNames names;
+    private ChaosSelector selector;
 
-    private List<CustomResourceDefinitionVersion> versions;
+    private String duration;
 
-    public CreateCustomResourceDefinitionReq() {
+    public BaseChaosSpec() {
     }
 }

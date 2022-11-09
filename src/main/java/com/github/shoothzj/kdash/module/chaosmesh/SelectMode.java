@@ -17,27 +17,18 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module;
+package com.github.shoothzj.kdash.module.chaosmesh;
 
-import lombok.Getter;
-import lombok.Setter;
+public class SelectMode {
 
-import java.util.List;
+    public static final String RANDOM_ONE = "one";
 
-@Setter
-@Getter
-public class CreateCustomResourceDefinitionReq {
+    public static final String ALL = "all";
 
-    private String name;
+    public static final String FIXED_NUMBER = "fixed";
 
-    private String group;
+    public static final String FIXED_PERCENT = "fixed-percent";
 
-    private String scope;
+    public static final String RANDOM_MAX_PERCENT = "random-max-percent";
 
-    private CustomResourceDefinitionNames names;
-
-    private List<CustomResourceDefinitionVersion> versions;
-
-    public CreateCustomResourceDefinitionReq() {
-    }
 }

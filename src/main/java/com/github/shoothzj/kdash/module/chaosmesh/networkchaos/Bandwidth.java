@@ -17,27 +17,27 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module;
+package com.github.shoothzj.kdash.module.chaosmesh.networkchaos;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
+import java.math.BigInteger;
 
 @Setter
 @Getter
-public class CreateCustomResourceDefinitionReq {
+public class Bandwidth{
 
-    private String name;
+    private String rate;
 
-    private String group;
+    private Long limit;
 
-    private String scope;
+    private Long buffer;
 
-    private CustomResourceDefinitionNames names;
+    private BigInteger peakrate;
 
-    private List<CustomResourceDefinitionVersion> versions;
+    private Long minburst;
 
-    public CreateCustomResourceDefinitionReq() {
+    public Bandwidth() {
     }
 }

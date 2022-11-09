@@ -17,27 +17,17 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module;
+package com.github.shoothzj.kdash.module.chaosmesh;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.List;
-
-@Setter
-@Getter
-public class CreateCustomResourceDefinitionReq {
-
-    private String name;
-
-    private String group;
-
-    private String scope;
-
-    private CustomResourceDefinitionNames names;
-
-    private List<CustomResourceDefinitionVersion> versions;
-
-    public CreateCustomResourceDefinitionReq() {
-    }
+public enum ChaosKind {
+    podchaos,
+    networkchaos,
+    stresschaos,
+    iochaos,
+    dnschaos,
+    timechaos,
+    jvmchaos,
+    httpchaos,
+    schedules,
+    workflows,
 }
