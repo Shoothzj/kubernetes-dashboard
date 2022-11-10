@@ -48,9 +48,10 @@ public class KubernetesUtil {
         return labelSelector;
     }
 
-    public static List<V1Container> singleContainerList(String image, Map<String, String> envMap) {
+    public static List<V1Container> singleContainerList(String image, Map<String, String> envMap, String name) {
         List<V1Container> containers = new ArrayList<>();
         V1Container container = new V1Container();
+        container.setName(name);
         container.setImage(image);
         container.setEnv(envMap.entrySet().stream().map(entry -> {
             V1EnvVar envVar = new V1EnvVar();

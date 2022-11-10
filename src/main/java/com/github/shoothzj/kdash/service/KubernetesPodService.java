@@ -51,7 +51,7 @@ public class KubernetesPodService {
     public void createPod(String namespace, CreatePodReq req) throws Exception {
         // pod
         V1Pod v1Pod = new V1Pod();
-        v1Pod.setApiVersion("apps/v1");
+        v1Pod.setApiVersion("v1");
         v1Pod.setKind("Pod");
 
         {
@@ -66,8 +66,7 @@ public class KubernetesPodService {
         {
             // spec
             V1PodSpec v1PodSpec = new V1PodSpec();
-            v1PodSpec.setContainers(KubernetesUtil.singleContainerList(req.getImage(), req.getEnv()));
-            v1PodSpec.setNodeName(req.getPodName());
+            v1PodSpec.setContainers(KubernetesUtil.singleContainerList(req.getImage(), req.getEnv(), req.getPodName()));
             v1PodSpec.setImagePullSecrets(KubernetesUtil.imagePullSecrets(req.getImagePullSecret()));
             v1Pod.setSpec(v1PodSpec);
         }
