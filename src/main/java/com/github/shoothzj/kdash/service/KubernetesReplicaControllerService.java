@@ -51,7 +51,43 @@ public class KubernetesReplicaControllerService {
         this.coreV1Api = new CoreV1Api(apiClient);
     }
 
-    public void createReplica(String namespace, CreateReplicaReq req) {
+    public void createReplica(String namespace, CreateReplicaReq req) throws ApiException {
+        V1ReplicationController replicationController = new V1ReplicationController();
+        replicationController.setApiVersion("v1");
+
+        {
+            // add metadata
+            V1ObjectMeta metaData = new V1ObjectMeta();
+            metaData.setName(req.getReplicaName());
+            metaData.setLabels(KubernetesUtil.label(req.getReplicaName()));
+            metaData.setNamespace(namespace);
+            replicationController.setMetadata(metaData);
+        }
+        {
+            // add spec
+            V1ReplicationControllerSpec controllerSpec = new V1ReplicationControllerSpec();
+            controllerSpec.setReplicas(req.getReplica());
+
+            controllerSpec.setSelector(KubernetesUtil.label(req.getReplicaName()));
+            // spec template
+            V1PodTemplateSpec v1PodTemplateSpec = new V1PodTemplateSpec();
+            V1PodSpec v1PodSpec = new V1PodSpec();
+            v1PodSpec.setContainers(KubernetesUtil.singleContainerList(req.getImage(), req.getEnv(),
+                    req.getReplicaName()));
+            v1PodSpec.setImagePullSecrets(KubernetesUtil.imagePullSecrets(req.getImagePullSecret()));
+            v1PodTemplateSpec.setSpec(v1PodSpec);
+
+            V1ObjectMeta v1ObjectMeta = new V1ObjectMeta();
+            v1ObjectMeta.setNamespace(namespace);
+            v1ObjectMeta.setName(req.getReplicaName());
+            v1ObjectMeta.setLabels(KubernetesUtil.label(req.getReplicaName()));
+            v1PodTemplateSpec.setMetadata(v1ObjectMeta);
+
+            controllerSpec.setTemplate(v1PodTemplateSpec);
+            replicationController.setSpec(controllerSpec);
+        }
+        coreV1Api.createNamespacedReplicationController(namespace, replicationController, "true",
+                null, null, null);
     }
 
     public void deleteReplicas(String namespace, String replicaName) throws ApiException {
