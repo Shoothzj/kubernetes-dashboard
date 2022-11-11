@@ -38,6 +38,8 @@ public class CreateReplicaReq {
 
     private Map<String, String> env;
 
+    private ResourceRequirements resourceRequirements;
+
     public CreateReplicaReq() {
     }
 }

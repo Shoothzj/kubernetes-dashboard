@@ -26,18 +26,12 @@ import java.util.Map;
 
 @Setter
 @Getter
-public class CreatePodReq {
+public class ResourceRequirements {
 
-    private String podName;
+    private Map<String, String> limits;
 
-    private String image;
+    private Map<String, String> requests;
 
-    private String imagePullSecret;
-
-    private Map<String, String> env;
-
-    private ResourceRequirements resourceRequirements;
-
-    public CreatePodReq() {
+    public ResourceRequirements() {
     }
 }

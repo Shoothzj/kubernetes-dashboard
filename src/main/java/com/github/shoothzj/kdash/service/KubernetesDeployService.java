@@ -88,7 +88,7 @@ public class KubernetesDeployService {
             V1PodSpec v1PodSpec = new V1PodSpec();
             // spec template spec containers
             v1PodSpec.setContainers(KubernetesUtil.singleContainerList(req.getImage(), req.getEnv(),
-                    req.getDeploymentName()));
+                    req.getDeploymentName(), req.getResourceRequirements()));
             v1PodSpec.setImagePullSecrets(KubernetesUtil.imagePullSecrets(req.getImagePullSecret()));
             templateSpec.setSpec(v1PodSpec);
             deploySpec.setTemplate(templateSpec);
@@ -138,14 +138,7 @@ public class KubernetesDeployService {
                 return getDeploymentResp;
             }
             List<V1Container> containers = v1PodSpec.getContainers();
-            List<ContainerInfo> containerInfoList = new ArrayList<>(containers.size());
-            for (V1Container container : containers) {
-                ContainerInfo containerInfo = new ContainerInfo();
-                containerInfo.setImage(container.getImage());
-                containerInfo.setEnv(KubernetesUtil.envToMap(container.getEnv()));
-                containerInfo.setPorts(container.getPorts());
-                containerInfoList.add(containerInfo);
-            }
+            List<ContainerInfo> containerInfoList = KubernetesUtil.containerInfoList(containers);
             getDeploymentResp.setContainerInfoList(containerInfoList);
         }
         return getDeploymentResp;
