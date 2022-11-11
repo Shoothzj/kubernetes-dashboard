@@ -36,6 +36,8 @@ public class CreatePodReq {
 
     private Map<String, String> env;
 
+    private ResourceRequirements resourceRequirements;
+
     public CreatePodReq() {
     }
 }

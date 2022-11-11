@@ -66,7 +66,8 @@ public class KubernetesPodService {
         {
             // spec
             V1PodSpec v1PodSpec = new V1PodSpec();
-            v1PodSpec.setContainers(KubernetesUtil.singleContainerList(req.getImage(), req.getEnv(), req.getPodName()));
+            v1PodSpec.setContainers(KubernetesUtil.singleContainerList(req.getImage(),
+                    req.getEnv(), req.getPodName(), req.getResourceRequirements()));
             v1PodSpec.setImagePullSecrets(KubernetesUtil.imagePullSecrets(req.getImagePullSecret()));
             v1Pod.setSpec(v1PodSpec);
         }

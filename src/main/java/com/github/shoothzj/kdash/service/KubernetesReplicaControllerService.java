@@ -73,7 +73,7 @@ public class KubernetesReplicaControllerService {
             V1PodTemplateSpec v1PodTemplateSpec = new V1PodTemplateSpec();
             V1PodSpec v1PodSpec = new V1PodSpec();
             v1PodSpec.setContainers(KubernetesUtil.singleContainerList(req.getImage(), req.getEnv(),
-                    req.getReplicaName()));
+                    req.getReplicaName(), req.getResourceRequirements()));
             v1PodSpec.setImagePullSecrets(KubernetesUtil.imagePullSecrets(req.getImagePullSecret()));
             v1PodTemplateSpec.setSpec(v1PodSpec);
 

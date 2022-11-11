@@ -20,10 +20,13 @@
 package com.github.shoothzj.kdash.util;
 
 import com.github.shoothzj.kdash.module.ContainerInfo;
+import com.github.shoothzj.kdash.module.ResourceRequirements;
+import io.kubernetes.client.custom.Quantity;
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1EnvVar;
 import io.kubernetes.client.openapi.models.V1LabelSelector;
 import io.kubernetes.client.openapi.models.V1LocalObjectReference;
+import io.kubernetes.client.openapi.models.V1ResourceRequirements;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -48,7 +51,10 @@ public class KubernetesUtil {
         return labelSelector;
     }
 
-    public static List<V1Container> singleContainerList(String image, Map<String, String> envMap, String name) {
+    public static List<V1Container> singleContainerList(String image,
+                                                        Map<String, String> envMap,
+                                                        String name,
+                                                        ResourceRequirements resourceRequirements) {
         List<V1Container> containers = new ArrayList<>();
         V1Container container = new V1Container();
         container.setName(name);
@@ -59,6 +65,18 @@ public class KubernetesUtil {
             envVar.setValue(entry.getValue());
             return envVar;
         }).collect(Collectors.toList()));
+        V1ResourceRequirements v1ResourceRequirements = new V1ResourceRequirements();
+        Map<String, Quantity> limitMap = new HashMap<>();
+        for (Map.Entry<String, String> entry : resourceRequirements.getLimits().entrySet()) {
+            limitMap.put(entry.getKey(), new Quantity(entry.getValue()));
+        }
+        v1ResourceRequirements.setLimits(limitMap);
+        Map<String, Quantity> requestMap = new HashMap<>();
+        for (Map.Entry<String, String> entry : resourceRequirements.getRequests().entrySet()) {
+            requestMap.put(entry.getKey(), new Quantity(entry.getValue()));
+        }
+        v1ResourceRequirements.setRequests(requestMap);
+        container.setResources(v1ResourceRequirements);
         containers.add(container);
         return containers;
     }

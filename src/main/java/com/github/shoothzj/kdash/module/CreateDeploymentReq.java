@@ -40,6 +40,8 @@ public class CreateDeploymentReq {
 
     private Map<String, String> env;
 
+    private ResourceRequirements resourceRequirements;
+
     public CreateDeploymentReq() {
     }
 }
