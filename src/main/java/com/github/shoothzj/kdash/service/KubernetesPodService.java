@@ -91,6 +91,20 @@ public class KubernetesPodService {
         return result;
     }
 
+    public List<String> getNamespacePodIp(String namespace, String labelSelector) throws ApiException {
+        V1PodList podList = coreV1Api.listNamespacedPod(namespace, "true", null, null,
+                null, labelSelector, null, null, null,
+                null, null);
+        List<String> result = new ArrayList<>();
+        for (V1Pod item : podList.getItems()) {
+            V1PodStatus status = item.getStatus();
+            if (status != null) {
+                result.add(status.getPodIP());
+            }
+        }
+        return result;
+    }
+
     private GetPodResp convert(V1Pod v1Pod) {
         GetPodResp podResp = new GetPodResp();
 
