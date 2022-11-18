@@ -33,7 +33,7 @@ public class AomMetricsService {
 
     public AomMetricsService(@Autowired CloudConfig cloudConfig, @Autowired HuaweiCloudConfig config) {
         aomClient = AomClient.newBuilder()
-                .withEndpoint(config.AOM_ENDPOINT)
+                .withEndpoint(config.aomEndpoint)
                 .withCredential(new BasicCredentials()
                         .withAk(cloudConfig.accessKey)
                         .withSk(cloudConfig.secretKey)

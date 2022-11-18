@@ -31,6 +31,6 @@ public class HuaweiCloudConfig {
 
     public final String region = EnvUtil.getString("HUAWEI_CLOUD_REGION", "cn-north-4");
 
-    public final String AOM_ENDPOINT = "aom." + region + ".myhuaweicloud.com";
+    public final String aomEndpoint = "aom." + region + ".myhuaweicloud.com";
 
 }
