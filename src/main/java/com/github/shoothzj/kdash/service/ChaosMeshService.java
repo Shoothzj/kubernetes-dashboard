@@ -20,6 +20,7 @@
 package com.github.shoothzj.kdash.service;
 
 import com.github.shoothzj.kdash.module.CreateNetworkChaosCrdObjectReq;
+import com.github.shoothzj.kdash.module.chaosmesh.BaseChaosSpec;
 import com.github.shoothzj.kdash.module.chaosmesh.Chaos;
 import com.github.shoothzj.kdash.module.chaosmesh.ChaosKind;
 import com.github.shoothzj.kdash.module.chaosmesh.ChaosMeshConst;
@@ -39,7 +40,7 @@ public class ChaosMeshService {
     }
 
     public void injectNetworkChaos(CreateNetworkChaosCrdObjectReq networkChaosCrdObjectReq) throws ApiException {
-        Chaos<NetworkChaosSpec.NetworkChaosAction> chaos = new Chaos<>(ChaosKind.networkchaos);
+        Chaos<NetworkChaosSpec.NetworkChaosAction, NetworkChaosSpec> chaos = new Chaos<>(ChaosKind.networkchaos);
         NetworkChaosSpec networkChaosSpec = new NetworkChaosSpec();
         chaos.setSpec(networkChaosSpec);
         ChaosMeshUtil.convert(networkChaosCrdObjectReq, chaos);
@@ -52,7 +53,7 @@ public class ChaosMeshService {
         createChaosMeshCrdObject(chaos);
     }
 
-    public <T> void createChaosMeshCrdObject(Chaos<T> chaos) throws ApiException {
+    public <T, Spec extends BaseChaosSpec<T>> void createChaosMeshCrdObject(Chaos<T, Spec> chaos) throws ApiException {
         customResourceService.createCustomObject(ChaosMeshConst.CHAOS_MESH_GROUP, ChaosMeshConst.CHAOS_MESH_CRD_VERSION,
                 chaos.getMetadata().getNamespace(), String.valueOf(chaos.getKind()), chaos);
     }

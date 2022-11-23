@@ -32,7 +32,7 @@ import java.util.List;
 
 public class ChaosMeshUtil {
 
-    public static <T> void checkBaseBody(Chaos<T> chaos) {
+    public static <T, Spec extends BaseChaosSpec<T>> void checkBaseBody(Chaos<T, Spec> chaos) {
         BaseChaosSpec<T> spec = chaos.getSpec();
         String mode = spec.getMode();
         if (!mode.equals(SelectMode.ALL)
@@ -44,31 +44,39 @@ public class ChaosMeshUtil {
         }
     }
 
-    public static void checkNetworkBody(Chaos<NetworkChaosSpec.NetworkChaosAction> chaos) {
+    public static void checkNetworkBody(Chaos<NetworkChaosSpec.NetworkChaosAction, NetworkChaosSpec> chaos) {
         checkBaseBody(chaos);
-        if (!(chaos.getSpec() instanceof NetworkChaosSpec)) {
-            throw new IllegalArgumentException("checkNetworkBody use for network chaos body check only");
-        }
-        NetworkChaosSpec networkChaosSpec = (NetworkChaosSpec) chaos.getSpec();
+        NetworkChaosSpec networkChaosSpec = chaos.getSpec();
         NetworkChaosSpec.NetworkChaosAction action = networkChaosSpec.getAction();
-        if (NetworkChaosSpec.NetworkChaosAction.loss.equals(action)
-                && networkChaosSpec.getLoss() == null) {
-            throw new IllegalArgumentException("body 'loss' should not be empty");
-        } else if (NetworkChaosSpec.NetworkChaosAction.duplicate.equals(action)
-                && networkChaosSpec.getDuplicate() == null) {
-            throw new IllegalArgumentException("body 'loss' should not be empty");
-        } else if (NetworkChaosSpec.NetworkChaosAction.corrupt.equals(action)
-                && networkChaosSpec.getCorrupt() == null) {
-            throw new IllegalArgumentException("body 'loss' should not be empty");
-        } else if (NetworkChaosSpec.NetworkChaosAction.delay.equals(action)
-                && networkChaosSpec.getDelay() == null) {
-            throw new IllegalArgumentException("body 'loss' should not be empty");
-        } else {
-            throw new UnsupportedOperationException(String.format("%s not support yet", action));
+        switch (action){
+            case loss:
+                if (networkChaosSpec.getLoss() == null){
+                    throw new IllegalArgumentException("body 'loss' should not be empty");
+                }
+                break;
+            case duplicate:
+                if (networkChaosSpec.getDuplicate() == null){
+                    throw new IllegalArgumentException("body 'duplicate' should not be empty");
+                }
+                break;
+            case corrupt:
+                if (networkChaosSpec.getCorrupt() == null){
+                    throw new IllegalArgumentException("body 'corrupt' should not be empty");
+                }
+                break;
+            case delay:
+                if (networkChaosSpec.getDelay() == null){
+                    throw new IllegalArgumentException("body 'delay' should not be empty");
+                }
+                break;
+            default:
+                throw new UnsupportedOperationException(String.format("%s not support yet", action));
         }
     }
 
-    public static <T> void convert(CreateChaosMeshCrdObjectReq req, Chaos<T> chaos) {
+    public static <T, Spec extends BaseChaosSpec<T>> void convert(
+            CreateChaosMeshCrdObjectReq req,
+            Chaos<T, Spec> chaos) {
         Chaos.Metadata metadata = new Chaos.Metadata();
         metadata.setName(req.getName());
         metadata.setNamespace(req.getNamespaces());
@@ -83,7 +91,7 @@ public class ChaosMeshUtil {
         ChaosSelector chaosSelector = new ChaosSelector();
         List<String> namespaces = new ArrayList<>();
         namespaces.add(req.getTargetNamespace());
-        chaosSelector.setLabelSelectors(req.getLabelSelector());
+        chaosSelector.setLabelSelectors(req.getLabelSelectors());
         chaosSelector.setNamespaces(namespaces);
         spec.setSelector(chaosSelector);
     }

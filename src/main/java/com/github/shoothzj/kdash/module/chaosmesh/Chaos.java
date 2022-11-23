@@ -26,7 +26,7 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
-public class Chaos<T> {
+public class Chaos<T, Spec extends BaseChaosSpec<T>> {
 
     @Setter
     @Getter
@@ -46,7 +46,7 @@ public class Chaos<T> {
 
     private Metadata metadata;
 
-    private BaseChaosSpec<T> spec;
+    private Spec spec;
 
     public Chaos(ChaosKind kind) {
         this.kind = kind;
