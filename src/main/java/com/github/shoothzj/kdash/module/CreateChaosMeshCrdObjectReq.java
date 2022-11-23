@@ -46,7 +46,7 @@ public class CreateChaosMeshCrdObjectReq {
     private String duration;
 
     @NotEmpty
-    private Map<String, String> labelSelector;
+    private Map<String, String> labelSelectors;
 
     public CreateChaosMeshCrdObjectReq() {
     }

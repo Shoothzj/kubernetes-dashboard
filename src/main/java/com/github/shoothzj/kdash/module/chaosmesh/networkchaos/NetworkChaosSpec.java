@@ -77,7 +77,9 @@ public class NetworkChaosSpec extends BaseChaosSpec<NetworkChaosSpec.NetworkChao
 
     private Duplicate duplicate;
 
-    // for partition action
+    /**
+     * for partition action
+     */
     private BaseChaosSpec<NetworkChaosAction> target;
 
     private Bandwidth bindwidth;
