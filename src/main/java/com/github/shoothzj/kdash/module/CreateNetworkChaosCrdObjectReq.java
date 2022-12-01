@@ -24,10 +24,10 @@ import com.github.shoothzj.kdash.module.chaosmesh.networkchaos.Delay;
 import com.github.shoothzj.kdash.module.chaosmesh.networkchaos.Duplicate;
 import com.github.shoothzj.kdash.module.chaosmesh.networkchaos.Loss;
 import com.github.shoothzj.kdash.module.chaosmesh.networkchaos.NetworkChaosSpec;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
