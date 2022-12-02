@@ -55,28 +55,26 @@ public class KubernetesUtil {
                                                         Map<String, String> envMap,
                                                         String name,
                                                         ResourceRequirements resourceRequirements) {
+        return singleContainerList(image, null, envMap, name, resourceRequirements);
+    }
+
+    public static List<V1Container> singleContainerList(String image,
+                                                        String imagePullPolicy,
+                                                        Map<String, String> envMap,
+                                                        String name,
+                                                        ResourceRequirements resourceRequirements) {
         List<V1Container> containers = new ArrayList<>();
         V1Container container = new V1Container();
         container.setName(name);
         container.setImage(image);
+        container.setImagePullPolicy(imagePullPolicy == null ? "Always" : imagePullPolicy);
         container.setEnv(envMap.entrySet().stream().map(entry -> {
             V1EnvVar envVar = new V1EnvVar();
             envVar.setName(entry.getKey());
             envVar.setValue(entry.getValue());
             return envVar;
         }).collect(Collectors.toList()));
-        V1ResourceRequirements v1ResourceRequirements = new V1ResourceRequirements();
-        Map<String, Quantity> limitMap = new HashMap<>();
-        for (Map.Entry<String, String> entry : resourceRequirements.getLimits().entrySet()) {
-            limitMap.put(entry.getKey(), new Quantity(entry.getValue()));
-        }
-        v1ResourceRequirements.setLimits(limitMap);
-        Map<String, Quantity> requestMap = new HashMap<>();
-        for (Map.Entry<String, String> entry : resourceRequirements.getRequests().entrySet()) {
-            requestMap.put(entry.getKey(), new Quantity(entry.getValue()));
-        }
-        v1ResourceRequirements.setRequests(requestMap);
-        container.setResources(v1ResourceRequirements);
+        container.setResources(resourceRequirements(resourceRequirements));
         containers.add(container);
         return containers;
     }
@@ -110,6 +108,21 @@ public class KubernetesUtil {
             containerInfoList.add(containerInfo);
         }
         return containerInfoList;
+    }
+
+    public static V1ResourceRequirements resourceRequirements(ResourceRequirements resourceRequirements) {
+        V1ResourceRequirements v1ResourceRequirements = new V1ResourceRequirements();
+        Map<String, Quantity> limitMap = new HashMap<>();
+        for (Map.Entry<String, String> entry : resourceRequirements.getLimits().entrySet()) {
+            limitMap.put(entry.getKey(), new Quantity(entry.getValue()));
+        }
+        v1ResourceRequirements.setLimits(limitMap);
+        Map<String, Quantity> requestMap = new HashMap<>();
+        for (Map.Entry<String, String> entry : resourceRequirements.getRequests().entrySet()) {
+            requestMap.put(entry.getKey(), new Quantity(entry.getValue()));
+        }
+        v1ResourceRequirements.setRequests(requestMap);
+        return v1ResourceRequirements;
     }
 
 }
