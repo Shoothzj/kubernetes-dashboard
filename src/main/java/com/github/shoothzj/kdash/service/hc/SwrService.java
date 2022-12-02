@@ -33,7 +33,7 @@ public class SwrService {
 
     public SwrService(@Autowired CloudConfig cloudConfig, @Autowired HuaweiCloudConfig config) {
         swrClient = SwrAsyncClient.newBuilder()
-                .withEndpoint(config.aomEndpoint)
+                .withEndpoint(config.swrEndpoint)
                 .withCredential(new BasicCredentials()
                         .withAk(cloudConfig.accessKey)
                         .withSk(cloudConfig.secretKey)
