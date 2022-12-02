@@ -20,14 +20,14 @@
 package com.github.shoothzj.kdash.util;
 
 public class NumberUtil {
-    public static boolean greaterEqualsThan(Double target, Double current, Double tolerance) {
+    public static boolean greatEqualThan(Double target, Double current, Double tolerance) {
         if (target == null || current == null || tolerance == null) {
             throw new IllegalArgumentException("metric compare arguments should not be null");
         }
         return current >= tolerance * target;
     }
 
-    public static boolean lessEqualsThan(Double target, Double current, Double tolerance) {
+    public static boolean lessEqualThan(Double target, Double current, Double tolerance) {
         if (target == null || current == null || tolerance == null) {
             throw new IllegalArgumentException("metric compare arguments should not be null");
         }
