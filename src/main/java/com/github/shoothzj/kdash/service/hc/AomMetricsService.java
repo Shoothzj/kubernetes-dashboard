@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.service;
+package com.github.shoothzj.kdash.service.hc;
 
 import com.github.shoothzj.kdash.config.CloudConfig;
 import com.github.shoothzj.kdash.config.HuaweiCloudConfig;
