@@ -23,8 +23,16 @@ import com.github.shoothzj.kdash.config.CloudConfig;
 import com.github.shoothzj.kdash.config.HuaweiCloudConfig;
 import com.huaweicloud.sdk.core.auth.BasicCredentials;
 import com.huaweicloud.sdk.evs.v2.EvsAsyncClient;
+import com.huaweicloud.sdk.evs.v2.model.CinderListAvailabilityZonesRequest;
+import com.huaweicloud.sdk.evs.v2.model.CinderListAvailabilityZonesResponse;
+import com.huaweicloud.sdk.evs.v2.model.CreateVolumeRequest;
+import com.huaweicloud.sdk.evs.v2.model.CreateVolumeResponse;
+import com.huaweicloud.sdk.evs.v2.model.DeleteVolumeRequest;
+import com.huaweicloud.sdk.evs.v2.model.DeleteVolumeResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class HcEvsService {
@@ -40,5 +48,17 @@ public class HcEvsService {
                         .withProjectId(config.projectId)
                 )
                 .build();
+    }
+
+    public CompletableFuture<CreateVolumeResponse> createVolume(CreateVolumeRequest request) {
+        return evsClient.createVolumeAsync(request);
+    }
+
+    public CompletableFuture<DeleteVolumeResponse> deleteVolume(DeleteVolumeRequest request) {
+        return evsClient.deleteVolumeAsync(request);
+    }
+
+    public CompletableFuture<CinderListAvailabilityZonesResponse> getVolumeAz() {
+        return evsClient.cinderListAvailabilityZonesAsync(new CinderListAvailabilityZonesRequest());
     }
 }
