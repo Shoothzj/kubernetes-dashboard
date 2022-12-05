@@ -90,6 +90,11 @@
         </dependency>
         <dependency>
             <groupId>com.huaweicloud.sdk</groupId>
+            <artifactId>huaweicloud-sdk-evs</artifactId>
+            <version>${huaweicloud-sdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.huaweicloud.sdk</groupId>
             <artifactId>huaweicloud-sdk-swr</artifactId>
             <version>${huaweicloud-sdk.version}</version>
         </dependency>
