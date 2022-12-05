@@ -21,19 +21,18 @@ package com.github.shoothzj.kdash.service.hc;
 
 import com.github.shoothzj.kdash.config.CloudConfig;
 import com.github.shoothzj.kdash.config.HuaweiCloudConfig;
-import com.huaweicloud.sdk.aom.v2.AomClient;
 import com.huaweicloud.sdk.core.auth.BasicCredentials;
+import com.huaweicloud.sdk.ecs.v2.EcsAsyncClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AomMetricsService {
+public class HcEcsService {
+    private final EcsAsyncClient ecsClient;
 
-    private final AomClient aomClient;
-
-    public AomMetricsService(@Autowired CloudConfig cloudConfig, @Autowired HuaweiCloudConfig config) {
-        aomClient = AomClient.newBuilder()
-                .withEndpoint(config.aomEndpoint)
+    public HcEcsService(@Autowired CloudConfig cloudConfig, @Autowired HuaweiCloudConfig config) {
+        ecsClient = EcsAsyncClient.newBuilder()
+                .withEndpoint(config.ecsEndpoint)
                 .withCredential(new BasicCredentials()
                         .withAk(cloudConfig.accessKey)
                         .withSk(cloudConfig.secretKey)
@@ -41,5 +40,4 @@ public class AomMetricsService {
                 )
                 .build();
     }
-
 }

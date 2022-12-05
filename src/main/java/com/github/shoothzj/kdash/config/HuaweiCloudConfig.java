@@ -33,6 +33,12 @@ public class HuaweiCloudConfig {
 
     public final String aomEndpoint = "aom." + region + ".myhuaweicloud.com";
 
+    public final String cceEndpoint = "cce." + region + ".myhuaweicloud.com";
+
+    public final String ecsEndpoint = "ecs." + region + ".myhuaweicloud.com";
+
+    public final String evsEndpoint = "evs." + region + ".myhuaweicloud.com";
+
     public final String swrEndpoint = "swr." + region + ".myhuaweicloud.com";
 
 }
