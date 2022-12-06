@@ -21,9 +21,12 @@ package com.github.shoothzj.kdash.service;
 
 import com.github.shoothzj.kdash.module.CreatePodReq;
 import com.github.shoothzj.kdash.module.GetPodResp;
+import com.github.shoothzj.kdash.module.ResourceReq;
 import com.github.shoothzj.kdash.util.KubernetesUtil;
+import io.kubernetes.client.custom.V1Patch;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
+import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1Pod;
@@ -42,10 +45,23 @@ import java.util.Map;
 @Service
 public class KubernetesPodService {
 
+    private static String jsonStr = "["
+            + "{\"op\":\"replace\",\"path\":\"/spec/template/spec/containers/0/resources/limits/cpu\","
+            + "\"value\":\"%s\"},"
+            + "{\"op\":\"replace\",\"path\":\"/spec/template/spec/containers/0/resources/limits/memory\","
+            + "\"value\":\"%s\"},"
+            + "{\"op\":\"replace\",\"path\":\"/spec/template/spec/containers/0/resources/requests/memory\","
+            + "\"value\":\"%s\"}, "
+            + "{\"op\":\"replace\",\"path\":\"/spec/template/spec/containers/0/resources/requests/memory\","
+            + "\"value\":\"%s\"}]";
+
     private final CoreV1Api coreV1Api;
+
+    private final AppsV1Api appsV1Api;
 
     public KubernetesPodService(@Autowired ApiClient apiClient) {
         this.coreV1Api = new CoreV1Api(apiClient);
+        this.appsV1Api = new AppsV1Api(apiClient);
     }
 
     public void createPod(String namespace, CreatePodReq req) throws Exception {
@@ -135,4 +151,19 @@ public class KubernetesPodService {
         return podResp;
     }
 
+    public void updateResource(String namespace, String podName, String kind, ResourceReq req) throws Exception {
+        String body = String.format(jsonStr, req.getLimitCpu(), req.getLimitMem(),
+                req.getRequestCpu(), req.getRequestMem());
+        if ("deployment".equalsIgnoreCase(kind)) {
+            appsV1Api.patchNamespacedDeployment(namespace, podName, new V1Patch(body), "true", null,
+                    null, null, null);
+        } else if ("statefulSet".equalsIgnoreCase(kind)) {
+            appsV1Api.patchNamespacedStatefulSet(namespace, podName, new V1Patch(body), null, null,
+                    null, null, null);
+        } else {
+            throw new Exception(kind + " type changes are not supported.");
+        }
+
+
+    }
 }
