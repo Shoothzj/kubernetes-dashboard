@@ -22,41 +22,13 @@ package com.github.shoothzj.kdash.module;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-import java.util.Map;
-
 @Setter
 @Getter
-public class CreateStatefulSetReq {
+public class NodeSelectorRequirement {
+    private String key;
 
-    private String namespace;
+    private String value;
 
-    private String statefulSetName;
-
-    private int replicas;
-
-    private String image;
-
-    private String imagePullSecret;
-
-    private Map<String, String> env;
-
-    private Map<String, String> annotations;
-
-    private Probe livenessProbe;
-
-    private Probe readinessProbe;
-
-    private NodeSelectorRequirement nodeSelectorRequirement;
-
-    private PodAffinityTerms podAffinityTerms;
-
-    private PodAffinityTerms podAntiAffinityTerms;
-
-    private ResourceRequirements resourceRequirements;
-
-    private List<VolumeClaimTemplates> persistentVolumes;
-
-    public CreateStatefulSetReq() {
+    public NodeSelectorRequirement() {
     }
 }

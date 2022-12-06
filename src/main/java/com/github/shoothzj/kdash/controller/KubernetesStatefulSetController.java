@@ -51,7 +51,7 @@ public class KubernetesStatefulSetController {
     }
 
     @PostMapping("/namespace/{namespace}/stateful-sets")
-    public ResponseEntity<Void> createDeployment(@RequestBody CreateStatefulSetReq req) throws Exception {
+    public ResponseEntity<Void> createStatefulSet(@RequestBody CreateStatefulSetReq req) throws Exception {
         kubernetesStatefulSetService.createNamespacedStatefulSet(req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
