@@ -19,10 +19,10 @@
 
 package com.github.shoothzj.kdash.controller;
 
-import com.github.shoothzj.kdash.module.CreateDeploymentReq;
-import com.github.shoothzj.kdash.module.GetDeploymentResp;
+import com.github.shoothzj.kdash.module.CreateStatefulSetReq;
+import com.github.shoothzj.kdash.module.GetStatefulSetResp;
 import com.github.shoothzj.kdash.module.ScaleReq;
-import com.github.shoothzj.kdash.service.KubernetesDeployService;
+import com.github.shoothzj.kdash.service.KubernetesStatefulSetService;
 import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,36 +42,36 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/kubernetes")
-public class KubernetesDeployController {
+public class KubernetesStatefulSetController {
 
-    public KubernetesDeployService deployService;
+    public KubernetesStatefulSetService kubernetesStatefulSetService;
 
-    public KubernetesDeployController(@Autowired KubernetesDeployService deployService) {
-        this.deployService = deployService;
+    public KubernetesStatefulSetController(@Autowired KubernetesStatefulSetService kubernetesStatefulSetService) {
+        this.kubernetesStatefulSetService = kubernetesStatefulSetService;
     }
 
-    @PostMapping("/namespace/{namespace}/deployments")
-    public ResponseEntity<Void> createDeployment(@RequestBody CreateDeploymentReq req) throws Exception {
-        deployService.createNamespacedDeploy(req);
+    @PostMapping("/namespace/{namespace}/stateful-sets")
+    public ResponseEntity<Void> createDeployment(@RequestBody CreateStatefulSetReq req) throws Exception {
+        kubernetesStatefulSetService.createNamespacedStatefulSet(req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/namespace/{namespace}/deployments/{deployName}")
+    @DeleteMapping("/namespace/{namespace}/stateful-set/{statefulSetName}")
     public ResponseEntity<Void> deleteDeploy(@PathVariable String namespace,
-                                             @PathVariable String deployName) throws ApiException {
-        deployService.deleteDeploy(namespace, deployName);
+                                             @PathVariable String statefulSetName) throws ApiException {
+        kubernetesStatefulSetService.deleteStatefulSet(namespace, statefulSetName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/namespace/{namespace}/deployments")
-    public ResponseEntity<List<GetDeploymentResp>> getDeployList(@PathVariable String namespace) throws ApiException {
-        return new ResponseEntity<>(deployService.getNamespaceDeployments(namespace), HttpStatus.OK);
+    @GetMapping("/namespace/{namespace}/stateful-sets")
+    public ResponseEntity<List<GetStatefulSetResp>> getDeployList(@PathVariable String namespace) throws ApiException {
+        return new ResponseEntity<>(kubernetesStatefulSetService.getNamespaceStatefulSets(namespace), HttpStatus.OK);
     }
 
-    @PutMapping("/namespace/{namespace}/deployments/scale")
+    @PutMapping("/namespace/{namespace}/stateful-set/scale")
     public ResponseEntity<Void> scaleDeployment(@PathVariable String namespace,
                                                 @RequestBody ScaleReq req) throws ApiException {
-        deployService.scaleDeploy(namespace, req);
+        kubernetesStatefulSetService.scaleStatefulSet(namespace, req);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

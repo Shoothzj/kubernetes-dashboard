@@ -41,7 +41,7 @@ public class HcEvsService {
 
     public HcEvsService(@Autowired CloudConfig cloudConfig, @Autowired HuaweiCloudConfig config) {
         evsClient = EvsAsyncClient.newBuilder()
-                .withEndpoint(config.swrEndpoint)
+                .withEndpoint(config.evsEndpoint)
                 .withCredential(new BasicCredentials()
                         .withAk(cloudConfig.accessKey)
                         .withSk(cloudConfig.secretKey)

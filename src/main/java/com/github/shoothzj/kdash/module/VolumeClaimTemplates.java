@@ -24,12 +24,12 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class ScaleDeploymentReq {
+public class VolumeClaimTemplates {
 
-    private String deployName;
+    private String volumeName;
 
-    private int replicas;
+    private String mountPath;
 
-    public ScaleDeploymentReq() {
+    public VolumeClaimTemplates() {
     }
 }
