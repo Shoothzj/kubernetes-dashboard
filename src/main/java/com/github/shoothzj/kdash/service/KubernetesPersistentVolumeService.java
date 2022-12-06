@@ -19,12 +19,26 @@
 
 package com.github.shoothzj.kdash.service;
 
+import com.github.shoothzj.kdash.module.CreatePersistentVolumeReq;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
+import io.kubernetes.client.openapi.models.V1LocalVolumeSource;
+import io.kubernetes.client.openapi.models.V1NodeSelector;
+import io.kubernetes.client.openapi.models.V1NodeSelectorRequirement;
+import io.kubernetes.client.openapi.models.V1NodeSelectorTerm;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1PersistentVolume;
+import io.kubernetes.client.openapi.models.V1PersistentVolumeSpec;
+import io.kubernetes.client.openapi.models.V1VolumeNodeAffinity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+@Service
 public class KubernetesPersistentVolumeService {
 
     private final CoreV1Api coreV1Api;
@@ -33,7 +47,43 @@ public class KubernetesPersistentVolumeService {
         this.coreV1Api = new CoreV1Api(apiClient);
     }
 
-    public void createPersistentVolume(V1PersistentVolume v1PersistentVolume) throws ApiException {
+    public void createPersistentVolume(CreatePersistentVolumeReq req) throws ApiException {
+        V1PersistentVolume v1PersistentVolume = new V1PersistentVolume();
+        v1PersistentVolume.setApiVersion("v1");
+        v1PersistentVolume.setKind("PersistentVolume");
+
+        // metadata below
+        V1ObjectMeta metadata = new V1ObjectMeta();
+        metadata.setName(req.getName());
+        v1PersistentVolume.setMetadata(metadata);
+
+        // spec below
+        V1PersistentVolumeSpec spec = new V1PersistentVolumeSpec();
+        spec.setCapacity(req.getCapacity());
+        spec.setAccessModes(req.getAccessModes());
+        spec.setPersistentVolumeReclaimPolicy(req.getPersistentVolumeReclaimPolicy());
+        spec.setStorageClassName(req.getStorageClassName());
+        V1LocalVolumeSource local = new V1LocalVolumeSource();
+        local.setPath(req.getLocalPath());
+        spec.setLocal(local);
+        // nodeAffinity convert
+        V1VolumeNodeAffinity v1NodeAffinity = new V1VolumeNodeAffinity();
+        V1NodeSelector v1NodeSelector = new V1NodeSelector();
+        List<V1NodeSelectorTerm> selectorTerms = new ArrayList<>();
+        V1NodeSelectorTerm v1NodeSelectorTerm = new V1NodeSelectorTerm();
+        Map<String, List<String>> nodeSelectorDefines = req.getNodeSelectorDefines();
+        for (Map.Entry<String, List<String>> entry : nodeSelectorDefines.entrySet()) {
+            V1NodeSelectorRequirement v1NodeSelectorRequirement = new V1NodeSelectorRequirement();
+            v1NodeSelectorRequirement.setKey(entry.getKey());
+            v1NodeSelectorRequirement.setOperator("In");
+            v1NodeSelectorRequirement.setValues(entry.getValue());
+            v1NodeSelectorTerm.addMatchExpressionsItem(v1NodeSelectorRequirement);
+        }
+        selectorTerms.add(v1NodeSelectorTerm);
+        v1NodeSelector.setNodeSelectorTerms(selectorTerms);
+        v1NodeAffinity.setRequired(v1NodeSelector);
+        spec.setNodeAffinity(v1NodeAffinity);
+        v1PersistentVolume.setSpec(spec);
         coreV1Api.createPersistentVolume(v1PersistentVolume, "true", null, null, null);
     }
 
