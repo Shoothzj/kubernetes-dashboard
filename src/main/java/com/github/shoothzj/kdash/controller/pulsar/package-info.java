@@ -17,18 +17,4 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module;
-
-import lombok.Getter;
-import lombok.Setter;
-
-@Setter
-@Getter
-public class NodeSelectorRequirement {
-    private String key;
-
-    private String value;
-
-    public NodeSelectorRequirement() {
-    }
-}
+package com.github.shoothzj.kdash.controller.pulsar;

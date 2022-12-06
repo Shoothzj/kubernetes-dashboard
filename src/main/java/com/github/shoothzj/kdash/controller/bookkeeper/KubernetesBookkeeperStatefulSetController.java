@@ -17,18 +17,14 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module;
+package com.github.shoothzj.kdash.controller.bookkeeper;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Setter
-@Getter
-public class NodeSelectorRequirement {
-    private String key;
-
-    private String value;
-
-    public NodeSelectorRequirement() {
-    }
+@Slf4j
+@RestController
+@RequestMapping("/api/kubernetes/bookkeeper")
+public class KubernetesBookkeeperStatefulSetController {
 }

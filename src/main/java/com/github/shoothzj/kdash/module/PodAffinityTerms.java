@@ -19,11 +19,18 @@
 
 package com.github.shoothzj.kdash.module;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 public class PodAffinityTerms {
     private String key;
+
     private String value;
+
     private String topologyKey;
+
+    public PodAffinityTerms() {
+    }
 }

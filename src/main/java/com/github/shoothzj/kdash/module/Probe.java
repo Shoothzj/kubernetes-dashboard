@@ -19,11 +19,13 @@
 
 package com.github.shoothzj.kdash.module;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
-@Data
+@Setter
+@Getter
 public class Probe {
 
     private List<String> probeCommand;
@@ -37,4 +39,7 @@ public class Probe {
     private int successThreshold;
 
     private int timeoutSeconds;
+
+    public Probe() {
+    }
 }
