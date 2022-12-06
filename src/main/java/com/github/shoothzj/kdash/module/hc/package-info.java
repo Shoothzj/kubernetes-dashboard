@@ -17,19 +17,4 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module;
-
-import lombok.Getter;
-import lombok.Setter;
-
-@Setter
-@Getter
-public class VolumeClaimTemplates {
-
-    private String volumeName;
-
-    private String mountPath;
-
-    public VolumeClaimTemplates() {
-    }
-}
+package com.github.shoothzj.kdash.module.hc;

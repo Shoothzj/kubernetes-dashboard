@@ -17,19 +17,24 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module;
+package com.github.shoothzj.kdash.module.hc;
 
-import lombok.Getter;
-import lombok.Setter;
+public enum AomMetricsPeriod {
+    LastOneMinute("-1.-1.1"),
+    LastFiveMinutes("-1.-1.5"),
+    LastTenMinutes("-1.-1.10"),
+    LastTwentyMinutes("-1.-1.20"),
+    LastThirtyMinutes("-1.-1.30"),
+    LastOneHour("-1.-1.60"),
+    ;
 
-@Setter
-@Getter
-public class VolumeClaimTemplates {
+    private final String value;
 
-    private String volumeName;
+    AomMetricsPeriod(String value) {
+        this.value = value;
+    }
 
-    private String mountPath;
-
-    public VolumeClaimTemplates() {
+    public String getValue() {
+        return value;
     }
 }
