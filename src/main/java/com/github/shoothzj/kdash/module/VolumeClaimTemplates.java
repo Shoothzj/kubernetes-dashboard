@@ -19,17 +19,11 @@
 
 package com.github.shoothzj.kdash.module;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Setter
-@Getter
-public class ScaleDeploymentReq {
+@Data
+public class VolumeClaimTemplates {
 
-    private String deployName;
-
-    private int replicas;
-
-    public ScaleDeploymentReq() {
-    }
+    private String volumeName;
+    private String mountPath;
 }

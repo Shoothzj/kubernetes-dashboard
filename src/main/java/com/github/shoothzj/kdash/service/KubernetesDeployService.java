@@ -22,7 +22,7 @@ package com.github.shoothzj.kdash.service;
 import com.github.shoothzj.kdash.module.ContainerInfo;
 import com.github.shoothzj.kdash.module.CreateDeploymentReq;
 import com.github.shoothzj.kdash.module.GetDeploymentResp;
-import com.github.shoothzj.kdash.module.ScaleDeploymentReq;
+import com.github.shoothzj.kdash.module.ScaleReq;
 import com.github.shoothzj.kdash.util.KubernetesUtil;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
@@ -144,17 +144,17 @@ public class KubernetesDeployService {
         return getDeploymentResp;
     }
 
-    public void scaleDeploy(String namespace, ScaleDeploymentReq req) throws ApiException {
+    public void scaleDeploy(String namespace, ScaleReq req) throws ApiException {
         V1Scale v1Scale = new V1Scale();
         V1ScaleSpec v1ScaleSpec = new V1ScaleSpec();
         v1ScaleSpec.setReplicas(req.getReplicas());
         v1Scale.setSpec(v1ScaleSpec);
         V1ObjectMeta objectMeta = new V1ObjectMeta();
-        objectMeta.setName(req.getDeployName());
+        objectMeta.setName(req.getAppName());
         objectMeta.setNamespace(namespace);
-        objectMeta.setLabels(KubernetesUtil.label(req.getDeployName()));
+        objectMeta.setLabels(KubernetesUtil.label(req.getAppName()));
         v1Scale.setMetadata(objectMeta);
-        appsV1Api.replaceNamespacedDeploymentScale(req.getDeployName(), namespace, v1Scale, "true",
+        appsV1Api.replaceNamespacedDeploymentScale(req.getAppName(), namespace, v1Scale, "true",
                 null, null, null);
     }
 }
