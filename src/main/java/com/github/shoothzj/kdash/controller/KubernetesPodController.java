@@ -21,6 +21,7 @@ package com.github.shoothzj.kdash.controller;
 
 import com.github.shoothzj.kdash.module.CreatePodReq;
 import com.github.shoothzj.kdash.module.GetPodResp;
+import com.github.shoothzj.kdash.module.ResourceReq;
 import com.github.shoothzj.kdash.service.KubernetesPodService;
 import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +32,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -65,6 +68,15 @@ public class KubernetesPodController {
     @GetMapping("/namespaces/{namespace}/pods")
     public ResponseEntity<List<GetPodResp>> getPodList(@PathVariable String namespace) throws ApiException {
         return new ResponseEntity<>(kubernetesPodService.getNamespacePods(namespace), HttpStatus.OK);
+    }
+
+    @PutMapping("/namespace/{namespace}/pods/{podName}/update-resource")
+    public ResponseEntity<Void> updateResource(@PathVariable String namespace,
+                                               @PathVariable String podName,
+                                               @RequestParam String kind,
+                                               @RequestBody ResourceReq req) throws Exception {
+        kubernetesPodService.updateResource(namespace, podName, kind, req);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
