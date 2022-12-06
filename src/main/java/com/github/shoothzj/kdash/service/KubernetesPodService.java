@@ -163,7 +163,5 @@ public class KubernetesPodService {
         } else {
             throw new Exception(kind + " type changes are not supported.");
         }
-
-
     }
 }

@@ -19,12 +19,20 @@
 
 package com.github.shoothzj.kdash.module;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 public class ResourceReq {
     private int requestCpu;
+
     private int requestMem;
+
     private int limitCpu;
+
     private int limitMem;
+
+    public ResourceReq() {
+    }
 }
