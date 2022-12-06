@@ -28,6 +28,7 @@ import com.github.shoothzj.kdash.util.KubernetesUtil;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
+import io.kubernetes.client.openapi.models.V1Affinity;
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1PersistentVolumeClaim;
@@ -89,20 +90,33 @@ public class KubernetesStatefulSetService {
             }
             // spec template spec
             V1PodSpec v1PodSpec = new V1PodSpec();
-            // spec template spec containers
-            List<V1Container> v1Containers = KubernetesUtil.singleContainerList(req.getImage(), req.getEnv(),
-                    req.getStatefulSetName(), req.getResourceRequirements());
-            V1Container v1Container = v1Containers.get(0);
-            List<V1VolumeMount> volumeMounts = new ArrayList<>();
-            for (VolumeClaimTemplates persistentVolume : req.getPersistentVolumes()) {
-                V1VolumeMount v1VolumeMount = new V1VolumeMount();
-                v1VolumeMount.setName(persistentVolume.getVolumeName());
-                v1VolumeMount.setMountPath(persistentVolume.getMountPath());
-                volumeMounts.add(v1VolumeMount);
-            }
+            {
+                // spec template spec containers
+                List<V1Container> v1Containers = KubernetesUtil.singleContainerList(req.getImage(), req.getEnv(),
+                        req.getStatefulSetName(), req.getResourceRequirements());
+                V1Container v1Container = v1Containers.get(0);
+                List<V1VolumeMount> volumeMounts = new ArrayList<>();
+                // spec template spec liveness probe
+                v1Container.setLivenessProbe(KubernetesUtil.fetchV1Probe(req.getLivenessProbe()));
+                // spec template spec readiness probe
+                v1Container.setReadinessProbe(KubernetesUtil.fetchV1Probe(req.getReadinessProbe()));
+                for (VolumeClaimTemplates persistentVolume : req.getPersistentVolumes()) {
+                    V1VolumeMount v1VolumeMount = new V1VolumeMount();
+                    v1VolumeMount.setName(persistentVolume.getVolumeName());
+                    v1VolumeMount.setMountPath(persistentVolume.getMountPath());
+                    volumeMounts.add(v1VolumeMount);
+                }
 
-            v1Container.setVolumeMounts(volumeMounts);
-            v1PodSpec.setContainers(v1Containers);
+                v1Container.setVolumeMounts(volumeMounts);
+                v1PodSpec.setContainers(v1Containers);
+            }
+            {
+                V1Affinity v1Affinity = new V1Affinity();
+                v1Affinity.setPodAffinity(KubernetesUtil.fetchV1PodAffinity(req.getPodAffinityTerms()));
+                v1Affinity.setPodAntiAffinity(KubernetesUtil.fetchV1PodAntiAffinity(req.getPodAntiAffinityTerms()));
+                v1Affinity.setNodeAffinity(KubernetesUtil.fetchV1NodeAffinity(req.getNodeSelectorRequirement()));
+                v1PodSpec.setAffinity(v1Affinity);
+            }
             v1PodSpec.setImagePullSecrets(KubernetesUtil.imagePullSecrets(req.getImagePullSecret()));
             templateSpec.setSpec(v1PodSpec);
             statefulSetSpec.setTemplate(templateSpec);

@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -70,7 +69,7 @@ public class KubernetesPodController {
         return new ResponseEntity<>(kubernetesPodService.getNamespacePods(namespace), HttpStatus.OK);
     }
 
-    @PutMapping("/namespace/{namespace}/pods/{podName}/update-resource")
+    @PostMapping("/namespace/{namespace}/pods/{podName}/update-resource")
     public ResponseEntity<Void> updateResource(@PathVariable String namespace,
                                                @PathVariable String podName,
                                                @RequestParam String kind,

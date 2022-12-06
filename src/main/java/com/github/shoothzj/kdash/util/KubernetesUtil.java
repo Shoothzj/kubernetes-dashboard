@@ -20,12 +20,25 @@
 package com.github.shoothzj.kdash.util;
 
 import com.github.shoothzj.kdash.module.ContainerInfo;
+import com.github.shoothzj.kdash.module.NodeSelectorRequirement;
+import com.github.shoothzj.kdash.module.PodAffinityTerms;
+import com.github.shoothzj.kdash.module.Probe;
 import com.github.shoothzj.kdash.module.ResourceRequirements;
 import io.kubernetes.client.custom.Quantity;
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1EnvVar;
+import io.kubernetes.client.openapi.models.V1ExecAction;
 import io.kubernetes.client.openapi.models.V1LabelSelector;
+import io.kubernetes.client.openapi.models.V1LabelSelectorRequirement;
 import io.kubernetes.client.openapi.models.V1LocalObjectReference;
+import io.kubernetes.client.openapi.models.V1NodeAffinity;
+import io.kubernetes.client.openapi.models.V1NodeSelector;
+import io.kubernetes.client.openapi.models.V1NodeSelectorRequirement;
+import io.kubernetes.client.openapi.models.V1NodeSelectorTerm;
+import io.kubernetes.client.openapi.models.V1PodAffinity;
+import io.kubernetes.client.openapi.models.V1PodAffinityTerm;
+import io.kubernetes.client.openapi.models.V1PodAntiAffinity;
+import io.kubernetes.client.openapi.models.V1Probe;
 import io.kubernetes.client.openapi.models.V1ResourceRequirements;
 
 import javax.annotation.Nullable;
@@ -77,6 +90,77 @@ public class KubernetesUtil {
         container.setResources(resourceRequirements(resourceRequirements));
         containers.add(container);
         return containers;
+    }
+
+    public static V1Probe fetchV1Probe(Probe probe) {
+        V1Probe v1Probe = new V1Probe();
+        V1ExecAction execAction = new V1ExecAction();
+        execAction.command(probe.getProbeCommand());
+        v1Probe.setExec(execAction);
+        v1Probe.setFailureThreshold(probe.getFailureThreshold());
+        v1Probe.setInitialDelaySeconds(probe.getInitialDelaySeconds());
+        v1Probe.setPeriodSeconds(probe.getPeriodSeconds());
+        v1Probe.setSuccessThreshold(probe.getSuccessThreshold());
+        v1Probe.setTimeoutSeconds(probe.getTimeoutSeconds());
+        return v1Probe;
+    }
+
+    public static V1PodAntiAffinity fetchV1PodAntiAffinity(PodAffinityTerms podAffinityTerms) {
+        V1PodAntiAffinity v1PodAntiAffinity = new V1PodAntiAffinity();
+        v1PodAntiAffinity.setRequiredDuringSchedulingIgnoredDuringExecution(
+                fetchV1PodAffinityTerms(podAffinityTerms));
+        return v1PodAntiAffinity;
+    }
+
+    public static V1PodAffinity fetchV1PodAffinity(PodAffinityTerms podAffinityTerms) {
+        V1PodAffinity v1PodAffinity = new V1PodAffinity();
+        v1PodAffinity.setRequiredDuringSchedulingIgnoredDuringExecution(
+                fetchV1PodAffinityTerms(podAffinityTerms));
+        return v1PodAffinity;
+    }
+
+    public static V1NodeAffinity fetchV1NodeAffinity(NodeSelectorRequirement selectorRequirement) {
+        V1NodeAffinity v1NodeAffinity = new V1NodeAffinity();
+        V1NodeSelector v1NodeSelector = new V1NodeSelector();
+        List<V1NodeSelectorTerm> nodeSelectorTerms = new ArrayList<>();
+        V1NodeSelectorTerm v1NodeSelectorTerm = new V1NodeSelectorTerm();
+        List<V1NodeSelectorRequirement> matchExpressions = new ArrayList<>();
+        {
+            V1NodeSelectorRequirement v1NodeSelectorRequirement = new V1NodeSelectorRequirement();
+            v1NodeSelectorRequirement.setKey(selectorRequirement.getKey());
+            v1NodeSelectorRequirement.setOperator("In");
+            List<String> values = new ArrayList<>();
+            values.add(selectorRequirement.getValue());
+            v1NodeSelectorRequirement.setValues(values);
+            matchExpressions.add(v1NodeSelectorRequirement);
+        }
+        v1NodeSelectorTerm.setMatchExpressions(matchExpressions);
+        nodeSelectorTerms.add(v1NodeSelectorTerm);
+        v1NodeSelector.setNodeSelectorTerms(nodeSelectorTerms);
+        v1NodeAffinity.requiredDuringSchedulingIgnoredDuringExecution(v1NodeSelector);
+        return v1NodeAffinity;
+    }
+
+    public static List<V1PodAffinityTerm> fetchV1PodAffinityTerms(PodAffinityTerms podAffinityTerms) {
+        List<V1PodAffinityTerm> v1PodAffinityTerms = new ArrayList<>();
+        V1PodAffinityTerm v1PodAffinityTerm = new V1PodAffinityTerm();
+        V1LabelSelector v1LabelSelector = new V1LabelSelector();
+        {
+            List<V1LabelSelectorRequirement> matchExpressions = new ArrayList<>();
+            V1LabelSelectorRequirement v1LabelSelectorRequirement = new V1LabelSelectorRequirement();
+            v1LabelSelectorRequirement.setKey(podAffinityTerms.getKey());
+            v1LabelSelectorRequirement.setOperator("In");
+            List<String> values = new ArrayList<>();
+            values.add(podAffinityTerms.getValue());
+            v1LabelSelectorRequirement.setValues(values);
+            matchExpressions.add(v1LabelSelectorRequirement);
+            v1LabelSelector.setMatchExpressions(matchExpressions);
+        }
+        v1PodAffinityTerm.setLabelSelector(v1LabelSelector);
+        v1PodAffinityTerm.setTopologyKey(podAffinityTerms.getTopologyKey());
+
+        v1PodAffinityTerms.add(v1PodAffinityTerm);
+        return v1PodAffinityTerms;
     }
 
     public static Map<String, String> envToMap(@Nullable List<V1EnvVar> env) {
