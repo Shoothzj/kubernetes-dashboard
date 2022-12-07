@@ -29,6 +29,7 @@ import io.kubernetes.client.openapi.models.V1NodeSelectorRequirement;
 import io.kubernetes.client.openapi.models.V1NodeSelectorTerm;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1PersistentVolume;
+import io.kubernetes.client.openapi.models.V1PersistentVolumeList;
 import io.kubernetes.client.openapi.models.V1PersistentVolumeSpec;
 import io.kubernetes.client.openapi.models.V1VolumeNodeAffinity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,5 +90,18 @@ public class KubernetesPersistentVolumeService {
 
     public void deletePersistentVolume(String name) throws ApiException {
         coreV1Api.deletePersistentVolume(name, "true", null, null, null, null, null);
+    }
+
+    public boolean pvExists(String name) throws ApiException {
+        V1PersistentVolumeList persistentVolumeList = coreV1Api.listPersistentVolume("true",
+                null, null, null, null, null,
+                null, null, null, null);
+        List<V1PersistentVolume> items = persistentVolumeList.getItems();
+        for (V1PersistentVolume item : items) {
+            if (item.getMetadata() != null && name.equals(item.getMetadata().getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

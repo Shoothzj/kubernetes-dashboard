@@ -29,10 +29,16 @@ import com.huaweicloud.sdk.evs.v2.model.CreateVolumeRequest;
 import com.huaweicloud.sdk.evs.v2.model.CreateVolumeResponse;
 import com.huaweicloud.sdk.evs.v2.model.DeleteVolumeRequest;
 import com.huaweicloud.sdk.evs.v2.model.DeleteVolumeResponse;
+import com.huaweicloud.sdk.evs.v2.model.ListVolumesRequest;
+import com.huaweicloud.sdk.evs.v2.model.ListVolumesResponse;
+import com.huaweicloud.sdk.evs.v2.model.VolumeDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class HcEvsService {
@@ -60,5 +66,25 @@ public class HcEvsService {
 
     public CompletableFuture<CinderListAvailabilityZonesResponse> getVolumeAz() {
         return evsClient.cinderListAvailabilityZonesAsync(new CinderListAvailabilityZonesRequest());
+    }
+
+    public CompletableFuture<ListVolumesResponse> listVolumeByVolumeName(String name) {
+        ListVolumesRequest request = new ListVolumesRequest();
+        request.setName(name);
+        return evsClient.listVolumesAsync(request);
+    }
+
+    public CompletableFuture<List<String>> listVolumeIdByVolumeName(
+            String name, CompletableFuture<List<String>> future) {
+        this.listVolumeByVolumeName(name).thenAcceptAsync(listVolumes -> {
+            List<String> volumeIds = new ArrayList<>();
+            for (VolumeDetail volume : listVolumes.getVolumes()) {
+                if (name.equals(volume.getName())) {
+                    volumeIds.add(volume.getId());
+                }
+            }
+            future.complete(volumeIds);
+        });
+        return future;
     }
 }
