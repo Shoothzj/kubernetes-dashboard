@@ -25,10 +25,13 @@ import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1PersistentVolumeClaim;
+import io.kubernetes.client.openapi.models.V1PersistentVolumeClaimList;
 import io.kubernetes.client.openapi.models.V1PersistentVolumeClaimSpec;
 import io.kubernetes.client.openapi.models.V1ResourceRequirements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class KubernetesPersistentVolumeClaimService {
@@ -66,6 +69,20 @@ public class KubernetesPersistentVolumeClaimService {
     public void deletePersistentVolumeClaim(String namespace, String name) throws ApiException {
         coreV1Api.deleteNamespacedPersistentVolumeClaim(name, namespace, "true",
                 null, null, null, null, null);
+    }
+
+    public boolean pvcExists(String namespace, String name) throws ApiException {
+        V1PersistentVolumeClaimList persistentVolumeClaimList = coreV1Api.listNamespacedPersistentVolumeClaim(
+                namespace, "true",
+                null, null, null, null, null,
+                null, null, null, null);
+        List<V1PersistentVolumeClaim> items = persistentVolumeClaimList.getItems();
+        for (V1PersistentVolumeClaim item : items) {
+            if (item.getMetadata() != null && name.equals(item.getMetadata().getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
