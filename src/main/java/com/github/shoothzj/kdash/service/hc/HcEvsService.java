@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 @Service
 public class HcEvsService {
@@ -74,16 +75,12 @@ public class HcEvsService {
         return evsClient.listVolumesAsync(request);
     }
 
-    public CompletableFuture<List<String>> listVolumeIdByVolumeName(
-            String name, CompletableFuture<List<String>> future) {
+    public CompletableFuture<List<String>> listVolumeIdByVolumeName(String name) {
+        CompletableFuture<List<String>> future = new CompletableFuture<>();
         this.listVolumeByVolumeName(name).thenAcceptAsync(listVolumes -> {
-            List<String> volumeIds = new ArrayList<>();
-            for (VolumeDetail volume : listVolumes.getVolumes()) {
-                if (name.equals(volume.getName())) {
-                    volumeIds.add(volume.getId());
-                }
-            }
-            future.complete(volumeIds);
+            List<String> list = listVolumes.getVolumes().stream().map(VolumeDetail::getName)
+                    .filter(name::equals).collect(Collectors.toList());
+            future.complete(list);
         });
         return future;
     }
