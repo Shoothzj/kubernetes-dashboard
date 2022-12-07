@@ -35,9 +35,15 @@ public class HuaweiCloudConfig {
 
     public final String cceEndpoint = "cce." + region + ".myhuaweicloud.com";
 
+    public final String disEndpoint = "dis." + region + ".myhuaweicloud.com";
+
+    public final String functiongraphEndpoint = "functiongraph." + region + ".myhuaweicloud.com";
+
     public final String ecsEndpoint = "ecs." + region + ".myhuaweicloud.com";
 
     public final String evsEndpoint = "evs." + region + ".myhuaweicloud.com";
+
+    public final String ltsEndpoint = "lts." + region + ".myhuaweicloud.com";
 
     public final String swrEndpoint = "swr." + region + ".myhuaweicloud.com";
 
