@@ -44,6 +44,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class KubernetesDeployService {
@@ -157,4 +158,15 @@ public class KubernetesDeployService {
         appsV1Api.replaceNamespacedDeploymentScale(req.getAppName(), namespace, v1Scale, "true",
                 null, null, null);
     }
+
+    public GetDeploymentResp getNamespaceDeployment(String namespace, String deployName) throws ApiException {
+        List<GetDeploymentResp> list = getNamespaceDeployments(namespace);
+        for (GetDeploymentResp deploy : list) {
+            if (Objects.equals(deploy.getDeployName(), deployName)) {
+                return deploy;
+            }
+        }
+        return null;
+    }
+
 }

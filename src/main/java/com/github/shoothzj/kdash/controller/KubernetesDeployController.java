@@ -75,4 +75,14 @@ public class KubernetesDeployController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PostMapping("/namespace/{namespace}/deployments/{deployName}/health-check")
+    public ResponseEntity<Void> healthCheck(@PathVariable String namespace, @PathVariable String deployName)
+            throws ApiException {
+        GetDeploymentResp resp = deployService.getNamespaceDeployment(namespace, deployName);
+        if (resp == null || resp.getReplicas() != resp.getAvailableReplicas()) {
+            return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
