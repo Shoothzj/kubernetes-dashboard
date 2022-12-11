@@ -48,6 +48,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class KubernetesStatefulSetService {
@@ -199,5 +200,15 @@ public class KubernetesStatefulSetService {
         v1Scale.setMetadata(objectMeta);
         appsV1Api.replaceNamespacedStatefulSetScale(req.getAppName(), namespace, v1Scale, "true",
                 null, null, null);
+    }
+
+    public GetStatefulSetResp getNamespaceStatefulSet(String namespace, String statefulSetName) throws ApiException {
+        List<GetStatefulSetResp> list = getNamespaceStatefulSets(namespace);
+        for (GetStatefulSetResp sts : list) {
+            if (Objects.equals(sts.getStatefulSetName(), statefulSetName)) {
+                return sts;
+            }
+        }
+        return null;
     }
 }

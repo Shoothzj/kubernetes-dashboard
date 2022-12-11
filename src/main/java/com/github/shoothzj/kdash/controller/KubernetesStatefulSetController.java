@@ -75,4 +75,14 @@ public class KubernetesStatefulSetController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PostMapping("/namespace/{namespace}/stateful-sets/{statefulSetName}/health-check")
+    public ResponseEntity<Void> healthCheck(@PathVariable String namespace, @PathVariable String statefulSetName)
+            throws ApiException {
+        GetStatefulSetResp resp = kubernetesStatefulSetService.getNamespaceStatefulSet(namespace, statefulSetName);
+        if (resp == null || resp.getReplicas() != resp.getAvailableReplicas()) {
+            return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
