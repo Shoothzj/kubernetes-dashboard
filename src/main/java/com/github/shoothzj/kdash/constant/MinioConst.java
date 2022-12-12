@@ -17,22 +17,7 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module.objectmeta;
+package com.github.shoothzj.kdash.constant;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.Map;
-
-@Setter
-@Getter
-public class ObjectMeta {
-    private String name;
-    private String namespace;
-    private String clusterName;
-    private Map<String, String> labels;
-    private Map<String, String> annotations;
-
-    public ObjectMeta() {
-    }
+public class MinioConst {
 }

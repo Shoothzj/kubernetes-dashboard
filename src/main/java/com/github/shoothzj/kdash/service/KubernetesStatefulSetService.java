@@ -25,7 +25,7 @@ import com.github.shoothzj.kdash.module.GetStatefulSetResp;
 import com.github.shoothzj.kdash.module.VolumeClaimTemplates;
 import com.github.shoothzj.kdash.module.ScaleReq;
 import com.github.shoothzj.kdash.module.objectmeta.ObjectMeta;
-import com.github.shoothzj.kdash.module.objectmeta.StatefulsetSpec;
+import com.github.shoothzj.kdash.module.objectmeta.StatefulSetSpec;
 import com.github.shoothzj.kdash.util.KubernetesUtil;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
@@ -64,7 +64,7 @@ public class KubernetesStatefulSetService {
     public void createNamespacedStatefulSetV2(String namespace,
                                               ObjectMeta objectMeta,
                                               V1StatefulSetStatus v1StatefulSetStatus,
-                                              StatefulsetSpec statefulsetSpec) throws ApiException {
+                                              StatefulSetSpec statefulsetSpec) throws ApiException {
         V1StatefulSet v1StatefulSet = new V1StatefulSet();
         v1StatefulSet.setApiVersion("apps/v1");
         v1StatefulSet.setKind("StatefulSet");
@@ -111,7 +111,7 @@ public class KubernetesStatefulSetService {
                 v1StatefulSetSpec.setVolumeClaimTemplates(volumeClaimsTemplates);
             }
         }
-        v1StatefulSetSpec.setPodManagementPolicy(statefulsetSpec.getPodManagementpolicy());
+        v1StatefulSetSpec.setPodManagementPolicy(statefulsetSpec.getPodManagementPolicy());
 
         // spec template
         V1PodTemplateSpec v1PodTemplateSpec = new V1PodTemplateSpec();

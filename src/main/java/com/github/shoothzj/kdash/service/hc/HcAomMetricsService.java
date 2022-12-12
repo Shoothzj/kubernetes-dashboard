@@ -62,8 +62,8 @@ public class HcAomMetricsService {
     /**
      * query deployment or statefulset average cpu usage
      *
-     * @Param appName deployment name or statefulset name
-     * @Param period metric duration
+     * @param appName deployment name or statefulset name
+     * @param period metric duration
      * @return metric value
      */
     public Double getAppAverageCpuUsage(String appName, AomMetricsPeriod period) {

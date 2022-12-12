@@ -29,13 +29,15 @@ import io.kubernetes.client.openapi.models.V1PodSpec;
 import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
 import io.kubernetes.client.openapi.models.V1StatefulSetPersistentVolumeClaimRetentionPolicy;
 import io.kubernetes.client.openapi.models.V1StatefulSetUpdateStrategy;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.Map;
 
-@Data
-public class StatefulsetSpec {
+@Setter
+@Getter
+public class StatefulSetSpec {
 
     private String serviceName;
 
@@ -47,7 +49,7 @@ public class StatefulsetSpec {
 
     private V1StatefulSetPersistentVolumeClaimRetentionPolicy policy;
 
-    private String podManagementpolicy;
+    private String podManagementPolicy;
 
     private V1PodTemplateSpec v1PodTemplateSpec;
 
@@ -67,4 +69,6 @@ public class StatefulsetSpec {
 
     private Map<String, String> annotations;
 
+    public StatefulSetSpec() {
+    }
 }
