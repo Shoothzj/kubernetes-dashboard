@@ -24,6 +24,8 @@ import com.github.shoothzj.kdash.module.CreateStatefulSetReq;
 import com.github.shoothzj.kdash.module.GetStatefulSetResp;
 import com.github.shoothzj.kdash.module.VolumeClaimTemplates;
 import com.github.shoothzj.kdash.module.ScaleReq;
+import com.github.shoothzj.kdash.module.objectmeta.ObjectMeta;
+import com.github.shoothzj.kdash.module.objectmeta.StatefulsetSpec;
 import com.github.shoothzj.kdash.util.KubernetesUtil;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
@@ -57,6 +59,97 @@ public class KubernetesStatefulSetService {
 
     public KubernetesStatefulSetService(@Autowired ApiClient apiClient) {
         this.appsV1Api = new AppsV1Api(apiClient);
+    }
+
+    public void createNamespacedStatefulSetV2(String namespace,
+                                              ObjectMeta objectMeta,
+                                              V1StatefulSetStatus v1StatefulSetStatus,
+                                              StatefulsetSpec statefulsetSpec) throws ApiException {
+        V1StatefulSet v1StatefulSet = new V1StatefulSet();
+        v1StatefulSet.setApiVersion("apps/v1");
+        v1StatefulSet.setKind("StatefulSet");
+
+        // meta
+        V1ObjectMeta v1ObjectMeta = new V1ObjectMeta();
+        v1ObjectMeta.setName(objectMeta.getName());
+        v1ObjectMeta.setNamespace(objectMeta.getNamespace());
+        if (objectMeta.getLabels().size() != 0) {
+            v1ObjectMeta.setLabels(objectMeta.getLabels());
+        }
+        if (objectMeta.getClusterName() != null) {
+            v1ObjectMeta.setClusterName(objectMeta.getClusterName());
+        }
+        if (objectMeta.getAnnotations() != null && objectMeta.getAnnotations().size() != 0) {
+            v1ObjectMeta.setAnnotations(objectMeta.getAnnotations());
+        }
+        v1StatefulSet.setMetadata(v1ObjectMeta);
+
+        // spec
+        V1StatefulSetSpec v1StatefulSetSpec = new V1StatefulSetSpec();
+        v1StatefulSetSpec.setServiceName(statefulsetSpec.getServiceName());
+        v1StatefulSetSpec.setSelector(statefulsetSpec.getV1LabelSelector());
+        v1StatefulSetSpec.setReplicas(statefulsetSpec.getReplicas());
+        if (statefulsetSpec.getV1StatefulSetUpdateStrategy() != null) {
+            v1StatefulSetSpec.setUpdateStrategy(statefulsetSpec.getV1StatefulSetUpdateStrategy());
+        }
+        if (statefulsetSpec.getPolicy() != null) {
+            v1StatefulSetSpec.setPersistentVolumeClaimRetentionPolicy(statefulsetSpec.getPolicy());
+        }
+        {
+            List<V1PersistentVolumeClaim> volumeClaimsTemplates = new ArrayList<>();
+            for (VolumeClaimTemplates persistentVolume : statefulsetSpec.getPersistentVolumes()) {
+                V1PersistentVolumeClaim v1PersistentVolumeClaim = new V1PersistentVolumeClaim();
+                v1PersistentVolumeClaim.setKind("PersistentVolumeClaim");
+                V1ObjectMeta metadata = new V1ObjectMeta();
+                metadata.setNamespace(namespace);
+                metadata.setAnnotations(statefulsetSpec.getAnnotations());
+                metadata.setName(persistentVolume.getVolumeName());
+                v1PersistentVolumeClaim.setMetadata(metadata);
+                volumeClaimsTemplates.add(v1PersistentVolumeClaim);
+            }
+            if (volumeClaimsTemplates.size() != 0) {
+                v1StatefulSetSpec.setVolumeClaimTemplates(volumeClaimsTemplates);
+            }
+        }
+        v1StatefulSetSpec.setPodManagementPolicy(statefulsetSpec.getPodManagementpolicy());
+
+        // spec template
+        V1PodTemplateSpec v1PodTemplateSpec = new V1PodTemplateSpec();
+        V1ObjectMeta specV1ObjectMeta = statefulsetSpec.getSpecV1ObjectMeta();
+        if (specV1ObjectMeta == null) {
+            specV1ObjectMeta = new V1ObjectMeta();
+            specV1ObjectMeta.setLabels(KubernetesUtil.label(objectMeta.getName()));
+        }
+        v1PodTemplateSpec.setMetadata(specV1ObjectMeta);
+
+        V1PodSpec v1PodSpec = statefulsetSpec.getV1PodSpec() != null ? statefulsetSpec.getV1PodSpec() : new V1PodSpec();
+
+        // affinity
+        {
+            V1Affinity v1Affinity = new V1Affinity();
+            if (statefulsetSpec.getPodAffinityTerms() != null) {
+                v1Affinity.setPodAffinity(
+                        KubernetesUtil.fetchV1PodAffinity(statefulsetSpec.getPodAffinityTerms()));
+            }
+            if (statefulsetSpec.getPodAffinityTerms() != null) {
+                v1Affinity.setPodAntiAffinity(
+                        KubernetesUtil.fetchV1PodAntiAffinity(statefulsetSpec.getPodAntiAffinityTerms()));
+            }
+            v1Affinity.setNodeAffinity(
+                    KubernetesUtil.fetchV1NodeAffinity(statefulsetSpec.getNodeSelectorRequirement()));
+            v1PodSpec.setAffinity(v1Affinity);
+        }
+        // Container
+        v1PodSpec.setContainers((KubernetesUtil.singleContainerList(statefulsetSpec.getSpecV1Container())));
+        v1PodTemplateSpec.setSpec(v1PodSpec);
+        v1StatefulSetSpec.setTemplate(v1PodTemplateSpec);
+        v1StatefulSet.setSpec(v1StatefulSetSpec);
+        if (v1StatefulSetStatus != null) {
+            v1StatefulSet.setStatus(v1StatefulSetStatus);
+        }
+
+        appsV1Api.createNamespacedStatefulSet(namespace, v1StatefulSet,
+                "true", null, null, null);
     }
 
     public void createNamespacedStatefulSet(CreateStatefulSetReq req) throws Exception {

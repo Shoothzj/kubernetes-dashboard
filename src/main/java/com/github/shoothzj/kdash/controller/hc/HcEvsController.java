@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -86,6 +87,12 @@ public class HcEvsController {
                     }
                 });
         return new ResponseEntity<>(future.get(), HttpStatus.OK);
+    }
+
+    @GetMapping("volumes/{volumeName}")
+    public ResponseEntity<List<String>> getVolumeByName(@PathVariable String volumeName)
+            throws ExecutionException, InterruptedException {
+        return new ResponseEntity<>(evsService.listVolumeIdByVolumeName(volumeName).get(), HttpStatus.OK);
     }
 
 }

@@ -51,6 +51,8 @@ public class KubernetesPersistentVolumeClaimService {
         V1ObjectMeta metadata = new V1ObjectMeta();
         metadata.setName(req.getName());
         metadata.setNamespace(namespace);
+        metadata.setLabels(req.getLabels());
+        metadata.setAnnotations(req.getAnnotations());
         v1PersistentVolumeClaim.setMetadata(metadata);
 
         // spec below

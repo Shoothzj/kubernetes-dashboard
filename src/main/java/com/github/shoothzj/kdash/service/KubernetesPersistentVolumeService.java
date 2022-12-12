@@ -56,6 +56,8 @@ public class KubernetesPersistentVolumeService {
         // metadata below
         V1ObjectMeta metadata = new V1ObjectMeta();
         metadata.setName(req.getName());
+        metadata.setLabels(req.getLabels());
+        metadata.setAnnotations(req.getAnnotations());
         v1PersistentVolume.setMetadata(metadata);
 
         // spec below
@@ -68,22 +70,25 @@ public class KubernetesPersistentVolumeService {
         local.setPath(req.getLocalPath());
         spec.setLocal(local);
         // nodeAffinity convert
-        V1VolumeNodeAffinity v1NodeAffinity = new V1VolumeNodeAffinity();
-        V1NodeSelector v1NodeSelector = new V1NodeSelector();
-        List<V1NodeSelectorTerm> selectorTerms = new ArrayList<>();
-        V1NodeSelectorTerm v1NodeSelectorTerm = new V1NodeSelectorTerm();
         Map<String, List<String>> nodeSelectorDefines = req.getNodeSelectorDefines();
-        for (Map.Entry<String, List<String>> entry : nodeSelectorDefines.entrySet()) {
-            V1NodeSelectorRequirement v1NodeSelectorRequirement = new V1NodeSelectorRequirement();
-            v1NodeSelectorRequirement.setKey(entry.getKey());
-            v1NodeSelectorRequirement.setOperator("In");
-            v1NodeSelectorRequirement.setValues(entry.getValue());
-            v1NodeSelectorTerm.addMatchExpressionsItem(v1NodeSelectorRequirement);
+        if (nodeSelectorDefines != null) {
+            V1VolumeNodeAffinity v1NodeAffinity = new V1VolumeNodeAffinity();
+            V1NodeSelector v1NodeSelector = new V1NodeSelector();
+            List<V1NodeSelectorTerm> selectorTerms = new ArrayList<>();
+            V1NodeSelectorTerm v1NodeSelectorTerm = new V1NodeSelectorTerm();
+            for (Map.Entry<String, List<String>> entry : nodeSelectorDefines.entrySet()) {
+                V1NodeSelectorRequirement v1NodeSelectorRequirement = new V1NodeSelectorRequirement();
+                v1NodeSelectorRequirement.setKey(entry.getKey());
+                v1NodeSelectorRequirement.setOperator("In");
+                v1NodeSelectorRequirement.setValues(entry.getValue());
+                v1NodeSelectorTerm.addMatchExpressionsItem(v1NodeSelectorRequirement);
+            }
+            selectorTerms.add(v1NodeSelectorTerm);
+            v1NodeSelector.setNodeSelectorTerms(selectorTerms);
+            v1NodeAffinity.setRequired(v1NodeSelector);
+            spec.setNodeAffinity(v1NodeAffinity);
         }
-        selectorTerms.add(v1NodeSelectorTerm);
-        v1NodeSelector.setNodeSelectorTerms(selectorTerms);
-        v1NodeAffinity.setRequired(v1NodeSelector);
-        spec.setNodeAffinity(v1NodeAffinity);
+        spec.setCsi(req.getCsi());
         v1PersistentVolume.setSpec(spec);
         coreV1Api.createPersistentVolume(v1PersistentVolume, "true", null, null, null);
     }

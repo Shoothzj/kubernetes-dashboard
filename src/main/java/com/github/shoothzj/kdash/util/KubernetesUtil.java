@@ -27,6 +27,7 @@ import com.github.shoothzj.kdash.module.ResourceRequirements;
 import io.kubernetes.client.custom.Quantity;
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1EnvVar;
+import io.kubernetes.client.openapi.models.V1EnvVarSource;
 import io.kubernetes.client.openapi.models.V1ExecAction;
 import io.kubernetes.client.openapi.models.V1LabelSelector;
 import io.kubernetes.client.openapi.models.V1LabelSelectorRequirement;
@@ -35,6 +36,7 @@ import io.kubernetes.client.openapi.models.V1NodeAffinity;
 import io.kubernetes.client.openapi.models.V1NodeSelector;
 import io.kubernetes.client.openapi.models.V1NodeSelectorRequirement;
 import io.kubernetes.client.openapi.models.V1NodeSelectorTerm;
+import io.kubernetes.client.openapi.models.V1ObjectFieldSelector;
 import io.kubernetes.client.openapi.models.V1PodAffinity;
 import io.kubernetes.client.openapi.models.V1PodAffinityTerm;
 import io.kubernetes.client.openapi.models.V1PodAntiAffinity;
@@ -71,6 +73,12 @@ public class KubernetesUtil {
         return singleContainerList(image, null, envMap, name, resourceRequirements);
     }
 
+    public static List<V1Container> singleContainerList(V1Container container) {
+        List<V1Container> v1Containers = new ArrayList<>();
+        v1Containers.add(container);
+        return v1Containers;
+    }
+
     public static List<V1Container> singleContainerList(String image,
                                                         String imagePullPolicy,
                                                         Map<String, String> envMap,
@@ -90,6 +98,17 @@ public class KubernetesUtil {
         container.setResources(resourceRequirements(resourceRequirements));
         containers.add(container);
         return containers;
+    }
+
+    public static V1EnvVar fetchV1EnvVar(String fieldPath, String name) {
+        V1EnvVar v1EnvVar = new V1EnvVar();
+        V1EnvVarSource v1EnvVarSource = new V1EnvVarSource();
+        V1ObjectFieldSelector v1ObjectFieldSelector = new V1ObjectFieldSelector();
+        v1ObjectFieldSelector.setFieldPath(fieldPath);
+        v1EnvVarSource.setFieldRef(v1ObjectFieldSelector);
+        v1EnvVar.setValueFrom(v1EnvVarSource);
+        v1EnvVar.setName(name);
+        return v1EnvVar;
     }
 
     public static V1Probe fetchV1Probe(Probe probe) {

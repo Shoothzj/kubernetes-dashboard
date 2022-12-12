@@ -17,30 +17,4 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module;
-
-import io.kubernetes.client.custom.Quantity;
-import io.kubernetes.client.openapi.models.V1CSIPersistentVolumeSource;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.List;
-import java.util.Map;
-
-@Getter
-@Setter
-public class CreatePersistentVolumeReq {
-    private String name;
-    private Map<String, Quantity> capacity;
-    private List<String> accessModes;
-    private String persistentVolumeReclaimPolicy;
-    private String storageClassName;
-    private String localPath;
-    private Map<String, String> annotations;
-    private Map<String, String> labels;
-    private Map<String, List<String>> nodeSelectorDefines;
-    private V1CSIPersistentVolumeSource csi;
-
-    public CreatePersistentVolumeReq() {
-    }
-}
+package com.github.shoothzj.kdash.module.objectmeta;
