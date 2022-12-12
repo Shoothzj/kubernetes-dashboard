@@ -28,8 +28,14 @@ import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { AppBar, Drawer } from '@mui/material';
+import { AppBar, colors, Drawer } from '@mui/material';
 import HomePage from './HomePage';
+import DeploymentPage from './deployment/Deployment';
+import NodePage from './node/node';
+import StatefulSetPage from './statefulset/StatefulSet';
+import SecretePage from './secrete/Secret';
+import PodPage from './pod/Pod';
+import JobPage from './job/Job';
 
 const drawerWidth = 240;
 
@@ -61,12 +67,52 @@ function App() {
         <Toolbar />
         <Divider />
         <List>
-          <ListItem key="Home Page" disablePadding>
+          <ListItem key="job" disablePadding>
             <ListItemButton
               onClick={async () => {
-                navigate('/');
+                navigate('/job');
               }}>
-              <ListItemText primary="Home Page" />
+              <ListItemText primary="job" />
+            </ListItemButton>
+          </ListItem>
+          <ListItem key="pod" disablePadding>
+            <ListItemButton
+              onClick={async () => {
+                navigate('/pod');
+              }}>
+              <ListItemText primary="pod" />
+            </ListItemButton>
+          </ListItem>
+          <ListItem key="node" disablePadding>
+            <ListItemButton
+              onClick={async () => {
+                navigate('/node');
+              }}>
+              <ListItemText primary="node" />
+            </ListItemButton>
+          </ListItem>
+          <ListItem key="secret" disablePadding>
+            <ListItemButton
+              onClick={async () => {
+                navigate('/secret');
+              }}>
+              <ListItemText primary="secret" />
+            </ListItemButton>
+          </ListItem>
+          <ListItem key="statefulset" disablePadding>
+            <ListItemButton
+              onClick={async () => {
+                navigate('/statefulset');
+              }}>
+              <ListItemText primary="statefulset" />
+            </ListItemButton>
+          </ListItem>
+          <ListItem key="deployment" disablePadding>
+            <ListItemButton
+              onClick={async () => {
+                navigate('/deployment');
+              }}>
+              <ListItemText primary="deployment" />
             </ListItemButton>
           </ListItem>
         </List>
@@ -75,7 +121,12 @@ function App() {
         <Toolbar />
         <div>
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/pod" element={<PodPage />} />
+            <Route path="/job" element={<JobPage />} />
+            <Route path="/node" element={<NodePage />} />
+            <Route path="/secret" element={<SecretePage />} />
+            <Route path="/deployment" element={<DeploymentPage />} />
+            <Route path="/statefulset" element={<StatefulSetPage />} />
           </Routes>
         </div>
       </Box>
