@@ -20,11 +20,13 @@
 package com.github.shoothzj.kdash.module;
 
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Map;
 
-@Data
+@Setter
+@Getter
 public class CreateSecretReq {
 
     private String secretName;
@@ -36,6 +38,9 @@ public class CreateSecretReq {
     private Boolean immutable;
 
     private String type;
+
+    public CreateSecretReq() {
+    }
 
     public Boolean getImmutable() {
         if (this.immutable == null) {
