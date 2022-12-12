@@ -25,22 +25,10 @@ public class PrometheusConst {
 
     public static final String SPRING_METRICS_PATH = "/actuator/prometheus";
 
-    public static final String DEFAULT_METRICS_HOST = "%s:8080";
-
-    public static final String PULSAR_MATCH_LABEL_NAME = "pulsar-push";
-
     public static final int PROMETHEUS_METRICS_PORT = 9090;
 
     public static final int REDIS_METRICS_PORT = 9121;
 
     public static final int KAFKA_METRICS_PORT = 9308;
-
-    public static final String MINIO_APP_NAME = "minio";
-
-    public static final String Minio_POD_NAME = "minio-";
-
-    public static final String BOOKKEEPER_APP_NAME = " bookkeeper";
-
-    public static final String PRERFIX_BOOKKEEPER_POD_NAME = "bookkeeper-";
 
 }

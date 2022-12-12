@@ -40,7 +40,8 @@ public class AomMetricsConst {
 
     public static final String NODE_METRICS_NAMESPACE = "PAAS.NODE";
 
-    // statistics取值範圍：maximum,minimum,sum,average,sampleCount
+    // available statistics value：maximum,minimum,sum,average,sampleCount
+
     public static final String AVERAGE_METRIC_STATISTICS_TYPE = "average";
 
     public static final String MAXIMUM_METRIC_STATISTICS_TYPE = "maximum";
