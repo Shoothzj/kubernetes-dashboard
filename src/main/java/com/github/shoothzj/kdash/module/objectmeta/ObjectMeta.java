@@ -17,50 +17,18 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module;
+package com.github.shoothzj.kdash.module.objectmeta;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-import java.util.List;
 import java.util.Map;
 
-@Setter
-@Getter
-public class CreateStatefulSetReq {
-
+@Data
+public class ObjectMeta {
+    private String name;
     private String namespace;
-
-    private String statefulSetName;
-
-    private int replicas;
-
-    private String image;
-
-    private String imagePullSecret;
-
-    private Map<String, String> env;
-
+    private String clusterName;
+    private Map<String, String> labels;
     private Map<String, String> annotations;
 
-    private List<ValueFrom> valueFroms;
-
-    private String serviceName;
-
-    private Probe livenessProbe;
-
-    private Probe readinessProbe;
-
-    private NodeSelectorRequirement nodeSelectorRequirement;
-
-    private PodAffinityTerms podAffinityTerms;
-
-    private PodAffinityTerms podAntiAffinityTerms;
-
-    private ResourceRequirements resourceRequirements;
-
-    private List<VolumeClaimTemplates> persistentVolumes;
-
-    public CreateStatefulSetReq() {
-    }
 }

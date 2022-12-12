@@ -76,8 +76,10 @@ public class HcEvsService {
     public CompletableFuture<List<String>> listVolumeIdByVolumeName(String name) {
         CompletableFuture<List<String>> future = new CompletableFuture<>();
         this.listVolumeByVolumeName(name).thenAcceptAsync(listVolumes -> {
-            List<String> list = listVolumes.getVolumes().stream().map(VolumeDetail::getName)
-                    .filter(name::equals).collect(Collectors.toList());
+            List<String> list = listVolumes.getVolumes().stream()
+                    .filter(volumeDetail -> name.equals(volumeDetail.getName()))
+                    .map(VolumeDetail::getId)
+                    .collect(Collectors.toList());
             future.complete(list);
         });
         return future;

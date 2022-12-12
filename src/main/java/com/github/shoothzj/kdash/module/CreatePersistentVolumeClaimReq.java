@@ -34,6 +34,8 @@ public class CreatePersistentVolumeClaimReq {
     private String storageClassName;
     private String volumeName;
     private Map<String, Quantity> requests;
+    private Map<String, String> labels;
+    private Map<String, String> annotations;
 
     public CreatePersistentVolumeClaimReq() {
     }

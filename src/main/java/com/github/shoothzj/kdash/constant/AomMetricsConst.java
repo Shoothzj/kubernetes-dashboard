@@ -21,8 +21,31 @@ package com.github.shoothzj.kdash.constant;
 
 public class AomMetricsConst {
 
+    // metric dimensions, deployment or statefulset
+    public static final String APP_METRIC_DIMENSIONS_NAME = "appName";
+
+    // metric dimensions, pod
+    public static final String POD_METRIC_DIMENSIONS_NAME = "podName";
+
+    public static final String CPU_METRIC_NAME = "cpuUsage";
+
+    public static final String MEMORY_METRIC_NAME = "memUsage";
+
+    // PAAS.CONTAINER:　
+    // PAAS.NODE:
+    // PAAS.SLA:
+    // PAAS.AGGR:
+    // CUSTOMMETRICS:
     public static final String CONTAINER_METRICS_NAMESPACE = "PAAS.CONTAINER";
 
     public static final String NODE_METRICS_NAMESPACE = "PAAS.NODE";
+
+    // available statistics value：maximum,minimum,sum,average,sampleCount
+
+    public static final String AVERAGE_METRIC_STATISTICS_TYPE = "average";
+
+    public static final String MAXIMUM_METRIC_STATISTICS_TYPE = "maximum";
+
+    public static final String MINIMUM_METRIC_STATISTICS_TYPE = "minimum";
 
 }
