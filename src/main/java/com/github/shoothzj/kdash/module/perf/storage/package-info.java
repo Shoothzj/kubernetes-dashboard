@@ -17,19 +17,4 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module.minio;
-
-import lombok.Getter;
-import lombok.Setter;
-
-@Setter
-@Getter
-public class CreateMinioReq {
-
-    private String cpu;
-
-    private String memory;
-
-    public CreateMinioReq() {
-    }
-}
+package com.github.shoothzj.kdash.module.perf.storage;

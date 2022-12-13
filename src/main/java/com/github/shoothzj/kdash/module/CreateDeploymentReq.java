@@ -32,6 +32,8 @@ public class CreateDeploymentReq {
 
     private String deploymentName;
 
+    private Map<String, String> labels;
+
     private int replicas;
 
     private String image;
