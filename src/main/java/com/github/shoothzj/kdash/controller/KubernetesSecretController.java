@@ -20,6 +20,7 @@
 package com.github.shoothzj.kdash.controller;
 
 import com.github.shoothzj.kdash.module.CreateSecretReq;
+import com.github.shoothzj.kdash.module.YamlReq;
 import com.github.shoothzj.kdash.service.KubernetesSecretService;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.models.V1SecretList;
@@ -33,6 +34,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/kubernetes")
@@ -49,6 +52,13 @@ public class KubernetesSecretController {
                                               @RequestBody CreateSecretReq req) throws ApiException {
         kubernetesSecretService.createSecret(namespace, req);
     return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping("/namespace/{namespace}/secrets/yaml")
+    public ResponseEntity<Void> createSecretByYaml(@PathVariable String namespace,
+                                             @RequestBody YamlReq req) throws ApiException, IOException {
+        kubernetesSecretService.createSecretByYaml(namespace, req);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/namespace/{namespace}/secrets/{secret}")

@@ -20,6 +20,7 @@
 package com.github.shoothzj.kdash.controller;
 
 import com.github.shoothzj.kdash.module.CreateDeploymentReq;
+import com.github.shoothzj.kdash.module.YamlReq;
 import com.github.shoothzj.kdash.module.GetDeploymentResp;
 import com.github.shoothzj.kdash.module.ScaleReq;
 import com.github.shoothzj.kdash.service.KubernetesDeployService;
@@ -50,9 +51,16 @@ public class KubernetesDeployController {
         this.deployService = deployService;
     }
 
-    @PostMapping("/namespace/{namespace}/deployments")
+    @PutMapping("/namespace/{namespace}/deployments")
     public ResponseEntity<Void> createDeployment(@RequestBody CreateDeploymentReq req) throws Exception {
         deployService.createNamespacedDeploy(req);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping("/namespace/{namespace}/deployments/yaml")
+    public ResponseEntity<Void> createDeploymentByYaml(@RequestBody YamlReq req,
+                                                       @PathVariable String namespace) throws Exception {
+        deployService.createDeploymentByYaml(namespace, req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

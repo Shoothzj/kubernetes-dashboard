@@ -22,6 +22,7 @@ package com.github.shoothzj.kdash.service;
 import com.github.shoothzj.kdash.module.CreateReplicaReq;
 import com.github.shoothzj.kdash.module.GetReplicaResp;
 import com.github.shoothzj.kdash.module.ScaleReplicaReq;
+import com.github.shoothzj.kdash.module.YamlReq;
 import com.github.shoothzj.kdash.util.KubernetesUtil;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
@@ -34,9 +35,12 @@ import io.kubernetes.client.openapi.models.V1ReplicationController;
 import io.kubernetes.client.openapi.models.V1ReplicationControllerList;
 import io.kubernetes.client.openapi.models.V1ReplicationControllerSpec;
 import io.kubernetes.client.openapi.models.V1ReplicationControllerStatus;
+import io.kubernetes.client.util.Yaml;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -87,6 +91,12 @@ public class KubernetesReplicaControllerService {
             replicationController.setSpec(controllerSpec);
         }
         coreV1Api.createNamespacedReplicationController(namespace, replicationController, "true",
+                null, null, null);
+    }
+
+    public void createReplicaByYaml(String namespace, YamlReq req) throws ApiException, IOException {
+        V1ReplicationController replication = (V1ReplicationController) Yaml.load(new File(req.getYamlPath()));
+        coreV1Api.createNamespacedReplicationController(namespace, replication, "true",
                 null, null, null);
     }
 

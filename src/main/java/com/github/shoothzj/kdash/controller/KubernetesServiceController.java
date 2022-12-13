@@ -22,6 +22,7 @@ package com.github.shoothzj.kdash.controller;
 import com.github.shoothzj.kdash.module.CreateServiceReq;
 import com.github.shoothzj.kdash.module.DeleteServiceReq;
 import com.github.shoothzj.kdash.module.GetServiceResp;
+import com.github.shoothzj.kdash.module.YamlReq;
 import com.github.shoothzj.kdash.service.KubernetesServiceService;
 import io.kubernetes.client.openapi.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +32,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -51,6 +54,13 @@ public class KubernetesServiceController {
     public ResponseEntity<Void> createService(@PathVariable String namespace,
                                               @RequestBody CreateServiceReq req) throws ApiException{
         kubernetesServiceService.createService(namespace, req);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping("/namespace/{namespace}/services/yaml")
+    public ResponseEntity<Void> createServiceByYaml(@PathVariable String namespace,
+                                              @RequestBody YamlReq req) throws ApiException, IOException {
+        kubernetesServiceService.createServiceByYaml(namespace, req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

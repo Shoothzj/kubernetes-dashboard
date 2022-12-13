@@ -21,6 +21,7 @@ package com.github.shoothzj.kdash.service;
 
 import com.github.shoothzj.kdash.module.ContainerInfo;
 import com.github.shoothzj.kdash.module.CreateDeploymentReq;
+import com.github.shoothzj.kdash.module.YamlReq;
 import com.github.shoothzj.kdash.module.GetDeploymentResp;
 import com.github.shoothzj.kdash.module.ScaleReq;
 import com.github.shoothzj.kdash.util.KubernetesUtil;
@@ -37,9 +38,12 @@ import io.kubernetes.client.openapi.models.V1PodSpec;
 import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
 import io.kubernetes.client.openapi.models.V1Scale;
 import io.kubernetes.client.openapi.models.V1ScaleSpec;
+import io.kubernetes.client.util.Yaml;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -98,6 +102,12 @@ public class KubernetesDeployService {
 
         appsV1Api.createNamespacedDeployment(req.getNamespace(), deployment,
                 "true", null, null, null);
+    }
+
+    public void createDeploymentByYaml(String namespace, YamlReq req) throws IOException, ApiException {
+        V1Deployment v1Deployment = (V1Deployment) Yaml.load(new File(req.getYamlPath()));
+        appsV1Api.createNamespacedDeployment(namespace, v1Deployment,
+                null, null, null, null);
     }
 
     public void deleteDeploy(String namespace, String deployName) throws ApiException {

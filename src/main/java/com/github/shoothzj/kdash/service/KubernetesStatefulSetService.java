@@ -24,6 +24,7 @@ import com.github.shoothzj.kdash.module.CreateStatefulSetReq;
 import com.github.shoothzj.kdash.module.GetStatefulSetResp;
 import com.github.shoothzj.kdash.module.VolumeClaimTemplates;
 import com.github.shoothzj.kdash.module.ScaleReq;
+import com.github.shoothzj.kdash.module.YamlReq;
 import com.github.shoothzj.kdash.module.objectmeta.ObjectMeta;
 import com.github.shoothzj.kdash.module.objectmeta.StatefulSetSpec;
 import com.github.shoothzj.kdash.util.KubernetesUtil;
@@ -43,9 +44,12 @@ import io.kubernetes.client.openapi.models.V1StatefulSetList;
 import io.kubernetes.client.openapi.models.V1StatefulSetSpec;
 import io.kubernetes.client.openapi.models.V1StatefulSetStatus;
 import io.kubernetes.client.openapi.models.V1VolumeMount;
+import io.kubernetes.client.util.Yaml;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -233,6 +237,13 @@ public class KubernetesStatefulSetService {
         }
 
         appsV1Api.createNamespacedStatefulSet(req.getNamespace(), v1StatefulSet,
+                "true", null, null, null);
+    }
+
+
+    public void createNamespacedStatefulSetByYaml(String namespace, YamlReq req) throws IOException, ApiException {
+        V1StatefulSet v1StatefulSet = (V1StatefulSet) Yaml.load(new File(req.getYamlPath()));
+        appsV1Api.createNamespacedStatefulSet(namespace, v1StatefulSet,
                 "true", null, null, null);
     }
 

@@ -22,6 +22,7 @@ package com.github.shoothzj.kdash.controller;
 import com.github.shoothzj.kdash.module.CreateReplicaReq;
 import com.github.shoothzj.kdash.module.GetReplicaResp;
 import com.github.shoothzj.kdash.module.ScaleReplicaReq;
+import com.github.shoothzj.kdash.module.YamlReq;
 import com.github.shoothzj.kdash.service.KubernetesReplicaControllerService;
 import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -51,10 +53,17 @@ public class KubernetesReplicaControllerController {
         this.kubernetesReplicaControllerService = kubernetesReplicaControllerService;
     }
 
-    @PostMapping("/namespaces/{namespace}/replicas")
+    @PutMapping("/namespaces/{namespace}/replicas")
     public ResponseEntity<Void> createReplicas(@PathVariable String namespace,
                                           @RequestBody CreateReplicaReq req) throws ApiException {
         kubernetesReplicaControllerService.createReplica(namespace, req);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping("/namespaces/{namespace}/replicas/yaml")
+    public ResponseEntity<Void> createReplicas(@PathVariable String namespace,
+                                               @RequestBody YamlReq req) throws ApiException, IOException {
+        kubernetesReplicaControllerService.createReplicaByYaml(namespace, req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -70,7 +79,7 @@ public class KubernetesReplicaControllerController {
         return new ResponseEntity<>(kubernetesReplicaControllerService.getReplicas(namespace), HttpStatus.OK);
     }
 
-    @PutMapping("/namespace/{namespace}/replicas/scale")
+    @PostMapping("/namespace/{namespace}/replicas/scale")
     public ResponseEntity<Void> scaleDeployment(@PathVariable String namespace,
                                                 @RequestBody ScaleReplicaReq req) throws ApiException {
         kubernetesReplicaControllerService.scaleReplica(namespace, req);
