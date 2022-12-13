@@ -17,19 +17,23 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module.minio;
+package com.github.shoothzj.kdash.module.perf.mq;
 
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+
 @Setter
 @Getter
-public class CreateMinioReq {
+public class CreatePerfPulsarProducerReplicaReq {
 
-    private String cpu;
+    private String suffix;
 
-    private String memory;
+    private int replica;
 
-    public CreateMinioReq() {
+    private Map<String, String> env;
+
+    public CreatePerfPulsarProducerReplicaReq() {
     }
 }
