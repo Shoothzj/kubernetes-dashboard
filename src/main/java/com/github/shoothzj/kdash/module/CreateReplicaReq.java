@@ -30,6 +30,8 @@ public class CreateReplicaReq {
 
     private String replicaName;
 
+    private Map<String, String> labels;
+
     private String image;
 
     private int replica;

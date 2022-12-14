@@ -17,24 +17,15 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module;
+package com.github.shoothzj.kdash.module.perf.storage;
 
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @Setter
-public class BaseCreatReq<Param> {
+@Getter
+public class CreatePerfMysqlReplicaReq {
 
-    private BaseCreatReqType type = BaseCreatReqType.PARAM;
-
-    private Param param;
-
-    public BaseCreatReq(){
-    }
-
-    public BaseCreatReq(BaseCreatReqType type, Param param){
-        this.param = param;
-        this.type = type;
+    public CreatePerfMysqlReplicaReq() {
     }
 }
