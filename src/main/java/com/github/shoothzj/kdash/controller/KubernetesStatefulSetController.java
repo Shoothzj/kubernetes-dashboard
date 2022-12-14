@@ -56,7 +56,7 @@ public class KubernetesStatefulSetController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/namespace/{namespace}/stateful-set/{statefulSetName}")
+    @DeleteMapping("/namespace/{namespace}/stateful-sets/{statefulSetName}")
     public ResponseEntity<Void> deleteDeploy(@PathVariable String namespace,
                                              @PathVariable String statefulSetName) throws ApiException {
         kubernetesStatefulSetService.deleteStatefulSet(namespace, statefulSetName);
@@ -68,7 +68,7 @@ public class KubernetesStatefulSetController {
         return new ResponseEntity<>(kubernetesStatefulSetService.getNamespaceStatefulSets(namespace), HttpStatus.OK);
     }
 
-    @PutMapping("/namespace/{namespace}/stateful-set/scale")
+    @PutMapping("/namespace/{namespace}/stateful-sets/scale")
     public ResponseEntity<Void> scaleDeployment(@PathVariable String namespace,
                                                 @RequestBody ScaleReq req) throws ApiException {
         kubernetesStatefulSetService.scaleStatefulSet(namespace, req);

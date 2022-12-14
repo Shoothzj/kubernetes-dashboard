@@ -22,26 +22,19 @@ package com.github.shoothzj.kdash.module;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Map;
-
-@Setter
 @Getter
-public class CreateReplicaReq {
+@Setter
+public class BaseCreatReq<Param> {
 
-    private String replicaName;
+    private BaseCreatReqType type = BaseCreatReqType.PARAM;
 
-    private Map<String, String> labels;
+    private Param param;
 
-    private String image;
+    public BaseCreatReq(){
+    }
 
-    private int replica;
-
-    private String imagePullSecret;
-
-    private Map<String, String> env;
-
-    private ResourceRequirements resourceRequirements;
-
-    public CreateReplicaReq() {
+    public BaseCreatReq(BaseCreatReqType type, Param param){
+        this.param = param;
+        this.type = type;
     }
 }

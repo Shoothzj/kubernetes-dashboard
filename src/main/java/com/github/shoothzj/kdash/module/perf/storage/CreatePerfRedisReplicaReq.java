@@ -17,31 +17,15 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module;
+package com.github.shoothzj.kdash.module.perf.storage;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Map;
-
 @Setter
 @Getter
-public class CreateReplicaReq {
+public class CreatePerfRedisReplicaReq {
 
-    private String replicaName;
-
-    private Map<String, String> labels;
-
-    private String image;
-
-    private int replica;
-
-    private String imagePullSecret;
-
-    private Map<String, String> env;
-
-    private ResourceRequirements resourceRequirements;
-
-    public CreateReplicaReq() {
+    public CreatePerfRedisReplicaReq() {
     }
 }
