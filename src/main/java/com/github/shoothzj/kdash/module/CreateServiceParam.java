@@ -19,13 +19,27 @@
 
 package com.github.shoothzj.kdash.module;
 
+import io.kubernetes.client.openapi.models.V1ServicePort;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+import java.util.Map;
+
 @Setter
 @Getter
-public class CreateDeploymentReq  extends BaseReq<CreateDeploymentParam> {
+public class CreateServiceParam extends BaseParam{
 
-    public CreateDeploymentReq() {
+    private String serviceName;
+
+    private String serviceClusterName;
+
+    private Map<String, String> serviceLabels;
+
+    private Map<String, String> serviceSelector;
+
+    private List<V1ServicePort> ports;
+
+    public CreateServiceParam() {
     }
 }

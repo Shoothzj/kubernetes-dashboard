@@ -19,13 +19,6 @@
 
 package com.github.shoothzj.kdash.module;
 
-import lombok.Getter;
-import lombok.Setter;
+public class BaseParam {
 
-@Setter
-@Getter
-public class CreateDeploymentReq  extends BaseReq<CreateDeploymentParam> {
-
-    public CreateDeploymentReq() {
-    }
 }

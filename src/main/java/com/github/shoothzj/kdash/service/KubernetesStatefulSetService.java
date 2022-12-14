@@ -20,10 +20,10 @@
 package com.github.shoothzj.kdash.service;
 
 import com.github.shoothzj.kdash.module.ContainerInfo;
-import com.github.shoothzj.kdash.module.CreateStatefulSetReq;
+import com.github.shoothzj.kdash.module.CreateStatefulSetParam;
 import com.github.shoothzj.kdash.module.GetStatefulSetResp;
-import com.github.shoothzj.kdash.module.VolumeClaimTemplates;
 import com.github.shoothzj.kdash.module.ScaleReq;
+import com.github.shoothzj.kdash.module.VolumeClaimTemplates;
 import com.github.shoothzj.kdash.module.objectmeta.ObjectMeta;
 import com.github.shoothzj.kdash.module.objectmeta.StatefulSetSpec;
 import com.github.shoothzj.kdash.util.KubernetesUtil;
@@ -43,9 +43,11 @@ import io.kubernetes.client.openapi.models.V1StatefulSetList;
 import io.kubernetes.client.openapi.models.V1StatefulSetSpec;
 import io.kubernetes.client.openapi.models.V1StatefulSetStatus;
 import io.kubernetes.client.openapi.models.V1VolumeMount;
+import io.kubernetes.client.util.Yaml;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -152,7 +154,7 @@ public class KubernetesStatefulSetService {
                 "true", null, null, null);
     }
 
-    public void createNamespacedStatefulSet(CreateStatefulSetReq req) throws Exception {
+    public void createNamespacedStatefulSet(String namespace, CreateStatefulSetParam req) throws Exception {
         // deploy
         V1StatefulSet v1StatefulSet = new V1StatefulSet();
         v1StatefulSet.setApiVersion("apps/v1");
@@ -162,7 +164,7 @@ public class KubernetesStatefulSetService {
             // metadata
             V1ObjectMeta metadata = new V1ObjectMeta();
             metadata.setName(req.getStatefulSetName());
-            metadata.setNamespace(req.getNamespace());
+            metadata.setNamespace(namespace);
             metadata.setLabels(KubernetesUtil.label(req.getStatefulSetName()));
             v1StatefulSet.setMetadata(metadata);
         }
@@ -222,7 +224,7 @@ public class KubernetesStatefulSetService {
                     V1PersistentVolumeClaim v1PersistentVolumeClaim = new V1PersistentVolumeClaim();
                     v1PersistentVolumeClaim.setKind("PersistentVolumeClaim");
                     V1ObjectMeta metadata = new V1ObjectMeta();
-                    metadata.setNamespace(req.getNamespace());
+                    metadata.setNamespace(namespace);
                     metadata.setAnnotations(req.getAnnotations());
                     metadata.setName(persistentVolume.getVolumeName());
                     v1PersistentVolumeClaim.setMetadata(metadata);
@@ -232,7 +234,14 @@ public class KubernetesStatefulSetService {
             }
         }
 
-        appsV1Api.createNamespacedStatefulSet(req.getNamespace(), v1StatefulSet,
+        appsV1Api.createNamespacedStatefulSet(namespace, v1StatefulSet,
+                "true", null, null, null);
+    }
+
+    public void createNamespacedStatefulSetByYaml(String namespace, String yamlContent)
+            throws IOException, ApiException {
+        V1StatefulSet v1StatefulSet = (V1StatefulSet) Yaml.load(yamlContent);
+        appsV1Api.createNamespacedStatefulSet(namespace, v1StatefulSet,
                 "true", null, null, null);
     }
 

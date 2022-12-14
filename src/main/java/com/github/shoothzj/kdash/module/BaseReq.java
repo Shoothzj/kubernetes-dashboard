@@ -22,10 +22,26 @@ package com.github.shoothzj.kdash.module;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
-public class CreateDeploymentReq  extends BaseReq<CreateDeploymentParam> {
+@Setter
+public class BaseReq<Param extends BaseParam> {
 
-    public CreateDeploymentReq() {
+    private BaseReqType type;
+
+    private Param param;
+
+    private String yamlContent;
+
+    public BaseReq(){
+    }
+
+    public BaseReq(Param param){
+        this.type = BaseReqType.PARAM;
+        this.param = param;
+    }
+
+    public BaseReq(String yamlContent){
+        this.type = BaseReqType.YAML;
+        this.yamlContent = yamlContent;
     }
 }

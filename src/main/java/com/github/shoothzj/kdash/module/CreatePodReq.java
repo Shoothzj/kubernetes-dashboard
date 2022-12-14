@@ -22,22 +22,9 @@ package com.github.shoothzj.kdash.module;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Map;
-
 @Setter
 @Getter
-public class CreatePodReq {
-
-    private String podName;
-
-    private String image;
-
-    private String imagePullSecret;
-
-    private Map<String, String> env;
-
-    private ResourceRequirements resourceRequirements;
-
+public class CreatePodReq extends BaseReq<CreatePodParam> {
     public CreatePodReq() {
     }
 }
