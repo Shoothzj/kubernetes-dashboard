@@ -19,6 +19,7 @@
 
 package com.github.shoothzj.kdash.controller;
 
+import com.github.shoothzj.kdash.module.BaseReqType;
 import com.github.shoothzj.kdash.module.CreateStatefulSetReq;
 import com.github.shoothzj.kdash.module.GetStatefulSetResp;
 import com.github.shoothzj.kdash.module.ScaleReq;
@@ -51,8 +52,15 @@ public class KubernetesStatefulSetController {
     }
 
     @PostMapping("/namespace/{namespace}/stateful-sets")
-    public ResponseEntity<Void> createStatefulSet(@RequestBody CreateStatefulSetReq req) throws Exception {
-        kubernetesStatefulSetService.createNamespacedStatefulSet(req);
+    public ResponseEntity<Void> createStatefulSet(@RequestBody CreateStatefulSetReq req,
+                                                  @PathVariable String namespace) throws Exception {
+        if (BaseReqType.PARAM.equals(req.getType())) {
+            kubernetesStatefulSetService.createNamespacedStatefulSet(namespace, req.getParam());
+        } else if (BaseReqType.YAML.equals(req.getType())) {
+            kubernetesStatefulSetService.createNamespacedStatefulSetByYaml(namespace, req.getYamlContent());
+        } else {
+            throw new Exception("unsupportable operation type");
+        }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

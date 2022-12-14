@@ -34,9 +34,11 @@ import io.kubernetes.client.openapi.models.V1ReplicationController;
 import io.kubernetes.client.openapi.models.V1ReplicationControllerList;
 import io.kubernetes.client.openapi.models.V1ReplicationControllerSpec;
 import io.kubernetes.client.openapi.models.V1ReplicationControllerStatus;
+import io.kubernetes.client.util.Yaml;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -87,6 +89,12 @@ public class KubernetesReplicaControllerService {
             replicationController.setSpec(controllerSpec);
         }
         coreV1Api.createNamespacedReplicationController(namespace, replicationController, "true",
+                null, null, null);
+    }
+
+    public void createReplicaByYaml(String namespace, String yamlContent) throws ApiException, IOException {
+        V1ReplicationController replication = (V1ReplicationController) Yaml.load(yamlContent);
+        coreV1Api.createNamespacedReplicationController(namespace, replication, "true",
                 null, null, null);
     }
 

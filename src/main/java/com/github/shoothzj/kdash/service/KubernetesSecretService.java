@@ -19,7 +19,7 @@
 
 package com.github.shoothzj.kdash.service;
 
-import com.github.shoothzj.kdash.module.CreateSecretReq;
+import com.github.shoothzj.kdash.module.CreateSecretParam;
 import com.github.shoothzj.kdash.util.KubernetesUtil;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
@@ -27,8 +27,11 @@ import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1Secret;
 import io.kubernetes.client.openapi.models.V1SecretList;
+import io.kubernetes.client.util.Yaml;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 @Service
 public class KubernetesSecretService {
@@ -39,7 +42,7 @@ public class KubernetesSecretService {
         this.coreV1Api = new CoreV1Api(apiClient);
     }
 
-    public void createSecret(String namespace, CreateSecretReq req) throws ApiException {
+    public void createSecret(String namespace, CreateSecretParam req) throws ApiException {
         V1Secret v1Secret = new V1Secret();
         v1Secret.setKind("Secret");
         v1Secret.setApiVersion("v1");
@@ -51,6 +54,12 @@ public class KubernetesSecretService {
         v1Secret.setMetadata(v1ObjectMeta);
         v1Secret.setImmutable(req.getImmutable());
         v1Secret.setStringData(req.getStringData());
+        coreV1Api.createNamespacedSecret(namespace, v1Secret,
+                " true", null, null, null);
+    }
+
+    public void createSecretByYaml(String namespace, String yamlContent) throws IOException, ApiException {
+        V1Secret v1Secret = (V1Secret) Yaml.load(yamlContent);
         coreV1Api.createNamespacedSecret(namespace, v1Secret,
                 " true", null, null, null);
     }

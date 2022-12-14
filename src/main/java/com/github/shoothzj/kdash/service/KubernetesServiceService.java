@@ -19,7 +19,7 @@
 
 package com.github.shoothzj.kdash.service;
 
-import com.github.shoothzj.kdash.module.CreateServiceReq;
+import com.github.shoothzj.kdash.module.CreateServiceParam;
 import com.github.shoothzj.kdash.module.DeleteServiceReq;
 import com.github.shoothzj.kdash.module.GetServiceResp;
 import io.kubernetes.client.openapi.ApiClient;
@@ -29,9 +29,11 @@ import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1Service;
 import io.kubernetes.client.openapi.models.V1ServiceList;
 import io.kubernetes.client.openapi.models.V1ServiceSpec;
+import io.kubernetes.client.util.Yaml;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +47,7 @@ public class KubernetesServiceService {
         this.coreV1Api = new CoreV1Api(apiClient);
     }
 
-    public void createService(String namespace, CreateServiceReq req) throws ApiException {
+    public void createService(String namespace, CreateServiceParam req) throws ApiException {
         final V1Service v1Service = new V1Service();
         {
             final V1ObjectMeta v1ObjectMeta = new V1ObjectMeta();
@@ -61,6 +63,12 @@ public class KubernetesServiceService {
             v1ServiceSpec.setSelector(req.getServiceSelector());
             v1Service.setSpec(v1ServiceSpec);
         }
+        coreV1Api.createNamespacedService(namespace, v1Service, "true",
+                null, null, null);
+    }
+
+    public void createServiceByYaml(String namespace, String yamlContent) throws IOException, ApiException {
+        V1Service v1Service = (V1Service) Yaml.load(yamlContent);
         coreV1Api.createNamespacedService(namespace, v1Service, "true", null, null, null);
     }
 

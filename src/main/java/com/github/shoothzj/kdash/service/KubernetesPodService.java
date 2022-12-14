@@ -19,7 +19,7 @@
 
 package com.github.shoothzj.kdash.service;
 
-import com.github.shoothzj.kdash.module.CreatePodReq;
+import com.github.shoothzj.kdash.module.CreatePodParam;
 import com.github.shoothzj.kdash.module.GetPodResp;
 import com.github.shoothzj.kdash.module.ResourceReq;
 import com.github.shoothzj.kdash.util.KubernetesUtil;
@@ -33,6 +33,7 @@ import io.kubernetes.client.openapi.models.V1Pod;
 import io.kubernetes.client.openapi.models.V1PodList;
 import io.kubernetes.client.openapi.models.V1PodSpec;
 import io.kubernetes.client.openapi.models.V1PodStatus;
+import io.kubernetes.client.util.Yaml;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -64,7 +65,7 @@ public class KubernetesPodService {
         this.appsV1Api = new AppsV1Api(apiClient);
     }
 
-    public void createPod(String namespace, CreatePodReq req) throws Exception {
+    public void createPod(String namespace, CreatePodParam req) throws Exception {
         // pod
         V1Pod v1Pod = new V1Pod();
         v1Pod.setApiVersion("v1");
@@ -151,6 +152,10 @@ public class KubernetesPodService {
         return podResp;
     }
 
+    public void createPodByYaml(String namespace, String yamlContent) throws Exception {
+        V1Pod v1Pod = (V1Pod) Yaml.load(yamlContent);
+        coreV1Api.createNamespacedPod(namespace, v1Pod, "true", null, null, null);
+    }
     public void updateResource(String namespace, String podName, String kind, ResourceReq req) throws Exception {
         String body = String.format(jsonStr, req.getLimitCpu(), req.getLimitMem(),
                 req.getRequestCpu(), req.getRequestMem());

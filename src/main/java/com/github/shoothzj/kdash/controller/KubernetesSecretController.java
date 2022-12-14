@@ -19,6 +19,7 @@
 
 package com.github.shoothzj.kdash.controller;
 
+import com.github.shoothzj.kdash.module.BaseReqType;
 import com.github.shoothzj.kdash.module.CreateSecretReq;
 import com.github.shoothzj.kdash.service.KubernetesSecretService;
 import io.kubernetes.client.openapi.ApiException;
@@ -46,9 +47,15 @@ public class KubernetesSecretController {
 
     @PutMapping("/namespace/{namespace}/secrets")
     public ResponseEntity<Void> createSecret(@PathVariable String namespace,
-                                              @RequestBody CreateSecretReq req) throws ApiException {
-        kubernetesSecretService.createSecret(namespace, req);
-    return new ResponseEntity<>(HttpStatus.CREATED);
+                                             @RequestBody CreateSecretReq req) throws Exception {
+        if (BaseReqType.PARAM.equals(req.getType())) {
+            kubernetesSecretService.createSecret(namespace, req.getParam());
+        } else if (BaseReqType.YAML.equals(req.getType())) {
+            kubernetesSecretService.createSecretByYaml(namespace, req.getYamlContent());
+        } else {
+            throw new Exception("unsupportable operation type");
+        }
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/namespace/{namespace}/secrets/{secret}")

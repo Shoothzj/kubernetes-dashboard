@@ -19,6 +19,7 @@
 
 package com.github.shoothzj.kdash.controller;
 
+import com.github.shoothzj.kdash.module.BaseReqType;
 import com.github.shoothzj.kdash.module.CreatePodReq;
 import com.github.shoothzj.kdash.module.GetPodResp;
 import com.github.shoothzj.kdash.module.ResourceReq;
@@ -53,13 +54,19 @@ public class KubernetesPodController {
     @PostMapping("/namespaces/{namespace}/pods")
     public ResponseEntity<Void> createPod(@PathVariable String namespace,
                                           @RequestBody CreatePodReq req) throws Exception {
-        kubernetesPodService.createPod(namespace, req);
+        if (BaseReqType.PARAM.equals(req.getType())) {
+            kubernetesPodService.createPod(namespace, req.getParam());
+        } else if (BaseReqType.YAML.equals(req.getType())) {
+            kubernetesPodService.createPodByYaml(namespace, req.getYamlContent());
+        } else {
+            throw new Exception("unsupportable operation type");
+        }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("namespaces/{namespace}/pods/{podName}")
     public ResponseEntity<Void> deletePod(@PathVariable String namespace,
-                                             @PathVariable String podName) throws ApiException {
+                                          @PathVariable String podName) throws ApiException {
         kubernetesPodService.deletePod(namespace, podName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

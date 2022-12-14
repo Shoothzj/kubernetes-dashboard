@@ -19,6 +19,7 @@
 
 package com.github.shoothzj.kdash.controller;
 
+import com.github.shoothzj.kdash.module.BaseReqType;
 import com.github.shoothzj.kdash.module.CreateDeploymentReq;
 import com.github.shoothzj.kdash.module.GetDeploymentResp;
 import com.github.shoothzj.kdash.module.ScaleReq;
@@ -51,8 +52,15 @@ public class KubernetesDeployController {
     }
 
     @PostMapping("/namespace/{namespace}/deployments")
-    public ResponseEntity<Void> createDeployment(@RequestBody CreateDeploymentReq req) throws Exception {
-        deployService.createNamespacedDeploy(req);
+    public ResponseEntity<Void> createDeployment(@PathVariable String namespace,
+                                                 @RequestBody CreateDeploymentReq req) throws Exception {
+        if (BaseReqType.PARAM.equals(req.getType())) {
+            deployService.createNamespacedDeploy(req.getParam());
+        } else if (BaseReqType.YAML.equals(req.getType())) {
+            deployService.createDeploymentByYaml(namespace, req.getYamlContent());
+        } else {
+            throw new Exception("unsupportable operation type");
+        }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

@@ -19,6 +19,7 @@
 
 package com.github.shoothzj.kdash.controller;
 
+import com.github.shoothzj.kdash.module.BaseReqType;
 import com.github.shoothzj.kdash.module.CreateServiceReq;
 import com.github.shoothzj.kdash.module.DeleteServiceReq;
 import com.github.shoothzj.kdash.module.GetServiceResp;
@@ -49,14 +50,20 @@ public class KubernetesServiceController {
 
     @PostMapping("/namespace/{namespace}/services")
     public ResponseEntity<Void> createService(@PathVariable String namespace,
-                                              @RequestBody CreateServiceReq req) throws ApiException{
-        kubernetesServiceService.createService(namespace, req);
+                                              @RequestBody CreateServiceReq req) throws Exception {
+        if (BaseReqType.PARAM.equals(req.getType())) {
+            kubernetesServiceService.createService(namespace, req.getParam());
+        } else if (BaseReqType.YAML.equals(req.getType())) {
+            kubernetesServiceService.createServiceByYaml(namespace, req.getYamlContent());
+        } else {
+            throw new Exception("unsupportable operation type");
+        }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/namespace/{namespace}/services")
-    public  ResponseEntity<Void> deleteService(@PathVariable String namespace,
-                                               @RequestBody DeleteServiceReq req) throws ApiException {
+    public ResponseEntity<Void> deleteService(@PathVariable String namespace,
+                                              @RequestBody DeleteServiceReq req) throws ApiException {
         kubernetesServiceService.deleteService(namespace, req);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

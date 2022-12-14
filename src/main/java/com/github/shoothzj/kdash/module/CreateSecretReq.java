@@ -19,37 +19,11 @@
 
 package com.github.shoothzj.kdash.module;
 
-import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Map;
 
 @Setter
 @Getter
-public class CreateSecretReq {
-
-    private String secretName;
-
-    private Map<String, String> stringData;
-
-    private V1ObjectMeta v1ObjectMeta;
-
-    private Boolean immutable;
-
-    private String type;
-
-    public CreateSecretReq() {
-    }
-
-    public Boolean getImmutable() {
-        if (this.immutable == null) {
-            this.immutable = false;
-        }
-        return immutable;
-    }
-
-    public void setImmutable(Boolean immutable) {
-        this.immutable = immutable;
-    }
+public class CreateSecretReq extends BaseReq<CreateSecretParam> {
 }
