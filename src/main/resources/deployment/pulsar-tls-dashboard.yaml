@@ -18,12 +18,13 @@
 #
 
 apiVersion: apps/v1
-kind: DaemonSet
+kind: Deployment
 metadata:
-  name: promtail
+  name: pulsar-tls-dashboard
 spec:
+  replicas: 1
   template:
     spec:
       containers:
-        - name: promtail
+        - name: pulsar-tls-dashboard
           imagePullPolicy: Always

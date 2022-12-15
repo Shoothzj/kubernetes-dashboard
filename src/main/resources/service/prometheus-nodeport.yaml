@@ -21,3 +21,5 @@ apiVersion: apps/v1
 kind: Service
 metadata:
   name: prometheus-nodeport
+spec:
+  type: NodePort

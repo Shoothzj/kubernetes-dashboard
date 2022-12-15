@@ -19,3 +19,7 @@
 
 apiVersion: apps/v1
 kind: Service
+metadata:
+  name: bookkeeper
+spec:
+  type: ClusterIP

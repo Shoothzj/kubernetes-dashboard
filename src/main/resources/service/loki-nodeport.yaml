@@ -19,3 +19,5 @@
 
 apiVersion: apps/v1
 kind: Service
+spec:
+  type: NodePort

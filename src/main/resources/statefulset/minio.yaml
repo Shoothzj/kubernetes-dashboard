@@ -19,3 +19,9 @@
 
 apiVersion: apps/v1
 kind: StatefulSet
+spec:
+  template:
+    spec:
+      containers:
+        - name: minio
+          imagePullPolicy: Always

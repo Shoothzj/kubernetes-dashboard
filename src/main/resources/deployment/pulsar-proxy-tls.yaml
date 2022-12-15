@@ -18,12 +18,12 @@
 #
 
 apiVersion: apps/v1
-kind: DaemonSet
+kind: Deployment
 metadata:
-  name: promtail
+  name: pulsar-proxy-tls
 spec:
   template:
     spec:
       containers:
-        - name: promtail
+        - name: pulsar-proxy
           imagePullPolicy: Always
