@@ -22,5 +22,7 @@ kind: Service
 metadata:
   name: kafka
 spec:
+  selector:
+    app: kafka
   type: ClusterIP
   clusterIP: None

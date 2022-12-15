@@ -20,4 +20,6 @@
 apiVersion: apps/v1
 kind: Service
 spec:
+  selector:
+    app: loki
   type: NodePort

@@ -22,4 +22,6 @@ kind: Service
 metadata:
   name: grafana-nodeport
 spec:
+  selector:
+    app: grafana
   type: NodePort

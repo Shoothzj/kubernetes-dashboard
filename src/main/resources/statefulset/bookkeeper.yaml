@@ -19,8 +19,15 @@
 
 apiVersion: apps/v1
 kind: StatefulSet
+metadata:
+  name: bookkeeper
+  labels:
+    app: bookkeeper
 spec:
   template:
+    metadata:
+      labels:
+        app: bookkeeper
     spec:
       containers:
         - name: bookkeeper

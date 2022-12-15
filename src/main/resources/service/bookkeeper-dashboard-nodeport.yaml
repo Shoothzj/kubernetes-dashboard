@@ -22,4 +22,6 @@ kind: Service
 metadata:
   name: bookkeeper-dashboard-nodeport
 spec:
+  selector:
+    app: bookkeeper-dashboard
   type: NodePort

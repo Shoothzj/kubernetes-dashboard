@@ -19,8 +19,15 @@
 
 apiVersion: apps/v1
 kind: StatefulSet
+metadata:
+  name: redis
+  labels:
+    app: redis
 spec:
   template:
+    metadata:
+      labels:
+        app: redis
     spec:
       containers:
         - name: redis

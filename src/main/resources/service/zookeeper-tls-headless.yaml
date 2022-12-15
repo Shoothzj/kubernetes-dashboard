@@ -20,8 +20,20 @@
 apiVersion: apps/v1
 kind: Service
 metadata:
-  name: zookeeper-dashboard-nodeport
+  name: zookeeper-tls
 spec:
   selector:
-    app: zookeeper-dashboard
-  type: NodePort
+    app: zookeeper-tls
+  type: ClusterIP
+  clusterIP: None
+  publishNotReadyAddresses: true
+  ports:
+    - protocol: TCP
+      port: 2181
+      name: client
+    - protocol: TCP
+      port: 2888
+      name: peer
+    - protocol: TCP
+      port: 3888
+      name: leader

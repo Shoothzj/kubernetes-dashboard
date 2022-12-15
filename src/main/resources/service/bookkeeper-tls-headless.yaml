@@ -20,8 +20,14 @@
 apiVersion: apps/v1
 kind: Service
 metadata:
-  name: zookeeper-dashboard-nodeport
+  name: bookkeeper-tls
 spec:
   selector:
-    app: zookeeper-dashboard
-  type: NodePort
+    app: bookkeeper-tls
+  type: ClusterIP
+  clusterIP: None
+  publishNotReadyAddresses: true
+  ports:
+    - protocol: TCP
+      port: 3181
+      name: client

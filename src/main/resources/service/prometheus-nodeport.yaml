@@ -22,4 +22,6 @@ kind: Service
 metadata:
   name: prometheus-nodeport
 spec:
+  selector:
+    app: prometheus
   type: NodePort

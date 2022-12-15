@@ -22,5 +22,14 @@ kind: Service
 metadata:
   name: pulsar
 spec:
+  selector:
+    app: pulsar
   type: ClusterIP
   clusterIP: None
+  ports:
+    - protocol: TCP
+      port: 6650
+      name: pulsar-tcp
+    - protocol: TCP
+      port: 8080
+      name: pulsar-http

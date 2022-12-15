@@ -22,4 +22,6 @@ kind: Service
 metadata:
   name: cassandra-dashboard-nodeport
 spec:
+  selector:
+    app: cassandra-dashboard
   type: NodePort

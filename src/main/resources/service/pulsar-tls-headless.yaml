@@ -20,8 +20,16 @@
 apiVersion: apps/v1
 kind: Service
 metadata:
-  name: zookeeper-dashboard-nodeport
+  name: pulsar-tls
 spec:
   selector:
-    app: zookeeper-dashboard
-  type: NodePort
+    app: pulsar-tls
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - protocol: TCP
+      port: 6651
+      name: pulsar-tcp-tls
+    - protocol: TCP
+      port: 8081
+      name: pulsar-http-tls

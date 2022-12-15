@@ -22,6 +22,18 @@ kind: Service
 metadata:
   name: zookeeper
 spec:
+  selector:
+    app: zookeeper
   type: ClusterIP
   clusterIP: None
   publishNotReadyAddresses: true
+  ports:
+    - protocol: TCP
+      port: 2181
+      name: client
+    - protocol: TCP
+      port: 2888
+      name: peer
+    - protocol: TCP
+      port: 3888
+      name: leader

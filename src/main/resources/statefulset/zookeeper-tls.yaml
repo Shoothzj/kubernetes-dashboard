@@ -19,8 +19,15 @@
 
 apiVersion: apps/v1
 kind: StatefulSet
+metadata:
+  name: zookeeper-tls
+  labels:
+    app: zookeeper-tls
 spec:
   template:
+    metadata:
+      labels:
+        app: zookeeper-tls
     spec:
       containers:
         - name: zookeeper

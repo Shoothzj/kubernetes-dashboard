@@ -22,6 +22,12 @@ kind: Service
 metadata:
   name: bookkeeper
 spec:
+  selector:
+    app: bookkeeper
   type: ClusterIP
   clusterIP: None
   publishNotReadyAddresses: true
+  ports:
+    - protocol: TCP
+      port: 3181
+      name: client
