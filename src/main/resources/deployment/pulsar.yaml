@@ -19,3 +19,11 @@
 
 apiVersion: apps/v1
 kind: Deployment
+metadata:
+  name: pulsar
+spec:
+  template:
+    spec:
+      containers:
+        - name: pulsar
+          imagePullPolicy: Always
