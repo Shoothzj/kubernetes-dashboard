@@ -21,10 +21,41 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cassandra-dashboard
+  labels:
+    app: cassandra-dashboard
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: cassandra-dashboard
   template:
+    metadata:
+      labels:
+        app: cassandra-dashboard
     spec:
       containers:
         - name: cassandra-dashboard
           imagePullPolicy: Always
+          resources:
+            limits:
+              memory: 256Mi
+              cpu: 125m
+            requests:
+              memory: 256Mi
+              cpu: 125m
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP

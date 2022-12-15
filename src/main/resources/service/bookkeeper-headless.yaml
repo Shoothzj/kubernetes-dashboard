@@ -23,4 +23,5 @@ metadata:
   name: bookkeeper
 spec:
   type: ClusterIP
+  clusterIP: None
   publishNotReadyAddresses: true

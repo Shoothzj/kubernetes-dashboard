@@ -19,3 +19,36 @@
 
 apiVersion: apps/v1
 kind: Deployment
+metadata:
+  name: keepalive
+  labels:
+    app: keepalive
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keepalive
+  template:
+    metadata:
+      labels:
+        app: keepalive
+    spec:
+      containers:
+        - name: keepalive
+          imagePullPolicy: Always
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
