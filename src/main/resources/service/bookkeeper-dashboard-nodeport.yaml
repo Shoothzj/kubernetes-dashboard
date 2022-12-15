@@ -17,16 +17,7 @@
 # under the License.
 #
 
-header:
-  license:
-    spdx-id: Apache-2.0
-    copyright-owner: Apache Software Foundation
-  paths-ignore:
-    - '**/*.gitkeep'
-    - '**/*.md'
-    - '**/*.json'
-    - '**/*.svg'
-    - 'LICENSE'
-    - '.gitignore'
-    - 'portal/.prettierrc'
-    - 'portal/public/robots.txt'
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: bookkeeper-dashboard-nodeport
