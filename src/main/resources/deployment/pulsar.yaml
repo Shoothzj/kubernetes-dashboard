@@ -35,6 +35,13 @@ spec:
       containers:
         - name: pulsar
           imagePullPolicy: Always
+          resources:
+            limits:
+              memory: 4Gi
+              cpu: 1000m
+            requests:
+              memory: 4Gi
+              cpu: 1000m
           env:
             - name: NODE_NAME
               valueFrom:

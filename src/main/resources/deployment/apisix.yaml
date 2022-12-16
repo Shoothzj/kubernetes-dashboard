@@ -20,29 +20,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx
+  name: apisix
   labels:
-    app: nginx
+    app: apisix
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nginx
+      app: apisix
   template:
     metadata:
       labels:
-        app: nginx
+        app: apisix
     spec:
       containers:
-        - name: nginx
+        - name: apisix
           imagePullPolicy: Always
-          resources:
-            limits:
-              memory: 1Gi
-              cpu: 500m
-            requests:
-              memory: 1Gi
-              cpu: 500m
           env:
             - name: NODE_NAME
               valueFrom:

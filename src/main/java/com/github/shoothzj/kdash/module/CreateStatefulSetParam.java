@@ -31,6 +31,8 @@ public class CreateStatefulSetParam extends BaseParam {
 
     private String statefulSetName;
 
+    private Map<String, String> labels;
+
     private int replicas;
 
     private String image;

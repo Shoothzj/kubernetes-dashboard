@@ -24,6 +24,7 @@ metadata:
   labels:
     app: minio
 spec:
+  replicas: 6
   template:
     metadata:
       labels:

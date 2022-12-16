@@ -48,29 +48,28 @@ public class ChaosMeshUtil {
         checkBaseBody(chaos);
         NetworkChaosSpec networkChaosSpec = chaos.getSpec();
         NetworkChaosSpec.NetworkChaosAction action = networkChaosSpec.getAction();
-        switch (action){
-            case loss:
-                if (networkChaosSpec.getLoss() == null){
+        switch (action) {
+            case loss -> {
+                if (networkChaosSpec.getLoss() == null) {
                     throw new IllegalArgumentException("body 'loss' should not be empty");
                 }
-                break;
-            case duplicate:
-                if (networkChaosSpec.getDuplicate() == null){
+            }
+            case duplicate -> {
+                if (networkChaosSpec.getDuplicate() == null) {
                     throw new IllegalArgumentException("body 'duplicate' should not be empty");
                 }
-                break;
-            case corrupt:
-                if (networkChaosSpec.getCorrupt() == null){
+            }
+            case corrupt -> {
+                if (networkChaosSpec.getCorrupt() == null) {
                     throw new IllegalArgumentException("body 'corrupt' should not be empty");
                 }
-                break;
-            case delay:
-                if (networkChaosSpec.getDelay() == null){
+            }
+            case delay -> {
+                if (networkChaosSpec.getDelay() == null) {
                     throw new IllegalArgumentException("body 'delay' should not be empty");
                 }
-                break;
-            default:
-                throw new UnsupportedOperationException(String.format("%s not support yet", action));
+            }
+            default -> throw new UnsupportedOperationException(String.format("%s not support yet", action));
         }
     }
 

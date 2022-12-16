@@ -24,6 +24,7 @@ metadata:
   labels:
     app: zookeeper-tls
 spec:
+  replicas: 1
   template:
     metadata:
       labels:

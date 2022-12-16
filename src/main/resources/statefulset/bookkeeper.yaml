@@ -24,6 +24,7 @@ metadata:
   labels:
     app: bookkeeper
 spec:
+  replicas: 1
   template:
     metadata:
       labels:
