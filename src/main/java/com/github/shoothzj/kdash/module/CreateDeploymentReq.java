@@ -24,7 +24,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class CreateDeploymentReq  extends BaseReq<CreateDeploymentParam> {
+public class CreateDeploymentReq extends BaseReq<CreateDeploymentParam> {
 
     public CreateDeploymentReq() {
     }

@@ -40,6 +40,8 @@ public class CreateServiceParam extends BaseParam{
 
     private List<V1ServicePort> ports;
 
+    private boolean publishNotReadyAddresses;
+
     public CreateServiceParam() {
     }
 }

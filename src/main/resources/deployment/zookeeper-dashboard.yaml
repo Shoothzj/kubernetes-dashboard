@@ -59,3 +59,5 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: status.podIP
+            - name: ZOOKEEPER_ADDR
+              valueFrom: zookeeper-0.zookeeper:2181

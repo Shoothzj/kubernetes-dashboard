@@ -131,14 +131,14 @@ public class KubernetesStatefulSetService {
             V1Affinity v1Affinity = new V1Affinity();
             if (statefulsetSpec.getPodAffinityTerms() != null) {
                 v1Affinity.setPodAffinity(
-                        KubernetesUtil.fetchV1PodAffinity(statefulsetSpec.getPodAffinityTerms()));
+                        KubernetesUtil.v1PodAffinity(statefulsetSpec.getPodAffinityTerms()));
             }
             if (statefulsetSpec.getPodAffinityTerms() != null) {
                 v1Affinity.setPodAntiAffinity(
-                        KubernetesUtil.fetchV1PodAntiAffinity(statefulsetSpec.getPodAntiAffinityTerms()));
+                        KubernetesUtil.v1PodAntiAffinity(statefulsetSpec.getPodAntiAffinityTerms()));
             }
             v1Affinity.setNodeAffinity(
-                    KubernetesUtil.fetchV1NodeAffinity(statefulsetSpec.getNodeSelectorRequirement()));
+                    KubernetesUtil.v1NodeAffinity(statefulsetSpec.getNodeSelectorRequirement()));
             v1PodSpec.setAffinity(v1Affinity);
         }
         // Container
@@ -193,9 +193,9 @@ public class KubernetesStatefulSetService {
                 V1Container v1Container = v1Containers.get(0);
                 List<V1VolumeMount> volumeMounts = new ArrayList<>();
                 // spec template spec liveness probe
-                v1Container.setLivenessProbe(KubernetesUtil.fetchV1Probe(req.getLivenessProbe()));
+                v1Container.setLivenessProbe(KubernetesUtil.v1Probe(req.getLivenessProbe()));
                 // spec template spec readiness probe
-                v1Container.setReadinessProbe(KubernetesUtil.fetchV1Probe(req.getReadinessProbe()));
+                v1Container.setReadinessProbe(KubernetesUtil.v1Probe(req.getReadinessProbe()));
                 for (VolumeClaimTemplates persistentVolume : req.getPersistentVolumes()) {
                     V1VolumeMount v1VolumeMount = new V1VolumeMount();
                     v1VolumeMount.setName(persistentVolume.getVolumeName());
@@ -208,9 +208,9 @@ public class KubernetesStatefulSetService {
             }
             {
                 V1Affinity v1Affinity = new V1Affinity();
-                v1Affinity.setPodAffinity(KubernetesUtil.fetchV1PodAffinity(req.getPodAffinityTerms()));
-                v1Affinity.setPodAntiAffinity(KubernetesUtil.fetchV1PodAntiAffinity(req.getPodAntiAffinityTerms()));
-                v1Affinity.setNodeAffinity(KubernetesUtil.fetchV1NodeAffinity(req.getNodeSelectorRequirement()));
+                v1Affinity.setPodAffinity(KubernetesUtil.v1PodAffinity(req.getPodAffinityTerms()));
+                v1Affinity.setPodAntiAffinity(KubernetesUtil.v1PodAntiAffinity(req.getPodAntiAffinityTerms()));
+                v1Affinity.setNodeAffinity(KubernetesUtil.v1NodeAffinity(req.getNodeSelectorRequirement()));
                 v1PodSpec.setAffinity(v1Affinity);
             }
             v1PodSpec.setImagePullSecrets(KubernetesUtil.imagePullSecrets(req.getImagePullSecret()));

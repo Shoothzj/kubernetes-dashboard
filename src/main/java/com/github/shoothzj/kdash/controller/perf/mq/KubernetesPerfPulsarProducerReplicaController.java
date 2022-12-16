@@ -20,7 +20,9 @@
 package com.github.shoothzj.kdash.controller.perf.mq;
 
 import com.github.shoothzj.kdash.module.perf.mq.CreatePerfPulsarProducerReplicaReq;
+import com.github.shoothzj.kdash.service.KubernetesReplicaControllerService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +35,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/kubernetes/perf/pulsar/producer")
 public class KubernetesPerfPulsarProducerReplicaController {
+
+    private final KubernetesReplicaControllerService rcService;
+
+    public KubernetesPerfPulsarProducerReplicaController(@Autowired KubernetesReplicaControllerService rcService) {
+        this.rcService = rcService;
+    }
 
     @PutMapping("/namespaces/{namespace}/replicas")
     public ResponseEntity<Void> createPerfPulsarProducerReplica(@RequestBody CreatePerfPulsarProducerReplicaReq req,

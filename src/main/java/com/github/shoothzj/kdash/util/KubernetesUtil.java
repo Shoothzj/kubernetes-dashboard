@@ -42,8 +42,9 @@ import io.kubernetes.client.openapi.models.V1PodAffinityTerm;
 import io.kubernetes.client.openapi.models.V1PodAntiAffinity;
 import io.kubernetes.client.openapi.models.V1Probe;
 import io.kubernetes.client.openapi.models.V1ResourceRequirements;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,13 +53,13 @@ import java.util.stream.Collectors;
 
 public class KubernetesUtil {
 
-    public static Map<String, String> label(String deployName) {
+    public static Map<String, String> label(@NotNull String deployName) {
         Map<String, String> map = new HashMap<>();
         map.put("app", deployName);
         return map;
     }
 
-    public static V1LabelSelector labelSelector(String deployName) {
+    public static V1LabelSelector labelSelector(@NotNull String deployName) {
         V1LabelSelector labelSelector = new V1LabelSelector();
         Map<String, String> matchLabels = new HashMap<>();
         matchLabels.put("app", deployName);
@@ -66,7 +67,7 @@ public class KubernetesUtil {
         return labelSelector;
     }
 
-    public static List<V1Container> singleContainerList(String image,
+    public static List<V1Container> singleContainerList(@NotNull String image,
                                                         Map<String, String> envMap,
                                                         String name,
                                                         ResourceRequirements resourceRequirements) {
@@ -80,9 +81,9 @@ public class KubernetesUtil {
     }
 
     public static List<V1Container> singleContainerList(String image,
-                                                        String imagePullPolicy,
+                                                        @Nullable String imagePullPolicy,
                                                         Map<String, String> envMap,
-                                                        String name,
+                                                        @NotNull String name,
                                                         ResourceRequirements resourceRequirements) {
         List<V1Container> containers = new ArrayList<>();
         V1Container container = new V1Container();
@@ -100,7 +101,7 @@ public class KubernetesUtil {
         return containers;
     }
 
-    public static V1EnvVar fetchV1EnvVar(String fieldPath, String name) {
+    public static V1EnvVar v1EnvVar(String fieldPath, String name) {
         V1EnvVar v1EnvVar = new V1EnvVar();
         V1EnvVarSource v1EnvVarSource = new V1EnvVarSource();
         V1ObjectFieldSelector v1ObjectFieldSelector = new V1ObjectFieldSelector();
@@ -111,7 +112,7 @@ public class KubernetesUtil {
         return v1EnvVar;
     }
 
-    public static V1Probe fetchV1Probe(Probe probe) {
+    public static V1Probe v1Probe(Probe probe) {
         V1Probe v1Probe = new V1Probe();
         V1ExecAction execAction = new V1ExecAction();
         execAction.command(probe.getProbeCommand());
@@ -124,21 +125,21 @@ public class KubernetesUtil {
         return v1Probe;
     }
 
-    public static V1PodAntiAffinity fetchV1PodAntiAffinity(PodAffinityTerms podAffinityTerms) {
+    public static V1PodAntiAffinity v1PodAntiAffinity(PodAffinityTerms podAffinityTerms) {
         V1PodAntiAffinity v1PodAntiAffinity = new V1PodAntiAffinity();
         v1PodAntiAffinity.setRequiredDuringSchedulingIgnoredDuringExecution(
-                fetchV1PodAffinityTerms(podAffinityTerms));
+                v1PodAffinityTerms(podAffinityTerms));
         return v1PodAntiAffinity;
     }
 
-    public static V1PodAffinity fetchV1PodAffinity(PodAffinityTerms podAffinityTerms) {
+    public static V1PodAffinity v1PodAffinity(PodAffinityTerms podAffinityTerms) {
         V1PodAffinity v1PodAffinity = new V1PodAffinity();
         v1PodAffinity.setRequiredDuringSchedulingIgnoredDuringExecution(
-                fetchV1PodAffinityTerms(podAffinityTerms));
+                v1PodAffinityTerms(podAffinityTerms));
         return v1PodAffinity;
     }
 
-    public static V1NodeAffinity fetchV1NodeAffinity(NodeSelectorRequirement selectorRequirement) {
+    public static V1NodeAffinity v1NodeAffinity(NodeSelectorRequirement selectorRequirement) {
         V1NodeAffinity v1NodeAffinity = new V1NodeAffinity();
         V1NodeSelector v1NodeSelector = new V1NodeSelector();
         List<V1NodeSelectorTerm> nodeSelectorTerms = new ArrayList<>();
@@ -160,7 +161,7 @@ public class KubernetesUtil {
         return v1NodeAffinity;
     }
 
-    public static List<V1PodAffinityTerm> fetchV1PodAffinityTerms(PodAffinityTerms podAffinityTerms) {
+    public static List<V1PodAffinityTerm> v1PodAffinityTerms(PodAffinityTerms podAffinityTerms) {
         List<V1PodAffinityTerm> v1PodAffinityTerms = new ArrayList<>();
         V1PodAffinityTerm v1PodAffinityTerm = new V1PodAffinityTerm();
         V1LabelSelector v1LabelSelector = new V1LabelSelector();

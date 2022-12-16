@@ -32,6 +32,10 @@ public class CreatePerfMinioReplicaReq {
 
     private int replica;
 
+    private String cpu;
+
+    private String memory;
+
     private Map<String, String> env;
 
     public CreatePerfMinioReplicaReq() {

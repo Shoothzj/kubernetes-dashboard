@@ -37,11 +37,11 @@ spec:
           imagePullPolicy: Always
           resources:
             limits:
-              memory: 256Mi
-              cpu: 125m
+              memory: 4Gi
+              cpu: 1000m
             requests:
-              memory: 256Mi
-              cpu: 125m
+              memory: 4Gi
+              cpu: 1000m
           env:
             - name: NODE_NAME
               valueFrom:
