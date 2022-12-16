@@ -20,13 +20,13 @@
 apiVersion: apps/v1
 kind: Service
 metadata:
-  name: kafka
+  name: minio
 spec:
   selector:
-    app: kafka
+    app: minio
   type: ClusterIP
   clusterIP: None
   ports:
     - protocol: TCP
-      port: 9092
-      name: kafka
+      port: 9000
+      name: minio

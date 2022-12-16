@@ -17,16 +17,12 @@
 # under the License.
 #
 
-apiVersion: apps/v1
-kind: Service
+apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
-  name: kafka
+  name: data-mysql-1
 spec:
-  selector:
-    app: kafka
-  type: ClusterIP
-  clusterIP: None
-  ports:
-    - protocol: TCP
-      port: 9092
-      name: kafka
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  volumeName: data-mysql-1

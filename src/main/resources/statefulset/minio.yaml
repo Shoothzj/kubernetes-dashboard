@@ -33,6 +33,13 @@ spec:
       containers:
         - name: minio
           imagePullPolicy: Always
+          resources:
+            limits:
+              memory: 1Gi
+              cpu: 500m
+            requests:
+              memory: 1Gi
+              cpu: 500m
           env:
             - name: NODE_NAME
               valueFrom:

@@ -17,27 +17,20 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module.perf.storage;
+package com.github.shoothzj.kdash.module;
 
+import com.huaweicloud.sdk.evs.v2.model.CreateVolumeOption;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Map;
-
 @Setter
 @Getter
-public class CreatePerfMinioReplicaReq {
+public class VolumeResource {
 
-    private String suffix;
+    private CreateVolumeOption.VolumeTypeEnum resourceType;
 
-    private int replicas;
+    private int resourceSize;
 
-    private String cpu;
-
-    private String memory;
-
-    private Map<String, String> env;
-
-    public CreatePerfMinioReplicaReq() {
+    public VolumeResource() {
     }
 }

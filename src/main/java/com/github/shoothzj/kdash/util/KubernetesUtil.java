@@ -139,7 +139,10 @@ public class KubernetesUtil {
         return v1PodAffinity;
     }
 
-    public static V1NodeAffinity v1NodeAffinity(NodeSelectorRequirement selectorRequirement) {
+    public static V1NodeAffinity v1NodeAffinity(@Nullable NodeSelectorRequirement selectorRequirement) {
+        if (selectorRequirement == null) {
+            return null;
+        }
         V1NodeAffinity v1NodeAffinity = new V1NodeAffinity();
         V1NodeSelector v1NodeSelector = new V1NodeSelector();
         List<V1NodeSelectorTerm> nodeSelectorTerms = new ArrayList<>();
@@ -161,7 +164,10 @@ public class KubernetesUtil {
         return v1NodeAffinity;
     }
 
-    public static List<V1PodAffinityTerm> v1PodAffinityTerms(PodAffinityTerms podAffinityTerms) {
+    public static List<V1PodAffinityTerm> v1PodAffinityTerms(@Nullable PodAffinityTerms podAffinityTerms) {
+        if (podAffinityTerms == null) {
+            return null;
+        }
         List<V1PodAffinityTerm> v1PodAffinityTerms = new ArrayList<>();
         V1PodAffinityTerm v1PodAffinityTerm = new V1PodAffinityTerm();
         V1LabelSelector v1LabelSelector = new V1LabelSelector();
