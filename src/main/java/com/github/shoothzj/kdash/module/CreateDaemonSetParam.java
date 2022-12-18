@@ -20,11 +20,13 @@
 package com.github.shoothzj.kdash.module;
 
 import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Map;
 
-@Data
+@Setter
+@Getter
 public class CreateDaemonSetParam extends BaseParam {
 
     private String daemonSetName;
@@ -32,4 +34,7 @@ public class CreateDaemonSetParam extends BaseParam {
     private Map<String, String> data;
 
     private V1PodTemplateSpec template;
+
+    public CreateDaemonSetParam() {
+    }
 }

@@ -17,21 +17,12 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module;
+package com.github.shoothzj.kdash.constant;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.github.shoothzj.kdash.util.KubernetesYamlUtil;
+import io.kubernetes.client.openapi.models.V1DaemonSet;
 
-import java.util.Map;
+public class DaemonConst {
 
-@Setter
-@Getter
-public class CreateConfigmapParam extends BaseParam {
-
-    private String configmapName;
-
-    private Map<String, String> data;
-
-    public CreateConfigmapParam() {
-    }
+    public static final V1DaemonSet PROMTAIL = KubernetesYamlUtil.getDaemonSet("promtail");
 }

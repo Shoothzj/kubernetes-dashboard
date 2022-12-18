@@ -17,21 +17,7 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module;
+package com.github.shoothzj.kdash.constant;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.Map;
-
-@Setter
-@Getter
-public class CreateConfigmapParam extends BaseParam {
-
-    private String configmapName;
-
-    private Map<String, String> data;
-
-    public CreateConfigmapParam() {
-    }
+public class SecretConst {
 }

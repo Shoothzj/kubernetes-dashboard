@@ -17,21 +17,23 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module;
+package com.github.shoothzj.kdash.constant;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.github.shoothzj.kdash.util.KubernetesYamlUtil;
+import io.kubernetes.client.openapi.models.V1ConfigMap;
 
-import java.util.Map;
+public class ConfigMapConst {
 
-@Setter
-@Getter
-public class CreateConfigmapParam extends BaseParam {
+    public static final V1ConfigMap LOKI = KubernetesYamlUtil.getConfigMap("loki");
 
-    private String configmapName;
+    public static final V1ConfigMap MINIO = KubernetesYamlUtil.getConfigMap("minio");
 
-    private Map<String, String> data;
+    public static final V1ConfigMap MYSQL = KubernetesYamlUtil.getConfigMap("mysql");
 
-    public CreateConfigmapParam() {
-    }
+    public static final V1ConfigMap NGINX = KubernetesYamlUtil.getConfigMap("nginx");
+
+    public static final V1ConfigMap PROMTAIL = KubernetesYamlUtil.getConfigMap("promtail");
+
+    public static final V1ConfigMap REDIS = KubernetesYamlUtil.getConfigMap("redis");
+
 }
