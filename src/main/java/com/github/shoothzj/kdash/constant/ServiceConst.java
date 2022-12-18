@@ -62,10 +62,10 @@ public class ServiceConst {
 
     public static final V1Service PULSAR_HEADLESS =
             KubernetesYamlUtil.getService("pulsar-headless");
-    
+
     public static final V1Service PULSAR_PROXY_NODEPORT =
             KubernetesYamlUtil.getService("pulsar-proxy-nodeport");
-    
+
     public static final V1Service PULSAR_PROXY_TLS_NODEPORT =
             KubernetesYamlUtil.getService("pulsar-proxy-tls-nodeport");
 
