@@ -34,17 +34,16 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/api/kubernetes/bookkeeper")
-public class KubernetesBookkeeperStatefulSetController {
-
-    @PutMapping("/namespace/{namespace}/stateful-sets")
-    public ResponseEntity<Void> createBookkeeper(@RequestBody CreateBookkeeperReq req,
-                                            @PathVariable String namespace) throws ApiException {
+public class KubernetesBookkeeperDashboardController {
+    @PutMapping("/namespace/{namespace}/dashboards")
+    public ResponseEntity<Void> createBookkeeperDashboard(@RequestBody CreateBookkeeperReq req,
+                                                     @PathVariable String namespace) throws ApiException {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/namespace/{namespace}/stateful-sets/{statefulSetName}")
-    public ResponseEntity<Void> deleteBookkeeper(@PathVariable String namespace,
-                                            @PathVariable String statefulSetName) throws ApiException {
+    @DeleteMapping("/namespace/{namespace}/dashboards/{dashboardName}")
+    public ResponseEntity<Void> deleteBookkeeperDashboard(@PathVariable String namespace,
+                                                     @PathVariable String dashboardName) throws ApiException {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

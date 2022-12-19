@@ -26,6 +26,10 @@ import lombok.Setter;
 @Getter
 public class CreateMinioReq {
 
+    private String name;
+
+    private String image;
+
     private String cpu;
 
     private String memory;

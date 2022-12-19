@@ -17,19 +17,19 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module.zookeeper;
+package com.github.shoothzj.kdash.module.mysql;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public class CreateZooKeeperReq {
+public class CreateMysqlDashboardReq {
 
     private String name;
 
     private String image;
 
-    public CreateZooKeeperReq() {
+    public CreateMysqlDashboardReq() {
     }
 }

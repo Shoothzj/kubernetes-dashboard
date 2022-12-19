@@ -24,12 +24,12 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class CreateZooKeeperReq {
+public class CreateZooKeeperDashboardReq {
 
     private String name;
 
     private String image;
 
-    public CreateZooKeeperReq() {
+    public CreateZooKeeperDashboardReq() {
     }
 }

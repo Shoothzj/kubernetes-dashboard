@@ -19,7 +19,15 @@
 
 package com.github.shoothzj.kdash.controller.mysql;
 
+import com.github.shoothzj.kdash.module.mysql.CreateMysqlReq;
+import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,4 +35,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/kubernetes/mysql")
 public class KubernetesMysqlStatefulSetController {
+
+    @PutMapping("/namespace/{namespace}/stateful-sets")
+    public ResponseEntity<Void> createMysql(@RequestBody CreateMysqlReq req,
+                                            @PathVariable String namespace) throws ApiException {
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/namespace/{namespace}/stateful-sets/{statefulSetName}")
+    public ResponseEntity<Void> deleteMysql(@PathVariable String namespace,
+                                            @PathVariable String statefulSetName) throws ApiException {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

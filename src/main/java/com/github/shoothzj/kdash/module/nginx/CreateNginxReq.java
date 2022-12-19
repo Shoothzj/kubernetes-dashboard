@@ -19,7 +19,16 @@
 
 package com.github.shoothzj.kdash.module.nginx;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class CreateNginxReq {
+
+    private String name;
+
+    private String image;
 
     public CreateNginxReq() {
     }

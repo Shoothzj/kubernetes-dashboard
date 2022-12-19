@@ -26,6 +26,10 @@ import lombok.Setter;
 @Getter
 public class CreateMysqlReq {
 
+    private String name;
+
+    private String image;
+
     public CreateMysqlReq() {
     }
 }

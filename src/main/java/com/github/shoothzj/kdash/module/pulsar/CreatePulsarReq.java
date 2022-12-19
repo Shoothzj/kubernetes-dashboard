@@ -26,6 +26,10 @@ import lombok.Setter;
 @Getter
 public class CreatePulsarReq {
 
+    private String name;
+
+    private String image;
+
     public CreatePulsarReq() {
     }
 }
