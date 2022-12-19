@@ -17,10 +17,10 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.controller.mysql;
+package com.github.shoothzj.kdash.controller.zookeeper;
 
-import com.github.shoothzj.kdash.module.mysql.CreateMysqlReq;
-import com.github.shoothzj.kdash.service.mysql.KubernetesMysqlService;
+import com.github.shoothzj.kdash.module.zookeeper.CreateZooKeeperDashboardReq;
+import com.github.shoothzj.kdash.service.zookeeper.KubernetesZooKeeperService;
 import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,23 +35,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/kubernetes/mysql")
-public class KubernetesMysqlStatefulSetController {
+@RequestMapping("/api/kubernetes/redis")
+public class KubernetesZooKeeperDashboardController {
 
     @Autowired
-    private KubernetesMysqlService mysqlService;
+    private KubernetesZooKeeperService zooKeeperService;
 
-    @PutMapping("/namespace/{namespace}/stateful-sets")
-    public ResponseEntity<Void> createMysql(@RequestBody CreateMysqlReq req,
-                                            @PathVariable String namespace) throws ApiException {
-        mysqlService.createMysql(namespace, req);
+    @PutMapping("/namespace/{namespace}/dashboards")
+    public ResponseEntity<Void> createZooKeeperDashboard(@RequestBody CreateZooKeeperDashboardReq req,
+                                                     @PathVariable String namespace) throws ApiException {
+        zooKeeperService.createDashboard(namespace, req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/namespace/{namespace}/stateful-sets/{statefulSetName}")
-    public ResponseEntity<Void> deleteMysql(@PathVariable String namespace,
-                                            @PathVariable String statefulSetName) throws ApiException {
-        mysqlService.deleteMysql(namespace, statefulSetName);
+    @DeleteMapping("/namespace/{namespace}/dashboards/{dashboardName}")
+    public ResponseEntity<Void> deleteZooKeeperDashboard(@PathVariable String namespace,
+                                                     @PathVariable String dashboardName) throws ApiException {
+        zooKeeperService.deleteDashboard(namespace, dashboardName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

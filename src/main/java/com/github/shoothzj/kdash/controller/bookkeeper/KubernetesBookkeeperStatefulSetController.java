@@ -20,8 +20,10 @@
 package com.github.shoothzj.kdash.controller.bookkeeper;
 
 import com.github.shoothzj.kdash.module.bookkeeper.CreateBookkeeperReq;
+import com.github.shoothzj.kdash.service.bookkeeper.KubernetesBookkeeperService;
 import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,15 +38,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/kubernetes/bookkeeper")
 public class KubernetesBookkeeperStatefulSetController {
 
+    @Autowired
+    private KubernetesBookkeeperService bookkeeperService;
+
     @PutMapping("/namespace/{namespace}/stateful-sets")
     public ResponseEntity<Void> createBookkeeper(@RequestBody CreateBookkeeperReq req,
                                             @PathVariable String namespace) throws ApiException {
+        bookkeeperService.createBookkeeper(namespace, req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/namespace/{namespace}/stateful-sets/{statefulSetName}")
     public ResponseEntity<Void> deleteBookkeeper(@PathVariable String namespace,
                                             @PathVariable String statefulSetName) throws ApiException {
+        bookkeeperService.deleteBookkeeper(namespace, statefulSetName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

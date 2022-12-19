@@ -20,8 +20,10 @@
 package com.github.shoothzj.kdash.controller.pulsar;
 
 import com.github.shoothzj.kdash.module.pulsar.CreatePulsarDashboardReq;
+import com.github.shoothzj.kdash.service.pulsar.KubernetesPulsarService;
 import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,15 +37,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/kubernetes/pulsar")
 public class KubernetesPulsarDashboardController {
+
+    @Autowired
+    private KubernetesPulsarService pulsarService;
+
     @PutMapping("/namespace/{namespace}/dashboards")
     public ResponseEntity<Void> createPulsarDashboard(@RequestBody CreatePulsarDashboardReq req,
                                                      @PathVariable String namespace) throws ApiException {
+        pulsarService.createDashboard(namespace, req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/namespace/{namespace}/dashboards/{dashboardName}")
     public ResponseEntity<Void> deletePulsarDashboard(@PathVariable String namespace,
                                                      @PathVariable String dashboardName) throws ApiException {
+        pulsarService.deleteDashboard(namespace, dashboardName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
