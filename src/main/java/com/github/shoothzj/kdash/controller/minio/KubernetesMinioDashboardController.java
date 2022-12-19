@@ -17,9 +17,9 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.controller.bookkeeper;
+package com.github.shoothzj.kdash.controller.minio;
 
-import com.github.shoothzj.kdash.module.bookkeeper.CreateBookkeeperReq;
+import com.github.shoothzj.kdash.module.minio.CreateMinioDashboardReq;
 import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -33,18 +33,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/kubernetes/bookkeeper")
-public class KubernetesBookkeeperStatefulSetController {
-
-    @PutMapping("/namespace/{namespace}/stateful-sets")
-    public ResponseEntity<Void> createBookkeeper(@RequestBody CreateBookkeeperReq req,
-                                            @PathVariable String namespace) throws ApiException {
+@RequestMapping("/api/kubernetes/minio")
+public class KubernetesMinioDashboardController {
+    @PutMapping("/namespace/{namespace}/dashboards")
+    public ResponseEntity<Void> createMinioDashboard(@RequestBody CreateMinioDashboardReq req,
+                                                     @PathVariable String namespace) throws ApiException {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/namespace/{namespace}/stateful-sets/{statefulSetName}")
-    public ResponseEntity<Void> deleteBookkeeper(@PathVariable String namespace,
-                                            @PathVariable String statefulSetName) throws ApiException {
+    @DeleteMapping("/namespace/{namespace}/dashboards/{dashboardName}")
+    public ResponseEntity<Void> deleteMinioDashboard(@PathVariable String namespace,
+                                                     @PathVariable String dashboardName) throws ApiException {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

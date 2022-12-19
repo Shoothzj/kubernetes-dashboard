@@ -17,19 +17,19 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module.zookeeper;
+package com.github.shoothzj.kdash.module.minio;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public class CreateZooKeeperReq {
+public class CreateMinioDashboardReq {
 
     private String name;
 
     private String image;
 
-    public CreateZooKeeperReq() {
+    public CreateMinioDashboardReq() {
     }
 }

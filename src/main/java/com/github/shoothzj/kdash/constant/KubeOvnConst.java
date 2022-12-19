@@ -17,19 +17,13 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module.zookeeper;
+package com.github.shoothzj.kdash.constant;
 
-import lombok.Getter;
-import lombok.Setter;
+public class KubeOvnConst {
 
-@Setter
-@Getter
-public class CreateZooKeeperReq {
+    public static final String ANNOTATION_IP = "ovn.kubernetes.io/ip_address";
 
-    private String name;
+    public static final String ANNOTATION_IP_POOL = "ovn.kubernetes.io/ip_pool";
 
-    private String image;
-
-    public CreateZooKeeperReq() {
-    }
+    public static final String ANNOTATION_MAC = "ovn.kubernetes.io/mac_address";
 }

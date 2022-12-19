@@ -19,7 +19,15 @@
 
 package com.github.shoothzj.kdash.controller.minio;
 
+import com.github.shoothzj.kdash.module.minio.CreateMinioReq;
+import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,4 +35,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/kubernetes/minio")
 public class KubernetesMinioStatefulSetController {
+
+    @PutMapping("/namespace/{namespace}/stateful-sets")
+    public ResponseEntity<Void> createMinio(@RequestBody CreateMinioReq req,
+                                            @PathVariable String namespace) throws ApiException {
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/namespace/{namespace}/stateful-sets/{statefulSetName}")
+    public ResponseEntity<Void> deleteMinio(@PathVariable String namespace,
+                                            @PathVariable String statefulSetName) throws ApiException {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
