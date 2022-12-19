@@ -19,9 +19,11 @@
 
 package com.github.shoothzj.kdash.controller.bookkeeper;
 
-import com.github.shoothzj.kdash.module.bookkeeper.CreateBookkeeperReq;
+import com.github.shoothzj.kdash.module.bookkeeper.CreateBookkeeperDashboardReq;
+import com.github.shoothzj.kdash.service.bookkeeper.KubernetesBookkeeperService;
 import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,15 +37,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/kubernetes/bookkeeper")
 public class KubernetesBookkeeperDashboardController {
+
+    @Autowired
+    private KubernetesBookkeeperService bookkeeperService;
+
     @PutMapping("/namespace/{namespace}/dashboards")
-    public ResponseEntity<Void> createBookkeeperDashboard(@RequestBody CreateBookkeeperReq req,
+    public ResponseEntity<Void> createBookkeeperDashboard(@RequestBody CreateBookkeeperDashboardReq req,
                                                      @PathVariable String namespace) throws ApiException {
+        bookkeeperService.createDashboard(namespace, req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/namespace/{namespace}/dashboards/{dashboardName}")
     public ResponseEntity<Void> deleteBookkeeperDashboard(@PathVariable String namespace,
                                                      @PathVariable String dashboardName) throws ApiException {
+        bookkeeperService.deleteDashboard(namespace, dashboardName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

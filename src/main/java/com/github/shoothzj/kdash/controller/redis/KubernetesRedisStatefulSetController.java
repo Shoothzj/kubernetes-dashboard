@@ -20,8 +20,10 @@
 package com.github.shoothzj.kdash.controller.redis;
 
 import com.github.shoothzj.kdash.module.redis.CreateRedisReq;
+import com.github.shoothzj.kdash.service.redis.KubernetesRedisService;
 import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,15 +38,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/kubernetes/redis")
 public class KubernetesRedisStatefulSetController {
 
+    @Autowired
+    private KubernetesRedisService redisService;
+
     @PutMapping("/namespace/{namespace}/stateful-sets")
     public ResponseEntity<Void> createRedis(@RequestBody CreateRedisReq req,
                                             @PathVariable String namespace) throws ApiException {
+        redisService.createRedis(namespace, req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/namespace/{namespace}/stateful-sets/{statefulSetName}")
     public ResponseEntity<Void> deleteRedis(@PathVariable String namespace,
                                             @PathVariable String statefulSetName) throws ApiException {
+        redisService.deleteRedis(namespace, statefulSetName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

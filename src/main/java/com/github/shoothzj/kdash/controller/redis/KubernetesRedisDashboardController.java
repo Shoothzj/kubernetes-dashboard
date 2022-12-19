@@ -20,8 +20,10 @@
 package com.github.shoothzj.kdash.controller.redis;
 
 import com.github.shoothzj.kdash.module.redis.CreateRedisDashboardReq;
+import com.github.shoothzj.kdash.service.redis.KubernetesRedisService;
 import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,15 +37,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/kubernetes/redis")
 public class KubernetesRedisDashboardController {
+
+    @Autowired
+    private KubernetesRedisService redisService;
+
     @PutMapping("/namespace/{namespace}/dashboards")
     public ResponseEntity<Void> createRedisDashboard(@RequestBody CreateRedisDashboardReq req,
                                                      @PathVariable String namespace) throws ApiException {
+        redisService.createDashboard(namespace, req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/namespace/{namespace}/dashboards/{dashboardName}")
     public ResponseEntity<Void> deleteRedisDashboard(@PathVariable String namespace,
                                                      @PathVariable String dashboardName) throws ApiException {
+        redisService.deleteDashboard(namespace, dashboardName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

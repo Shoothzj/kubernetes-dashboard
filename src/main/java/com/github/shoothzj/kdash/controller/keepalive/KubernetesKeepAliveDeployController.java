@@ -20,8 +20,10 @@
 package com.github.shoothzj.kdash.controller.keepalive;
 
 import com.github.shoothzj.kdash.module.keepalive.CreateKeepAliveReq;
+import com.github.shoothzj.kdash.service.keepalive.KubernetesKeepAliveService;
 import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,15 +38,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/kubernetes/keepalive")
 public class KubernetesKeepAliveDeployController {
 
+    @Autowired
+    private KubernetesKeepAliveService keepAliveService;
+
     @PutMapping("/namespace/{namespace}/deployments")
     public ResponseEntity<Void> createKeepAlive(@RequestBody CreateKeepAliveReq req,
                                             @PathVariable String namespace) throws ApiException {
+        keepAliveService.createKeepAlive(namespace, req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/namespace/{namespace}/deployments/{deployName}")
     public ResponseEntity<Void> deleteKeepAlive(@PathVariable String namespace,
                                             @PathVariable String deployName) throws ApiException {
+        keepAliveService.deleteKeepAlive(namespace, deployName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

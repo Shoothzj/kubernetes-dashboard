@@ -20,8 +20,10 @@
 package com.github.shoothzj.kdash.controller.pulsar;
 
 import com.github.shoothzj.kdash.module.pulsar.CreatePulsarReq;
+import com.github.shoothzj.kdash.service.pulsar.KubernetesPulsarService;
 import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,15 +38,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/kubernetes/pulsar")
 public class KubernetesPulsarDeployController {
 
+    @Autowired
+    private KubernetesPulsarService pulsarService;
+
     @PutMapping("/namespace/{namespace}/deployments")
     public ResponseEntity<Void> createPulsar(@RequestBody CreatePulsarReq req,
                                             @PathVariable String namespace) throws ApiException {
+        pulsarService.createPulsar(namespace, req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/namespace/{namespace}/deployments/{deployName}")
     public ResponseEntity<Void> deletePulsar(@PathVariable String namespace,
                                             @PathVariable String deployName) throws ApiException {
+        pulsarService.deletePulsar(namespace, deployName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

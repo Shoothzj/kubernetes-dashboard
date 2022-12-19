@@ -20,8 +20,10 @@
 package com.github.shoothzj.kdash.controller.minio;
 
 import com.github.shoothzj.kdash.module.minio.CreateMinioDashboardReq;
+import com.github.shoothzj.kdash.service.minio.KubernetesMinioService;
 import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,15 +37,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/kubernetes/minio")
 public class KubernetesMinioDashboardController {
+
+    @Autowired
+    private KubernetesMinioService minioService;
+
     @PutMapping("/namespace/{namespace}/dashboards")
     public ResponseEntity<Void> createMinioDashboard(@RequestBody CreateMinioDashboardReq req,
                                                      @PathVariable String namespace) throws ApiException {
+        minioService.createDashboard(namespace, req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/namespace/{namespace}/dashboards/{dashboardName}")
     public ResponseEntity<Void> deleteMinioDashboard(@PathVariable String namespace,
                                                      @PathVariable String dashboardName) throws ApiException {
+        minioService.deleteDashboard(namespace, dashboardName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

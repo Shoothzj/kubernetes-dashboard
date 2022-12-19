@@ -20,8 +20,10 @@
 package com.github.shoothzj.kdash.controller.mysql;
 
 import com.github.shoothzj.kdash.module.mysql.CreateMysqlDashboardReq;
+import com.github.shoothzj.kdash.service.mysql.KubernetesMysqlService;
 import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,15 +37,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/kubernetes/mysql")
 public class KubernetesMysqlDashboardController {
+
+    @Autowired
+    private KubernetesMysqlService mysqlService;
+
     @PutMapping("/namespace/{namespace}/dashboards")
     public ResponseEntity<Void> createMysqlDashboard(@RequestBody CreateMysqlDashboardReq req,
                                                      @PathVariable String namespace) throws ApiException {
+        mysqlService.createDashboard(namespace, req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/namespace/{namespace}/dashboards/{dashboardName}")
     public ResponseEntity<Void> deleteMysqlDashboard(@PathVariable String namespace,
                                                      @PathVariable String dashboardName) throws ApiException {
+        mysqlService.deleteDashboard(namespace, dashboardName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
