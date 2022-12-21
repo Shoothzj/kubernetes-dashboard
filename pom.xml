@@ -40,6 +40,7 @@
         <!-- dependency -->
         <guava.version>31.1-jre</guava.version>
         <huaweicloud-sdk.version>3.1.13</huaweicloud-sdk.version>
+        <jsch.version>0.2.4</jsch.version>
         <kubernetes.version>16.0.1</kubernetes.version>
         <lombok.version>1.18.24</lombok.version>
         <prom-api-client.version>0.0.3</prom-api-client.version>
@@ -109,6 +110,11 @@
             <groupId>com.huaweicloud.sdk</groupId>
             <artifactId>huaweicloud-sdk-swr</artifactId>
             <version>${huaweicloud-sdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.mwiede</groupId>
+            <artifactId>jsch</artifactId>
+            <version>${jsch.version}</version>
         </dependency>
         <dependency>
             <groupId>io.kubernetes</groupId>
