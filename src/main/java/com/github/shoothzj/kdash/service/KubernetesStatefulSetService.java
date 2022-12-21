@@ -154,7 +154,7 @@ public class KubernetesStatefulSetService {
                 "true", null, null, null);
     }
 
-    public void createNamespacedStatefulSet(String namespace, CreateStatefulSetParam req) throws Exception {
+    public void createNamespacedStatefulSet(String namespace, CreateStatefulSetParam req) throws ApiException {
         // deploy
         V1StatefulSet v1StatefulSet = new V1StatefulSet();
         v1StatefulSet.setApiVersion("apps/v1");

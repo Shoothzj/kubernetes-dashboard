@@ -21,10 +21,16 @@ package com.github.shoothzj.kdash.module.bookkeeper;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 
 @Setter
 @Getter
 public class CreateBookkeeperReq {
+
+    @Nullable
+    private String name;
+
+    private String image;
 
     public CreateBookkeeperReq() {
     }

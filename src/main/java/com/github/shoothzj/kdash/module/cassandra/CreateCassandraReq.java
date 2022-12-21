@@ -26,6 +26,10 @@ import lombok.Setter;
 @Getter
 public class CreateCassandraReq {
 
+    private String name;
+
+    private String image;
+
     public CreateCassandraReq() {
     }
 }

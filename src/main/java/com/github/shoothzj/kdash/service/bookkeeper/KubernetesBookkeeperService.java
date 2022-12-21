@@ -24,6 +24,8 @@ import com.github.shoothzj.kdash.module.bookkeeper.CreateBookkeeperReq;
 import com.github.shoothzj.kdash.service.KubernetesDeployService;
 import com.github.shoothzj.kdash.service.KubernetesServiceService;
 import com.github.shoothzj.kdash.service.KubernetesStatefulSetService;
+import com.github.shoothzj.kdash.util.BookkeeperUtil;
+import com.github.shoothzj.kdash.util.KubernetesUtil;
 import io.kubernetes.client.openapi.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,14 +43,20 @@ public class KubernetesBookkeeperService {
     private KubernetesServiceService serviceService;
 
     public void createBookkeeper(String namespace, CreateBookkeeperReq req) throws ApiException {
+        serviceService.createService(namespace, BookkeeperUtil.service(req));
+        statefulSetService.createNamespacedStatefulSet(namespace, BookkeeperUtil.statefulSet(req));
     }
 
     public void deleteBookkeeper(String namespace, String name) throws ApiException {
+        serviceService.deleteService(namespace, KubernetesUtil.name("bookkeeper", name));
+        statefulSetService.deleteStatefulSet(namespace, KubernetesUtil.name("bookkeeper", name));
     }
 
     public void createDashboard(String namespace, CreateBookkeeperDashboardReq req) throws ApiException {
+        deployService.createNamespacedDeploy(namespace, BookkeeperUtil.dashboardDeploy(req));
     }
 
     public void deleteDashboard(String namespace, String dashboardName) throws ApiException {
+        deployService.deleteDeploy(namespace, KubernetesUtil.name("bookkeeper-dashboard", dashboardName));
     }
 }

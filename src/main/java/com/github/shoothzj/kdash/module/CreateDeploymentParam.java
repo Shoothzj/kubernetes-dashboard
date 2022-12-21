@@ -28,8 +28,6 @@ import java.util.Map;
 @Getter
 public class CreateDeploymentParam extends BaseParam {
 
-    private String namespace;
-
     private String deploymentName;
 
     private Map<String, String> labels;
