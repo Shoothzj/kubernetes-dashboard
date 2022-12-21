@@ -43,6 +43,8 @@ public class BookkeeperUtil {
     public static CreateStatefulSetParam statefulSet(CreateBookkeeperReq req) {
         CreateStatefulSetParam createStatefulSetParam = new CreateStatefulSetParam();
         createStatefulSetParam.setStatefulSetName(KubernetesUtil.name("bookkeeper", req.getName()));
+        createStatefulSetParam.setImage(req.getImage());
+        createStatefulSetParam.setEnv(req.getEnv());
         return createStatefulSetParam;
     }
 
@@ -50,6 +52,7 @@ public class BookkeeperUtil {
         CreateDeploymentParam createDeploymentParam = new CreateDeploymentParam();
         createDeploymentParam.setDeploymentName(KubernetesUtil.name("bookkeeper-dashboard", req.getName()));
         createDeploymentParam.setImage(req.getImage());
+        createDeploymentParam.setEnv(req.getEnv());
         return createDeploymentParam;
     }
 }
