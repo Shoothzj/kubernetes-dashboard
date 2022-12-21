@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/kubernetes/redis")
+@RequestMapping("/api/kubernetes/zookeeper")
 public class KubernetesZooKeeperDashboardController {
 
     @Autowired

@@ -55,7 +55,7 @@ public class KubernetesDeployController {
     public ResponseEntity<Void> createDeployment(@PathVariable String namespace,
                                                  @RequestBody CreateDeploymentReq req) throws Exception {
         if (BaseReqType.PARAM.equals(req.getType())) {
-            deployService.createNamespacedDeploy(req.getParam());
+            deployService.createNamespacedDeploy(namespace, req.getParam());
         } else if (BaseReqType.YAML.equals(req.getType())) {
             deployService.createDeploymentByYaml(namespace, req.getYamlContent());
         } else {

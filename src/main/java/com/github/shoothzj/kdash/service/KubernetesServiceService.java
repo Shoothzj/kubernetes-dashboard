@@ -73,7 +73,11 @@ public class KubernetesServiceService {
     }
 
     public void deleteService(String namespace, DeleteServiceReq req) throws ApiException {
-        coreV1Api.deleteNamespacedService(req.getServiceName(), namespace, "true",
+        this.deleteService(namespace, req.getServiceName());
+    }
+
+    public void deleteService(String namespace, String serviceName) throws ApiException {
+        coreV1Api.deleteNamespacedService(serviceName, namespace, "true",
                 null, null, null,
                 null, null);
     }

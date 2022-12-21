@@ -57,7 +57,7 @@ public class KubernetesDeployService {
         this.appsV1Api = new AppsV1Api(apiClient);
     }
 
-    public void createNamespacedDeploy(CreateDeploymentParam req) throws Exception {
+    public void createNamespacedDeploy(String namespace, CreateDeploymentParam req) throws ApiException {
         // deploy
         V1Deployment deployment = new V1Deployment();
         deployment.setApiVersion("apps/v1");
@@ -67,7 +67,6 @@ public class KubernetesDeployService {
             // metadata
             V1ObjectMeta metadata = new V1ObjectMeta();
             metadata.setName(req.getDeploymentName());
-            metadata.setNamespace(req.getNamespace());
             metadata.setLabels(KubernetesUtil.label(req.getDeploymentName()));
             deployment.setMetadata(metadata);
         }
@@ -98,7 +97,7 @@ public class KubernetesDeployService {
             deployment.setSpec(deploySpec);
         }
 
-        appsV1Api.createNamespacedDeployment(req.getNamespace(), deployment,
+        appsV1Api.createNamespacedDeployment(namespace, deployment,
                 "true", null, null, null);
     }
 

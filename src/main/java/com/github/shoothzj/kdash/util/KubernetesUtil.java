@@ -53,6 +53,14 @@ import java.util.stream.Collectors;
 
 public class KubernetesUtil {
 
+    public static String name(String component, @Nullable String name) {
+        if (name == null) {
+            return component;
+        } else {
+            return component + "-" + name;
+        }
+    }
+
     public static Map<String, String> label(@NotNull String deployName) {
         Map<String, String> map = new HashMap<>();
         map.put("app", deployName);

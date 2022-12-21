@@ -21,10 +21,20 @@ package com.github.shoothzj.kdash.module.keepalive;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 @Setter
 @Getter
 public class CreateKeepAliveReq {
+
+    @Nullable
+    private String name;
+
+    private String image;
+
+    private Map<String, String> env;
 
     public CreateKeepAliveReq() {
     }

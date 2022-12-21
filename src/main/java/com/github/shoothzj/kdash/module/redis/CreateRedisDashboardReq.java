@@ -21,14 +21,20 @@ package com.github.shoothzj.kdash.module.redis;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 @Setter
 @Getter
 public class CreateRedisDashboardReq {
 
+    @Nullable
     private String name;
 
     private String image;
+
+    private Map<String, String> env;
 
     public CreateRedisDashboardReq() {
     }
