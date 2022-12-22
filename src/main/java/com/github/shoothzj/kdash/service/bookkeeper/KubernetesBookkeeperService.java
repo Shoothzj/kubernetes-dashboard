@@ -27,6 +27,8 @@ import com.github.shoothzj.kdash.service.KubernetesStatefulSetService;
 import com.github.shoothzj.kdash.util.BookkeeperUtil;
 import com.github.shoothzj.kdash.util.KubernetesUtil;
 import io.kubernetes.client.openapi.ApiException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,12 +44,12 @@ public class KubernetesBookkeeperService {
     @Autowired
     private KubernetesServiceService serviceService;
 
-    public void createBookkeeper(String namespace, CreateBookkeeperReq req) throws ApiException {
+    public void createBookkeeper(String namespace, @NotNull CreateBookkeeperReq req) throws ApiException {
         serviceService.createService(namespace, BookkeeperUtil.service(req));
         statefulSetService.createNamespacedStatefulSet(namespace, BookkeeperUtil.statefulSet(req));
     }
 
-    public void deleteBookkeeper(String namespace, String name) throws ApiException {
+    public void deleteBookkeeper(String namespace, @Nullable String name) throws ApiException {
         serviceService.deleteService(namespace, KubernetesUtil.name("bookkeeper", name));
         statefulSetService.deleteStatefulSet(namespace, KubernetesUtil.name("bookkeeper", name));
     }

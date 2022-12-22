@@ -42,6 +42,8 @@ public class CreateServiceParam extends BaseParam{
 
     private boolean publishNotReadyAddresses;
 
+    private String clusterIp;
+
     public CreateServiceParam() {
     }
 }

@@ -37,6 +37,7 @@ public class BookkeeperUtil {
         ArrayList<V1ServicePort> ports = new ArrayList<>();
         ports.add(new V1ServicePort().name("client").port(3181).targetPort(new IntOrString(3181)));
         createServiceParam.setPorts(ports);
+        createServiceParam.setClusterIp("None");
         return createServiceParam;
     }
 

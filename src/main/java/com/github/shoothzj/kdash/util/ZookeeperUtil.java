@@ -39,6 +39,8 @@ public class ZookeeperUtil {
         ports.add(new V1ServicePort().name("peer").port(2888).targetPort(new IntOrString(2888)));
         ports.add(new V1ServicePort().name("leader").port(3888).targetPort(new IntOrString(3888)));
         createServiceParam.setPorts(ports);
+        createServiceParam.setPublishNotReadyAddresses(true);
+        createServiceParam.setClusterIp("None");
         return createServiceParam;
     }
 
