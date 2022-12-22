@@ -21,6 +21,7 @@ package com.github.shoothzj.kdash.service.hc;
 
 import com.github.shoothzj.kdash.config.CloudConfig;
 import com.github.shoothzj.kdash.config.HuaweiCloudConfig;
+import com.github.shoothzj.kdash.util.CommonUtil;
 import com.huaweicloud.sdk.core.auth.BasicCredentials;
 import com.huaweicloud.sdk.ecs.v2.EcsAsyncClient;
 import com.huaweicloud.sdk.ecs.v2.model.BatchStopServersOption;
@@ -43,6 +44,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -104,13 +106,9 @@ public class HcEcsService {
                                     RETRY_PAUSE_TIME / 1000);
                             if (t instanceof CompletionException completionException
                                     && completionException.getMessage().contains("Ecs.0100")) {
-                                try {
-                                    Thread.sleep(RETRY_PAUSE_TIME);
-                                    futures.add(
-                                            ecsClient.changeServerOsWithoutCloudInitAsync(changeServerOsRequest));
-                                } catch (InterruptedException exc) {
-                                    throw new RuntimeException(exc);
-                                }
+                                CommonUtil.sleep(TimeUnit.MILLISECONDS, RETRY_PAUSE_TIME);
+                                futures.add(
+                                        ecsClient.changeServerOsWithoutCloudInitAsync(changeServerOsRequest));
                             }
                             return null;
                         }));

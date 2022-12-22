@@ -46,6 +46,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -63,11 +64,16 @@ public class KubernetesDeployService {
         deployment.setApiVersion("apps/v1");
         deployment.setKind("Deployment");
 
+        Map<String, String> labels = KubernetesUtil.label(req.getDeploymentName());
+        if (req.getLabels() != null) {
+            labels.putAll(req.getLabels());
+        }
+
         {
             // metadata
             V1ObjectMeta metadata = new V1ObjectMeta();
             metadata.setName(req.getDeploymentName());
-            metadata.setLabels(KubernetesUtil.label(req.getDeploymentName()));
+            metadata.setLabels(labels);
             deployment.setMetadata(metadata);
         }
 
@@ -83,7 +89,7 @@ public class KubernetesDeployService {
             {
                 // object metadata
                 V1ObjectMeta objectMeta = new V1ObjectMeta();
-                objectMeta.setLabels(KubernetesUtil.label(req.getDeploymentName()));
+                objectMeta.setLabels(labels);
                 templateSpec.setMetadata(objectMeta);
             }
             // spec template spec
