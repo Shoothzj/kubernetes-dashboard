@@ -28,11 +28,15 @@ import java.util.Map;
 @Getter
 public class CreatePerfPulsarProducerReplicaReq {
 
-    private String suffix;
+    private String name;
 
     private int replica;
 
     private Map<String, String> env;
+
+    private String cpu;
+
+    private String memory;
 
     public CreatePerfPulsarProducerReplicaReq() {
     }

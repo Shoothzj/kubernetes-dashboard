@@ -22,6 +22,7 @@ package com.github.shoothzj.kdash.module;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Map;
 
 @Setter
@@ -41,6 +42,20 @@ public class CreateDeploymentParam extends BaseParam {
     private Map<String, String> env;
 
     private ResourceRequirements resourceRequirements;
+
+    private NodeSelectorRequirement nodeSelectorRequirement;
+
+    private PodAffinityTerms podAffinityTerms;
+
+    private PodAffinityTerms podAntiAffinityTerms;
+
+    private List<String> preStopCommand;
+
+    private List<String> postStartCommand;
+
+    private Probe livenessProbe;
+
+    private Probe readinessProbe;
 
     public CreateDeploymentParam() {
     }

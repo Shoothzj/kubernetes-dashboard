@@ -26,6 +26,10 @@ import lombok.Setter;
 @Getter
 public class CreatePerfRedisReplicaReq {
 
+    private String cpu;
+
+    private String memory;
+
     public CreatePerfRedisReplicaReq() {
     }
 }

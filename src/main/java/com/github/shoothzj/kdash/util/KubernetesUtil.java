@@ -31,6 +31,8 @@ import io.kubernetes.client.openapi.models.V1EnvVarSource;
 import io.kubernetes.client.openapi.models.V1ExecAction;
 import io.kubernetes.client.openapi.models.V1LabelSelector;
 import io.kubernetes.client.openapi.models.V1LabelSelectorRequirement;
+import io.kubernetes.client.openapi.models.V1Lifecycle;
+import io.kubernetes.client.openapi.models.V1LifecycleHandler;
 import io.kubernetes.client.openapi.models.V1LocalObjectReference;
 import io.kubernetes.client.openapi.models.V1NodeAffinity;
 import io.kubernetes.client.openapi.models.V1NodeSelector;
@@ -69,9 +71,16 @@ public class KubernetesUtil {
     }
 
     public static V1LabelSelector labelSelector(@NotNull String deployName) {
+        return labelSelector(deployName, null);
+    }
+
+    public static V1LabelSelector labelSelector(@NotNull String deployName, @Nullable Map<String, String> selector) {
         V1LabelSelector labelSelector = new V1LabelSelector();
         Map<String, String> matchLabels = new HashMap<>();
         matchLabels.put("app", deployName);
+        if (selector != null) {
+            matchLabels.putAll(selector);
+        }
         labelSelector.setMatchLabels(matchLabels);
         return labelSelector;
     }
@@ -80,20 +89,29 @@ public class KubernetesUtil {
                                                         Map<String, String> envMap,
                                                         String name,
                                                         ResourceRequirements resourceRequirements) {
-        return singleContainerList(image, null, envMap, name, resourceRequirements);
+        return singleContainerList(image, null, envMap, name, resourceRequirements,
+                null, null, null);
     }
 
-    public static List<V1Container> singleContainerList(V1Container container) {
-        List<V1Container> v1Containers = new ArrayList<>();
-        v1Containers.add(container);
-        return v1Containers;
+    public static List<V1Container> singleContainerList(String image,
+                                                        Map<String, String> envMap,
+                                                        @NotNull String name,
+                                                        ResourceRequirements resourceRequirements,
+                                                        V1Lifecycle v1Lifecycle,
+                                                        V1Probe readinessProbe,
+                                                        V1Probe livenessProbe) {
+        return singleContainerList(image, null, envMap, name, resourceRequirements,
+                v1Lifecycle, readinessProbe, livenessProbe);
     }
 
     public static List<V1Container> singleContainerList(String image,
                                                         @Nullable String imagePullPolicy,
                                                         Map<String, String> envMap,
                                                         @NotNull String name,
-                                                        ResourceRequirements resourceRequirements) {
+                                                        ResourceRequirements resourceRequirements,
+                                                        V1Lifecycle v1Lifecycle,
+                                                        V1Probe readinessProbe,
+                                                        V1Probe livenessProbe) {
         List<V1Container> containers = new ArrayList<>();
         V1Container container = new V1Container();
         container.setName(name);
@@ -106,8 +124,17 @@ public class KubernetesUtil {
             return envVar;
         }).collect(Collectors.toList()));
         container.setResources(resourceRequirements(resourceRequirements));
+        container.setLifecycle(v1Lifecycle);
+        container.setReadinessProbe(readinessProbe);
+        container.setLivenessProbe(livenessProbe);
         containers.add(container);
         return containers;
+    }
+
+    public static List<V1Container> singleContainerList(V1Container container) {
+        List<V1Container> v1Containers = new ArrayList<>();
+        v1Containers.add(container);
+        return v1Containers;
     }
 
     public static V1EnvVar v1EnvVar(String fieldPath, String name) {
@@ -134,14 +161,40 @@ public class KubernetesUtil {
         return v1Probe;
     }
 
-    public static V1PodAntiAffinity v1PodAntiAffinity(PodAffinityTerms podAffinityTerms) {
+    public static V1Lifecycle v1Lifecycle(@Nullable List<String> postStartCommand,
+                                          @Nullable List<String> preStopCommand) {
+        V1Lifecycle v1Lifecycle = new V1Lifecycle();
+        if (postStartCommand != null) {
+            V1LifecycleHandler preStopHandler = new V1LifecycleHandler();
+            V1ExecAction preStopExecAction = new V1ExecAction();
+            preStopExecAction.command(postStartCommand);
+            preStopHandler.setExec(preStopExecAction);
+            v1Lifecycle.setPreStop(preStopHandler);
+        }
+        if (preStopCommand != null) {
+            V1LifecycleHandler postStartHandler = new V1LifecycleHandler();
+            V1ExecAction postStartExecAction = new V1ExecAction();
+            postStartExecAction.command(preStopCommand);
+            postStartHandler.setExec(postStartExecAction);
+            v1Lifecycle.setPostStart(postStartHandler);
+        }
+        return v1Lifecycle;
+    }
+
+    public static V1PodAntiAffinity v1PodAntiAffinity(@Nullable PodAffinityTerms podAffinityTerms) {
+        if (podAffinityTerms == null) {
+            return null;
+        }
         V1PodAntiAffinity v1PodAntiAffinity = new V1PodAntiAffinity();
         v1PodAntiAffinity.setRequiredDuringSchedulingIgnoredDuringExecution(
                 v1PodAffinityTerms(podAffinityTerms));
         return v1PodAntiAffinity;
     }
 
-    public static V1PodAffinity v1PodAffinity(PodAffinityTerms podAffinityTerms) {
+    public static V1PodAffinity v1PodAffinity(@Nullable PodAffinityTerms podAffinityTerms) {
+        if (podAffinityTerms == null) {
+            return null;
+        }
         V1PodAffinity v1PodAffinity = new V1PodAffinity();
         v1PodAffinity.setRequiredDuringSchedulingIgnoredDuringExecution(
                 v1PodAffinityTerms(podAffinityTerms));

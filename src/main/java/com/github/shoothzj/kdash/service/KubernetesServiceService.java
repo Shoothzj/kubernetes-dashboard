@@ -60,7 +60,9 @@ public class KubernetesServiceService {
         {
             final V1ServiceSpec v1ServiceSpec = new V1ServiceSpec();
             v1ServiceSpec.setPorts(req.getPorts());
+            v1ServiceSpec.setClusterIP(req.getClusterIp());
             v1ServiceSpec.setSelector(req.getServiceSelector());
+            v1ServiceSpec.setPublishNotReadyAddresses(req.isPublishNotReadyAddresses());
             v1Service.setSpec(v1ServiceSpec);
         }
         coreV1Api.createNamespacedService(namespace, v1Service, "true",

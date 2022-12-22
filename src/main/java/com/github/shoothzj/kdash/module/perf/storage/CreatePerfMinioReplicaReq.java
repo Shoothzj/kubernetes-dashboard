@@ -28,15 +28,17 @@ import java.util.Map;
 @Getter
 public class CreatePerfMinioReplicaReq {
 
-    private String suffix;
+    private String name;
 
     private int replicas;
+
+    private String image;
+
+    private Map<String, String> env;
 
     private String cpu;
 
     private String memory;
-
-    private Map<String, String> env;
 
     public CreatePerfMinioReplicaReq() {
     }
