@@ -42,6 +42,7 @@ import io.kubernetes.client.openapi.models.V1PodAffinityTerm;
 import io.kubernetes.client.openapi.models.V1PodAntiAffinity;
 import io.kubernetes.client.openapi.models.V1Probe;
 import io.kubernetes.client.openapi.models.V1ResourceRequirements;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,7 +55,7 @@ import java.util.stream.Collectors;
 public class KubernetesUtil {
 
     public static String name(String component, @Nullable String name) {
-        if (name == null) {
+        if (StringUtils.isNoneEmpty(name)) {
             return component;
         } else {
             return component + "-" + name;
