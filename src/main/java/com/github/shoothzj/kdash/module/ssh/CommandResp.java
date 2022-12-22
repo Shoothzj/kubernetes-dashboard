@@ -19,14 +19,19 @@
 
 package com.github.shoothzj.kdash.module.ssh;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
-@Data
+@Setter
+@Getter
 public class CommandResp {
 
     private String host;
 
     private List<String> result;
+
+    public CommandResp() {
+    }
 }

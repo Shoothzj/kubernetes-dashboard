@@ -20,9 +20,11 @@
 package com.github.shoothzj.kdash.module.ssh;
 
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 public class UserInfo {
 
     private String host;
@@ -32,4 +34,7 @@ public class UserInfo {
     private String username;
 
     private String password;
+
+    public UserInfo() {
+    }
 }

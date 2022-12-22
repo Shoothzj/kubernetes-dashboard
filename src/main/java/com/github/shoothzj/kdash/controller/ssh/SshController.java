@@ -42,7 +42,6 @@ public class SshController {
         this.sshService = sshService;
     }
 
-
     @PostMapping("/command")
     public ResponseEntity<List<CommandResp>> command(@RequestBody CommandReq req) {
         return new ResponseEntity<>(sshService.command(req), HttpStatus.OK);
