@@ -24,6 +24,8 @@ import com.github.shoothzj.kdash.module.minio.CreateMinioReq;
 import com.github.shoothzj.kdash.service.KubernetesDeployService;
 import com.github.shoothzj.kdash.service.KubernetesServiceService;
 import com.github.shoothzj.kdash.service.KubernetesStatefulSetService;
+import com.github.shoothzj.kdash.util.KubernetesUtil;
+import com.github.shoothzj.kdash.util.MinioUtil;
 import io.kubernetes.client.openapi.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,14 +43,20 @@ public class KubernetesMinioService {
     private KubernetesServiceService serviceService;
 
     public void createMinio(String namespace, CreateMinioReq req) throws ApiException {
+        serviceService.createService(namespace, MinioUtil.service(req));
+        statefulSetService.createNamespacedStatefulSet(namespace, MinioUtil.statefulSet(req));
     }
 
     public void deleteMinio(String namespace, String name) throws ApiException {
+        serviceService.deleteService(namespace, KubernetesUtil.name("minio", name));
+        statefulSetService.deleteStatefulSet(namespace, KubernetesUtil.name("minio", name));
     }
 
     public void createDashboard(String namespace, CreateMinioDashboardReq req) throws ApiException {
+        deployService.createNamespacedDeploy(namespace, MinioUtil.dashboardDeploy(req));
     }
 
     public void deleteDashboard(String namespace, String dashboardName) throws ApiException {
+        deployService.deleteDeploy(namespace, KubernetesUtil.name("minio-dashboard", dashboardName));
     }
 }

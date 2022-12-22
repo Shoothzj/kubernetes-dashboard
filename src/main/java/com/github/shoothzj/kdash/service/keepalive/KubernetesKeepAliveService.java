@@ -21,7 +21,8 @@ package com.github.shoothzj.kdash.service.keepalive;
 
 import com.github.shoothzj.kdash.module.keepalive.CreateKeepAliveReq;
 import com.github.shoothzj.kdash.service.KubernetesDeployService;
-import com.github.shoothzj.kdash.service.KubernetesServiceService;
+import com.github.shoothzj.kdash.util.KubernetesUtil;
+import com.github.shoothzj.kdash.util.KeepAliveUtil;
 import io.kubernetes.client.openapi.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,12 +33,11 @@ public class KubernetesKeepAliveService {
     @Autowired
     private KubernetesDeployService deployService;
 
-    @Autowired
-    private KubernetesServiceService serviceService;
-
     public void createKeepAlive(String namespace, CreateKeepAliveReq req) throws ApiException {
+        deployService.createNamespacedDeploy(namespace, KeepAliveUtil.deploy(req));
     }
 
     public void deleteKeepAlive(String namespace, String name) throws ApiException {
+        deployService.deleteDeploy(namespace, KubernetesUtil.name("keepAlive", name));
     }
 }

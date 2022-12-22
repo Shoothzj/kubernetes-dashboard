@@ -17,27 +17,19 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.service.nginx;
+package com.github.shoothzj.kdash.util;
 
+import com.github.shoothzj.kdash.module.CreateDeploymentParam;
 import com.github.shoothzj.kdash.module.nginx.CreateNginxReq;
-import com.github.shoothzj.kdash.service.KubernetesDeployService;
-import com.github.shoothzj.kdash.util.KubernetesUtil;
-import com.github.shoothzj.kdash.util.NginxUtil;
-import io.kubernetes.client.openapi.ApiException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
-public class KubernetesNginxService {
+public class NginxUtil {
 
-    @Autowired
-    private KubernetesDeployService deployService;
-
-    public void createNginx(String namespace, CreateNginxReq req) throws ApiException {
-        deployService.createNamespacedDeploy(namespace, NginxUtil.deploy(req));
+    public static CreateDeploymentParam deploy(CreateNginxReq req) {
+        CreateDeploymentParam createDeploymentParam = new CreateDeploymentParam();
+        createDeploymentParam.setDeploymentName(KubernetesUtil.name("nginx", req.getName()));
+        createDeploymentParam.setImage(req.getImage());
+        createDeploymentParam.setEnv(req.getEnv());
+        return createDeploymentParam;
     }
 
-    public void deleteNginx(String namespace, String name) throws ApiException {
-        deployService.deleteDeploy(namespace, KubernetesUtil.name("nginx", name));
-    }
 }

@@ -17,27 +17,19 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module.minio;
+package com.github.shoothzj.kdash.util;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.github.shoothzj.kdash.module.CreateDeploymentParam;
+import com.github.shoothzj.kdash.module.keepalive.CreateKeepAliveReq;
 
-import java.util.Map;
+public class KeepAliveUtil {
 
-@Setter
-@Getter
-public class CreateMinioReq {
-
-    private String name;
-
-    private String image;
-
-    private Map<String, String> env;
-
-    private String cpu;
-
-    private String memory;
-
-    public CreateMinioReq() {
+    public static CreateDeploymentParam deploy(CreateKeepAliveReq req) {
+        CreateDeploymentParam createDeploymentParam = new CreateDeploymentParam();
+        createDeploymentParam.setDeploymentName(KubernetesUtil.name("keepAlive", req.getName()));
+        createDeploymentParam.setImage(req.getImage());
+        createDeploymentParam.setEnv(req.getEnv());
+        return createDeploymentParam;
     }
+
 }

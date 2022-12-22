@@ -22,6 +22,8 @@ package com.github.shoothzj.kdash.module.minio;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+
 @Setter
 @Getter
 public class CreateMinioDashboardReq {
@@ -29,6 +31,8 @@ public class CreateMinioDashboardReq {
     private String name;
 
     private String image;
+
+    private Map<String, String> env;
 
     public CreateMinioDashboardReq() {
     }

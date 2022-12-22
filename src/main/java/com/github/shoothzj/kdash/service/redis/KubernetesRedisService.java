@@ -24,6 +24,8 @@ import com.github.shoothzj.kdash.module.redis.CreateRedisReq;
 import com.github.shoothzj.kdash.service.KubernetesDeployService;
 import com.github.shoothzj.kdash.service.KubernetesServiceService;
 import com.github.shoothzj.kdash.service.KubernetesStatefulSetService;
+import com.github.shoothzj.kdash.util.KubernetesUtil;
+import com.github.shoothzj.kdash.util.RedisUtil;
 import io.kubernetes.client.openapi.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,14 +43,20 @@ public class KubernetesRedisService {
     private KubernetesServiceService serviceService;
 
     public void createRedis(String namespace, CreateRedisReq req) throws ApiException {
+        serviceService.createService(namespace, RedisUtil.service(req));
+        statefulSetService.createNamespacedStatefulSet(namespace, RedisUtil.statefulSet(req));
     }
 
     public void deleteRedis(String namespace, String name) throws ApiException {
+        serviceService.deleteService(namespace, KubernetesUtil.name("redis", name));
+        statefulSetService.deleteStatefulSet(namespace, KubernetesUtil.name("redis", name));
     }
 
     public void createDashboard(String namespace, CreateRedisDashboardReq req) throws ApiException {
+        deployService.createNamespacedDeploy(namespace, RedisUtil.dashboardDeploy(req));
     }
 
     public void deleteDashboard(String namespace, String dashboardName) throws ApiException {
+        deployService.deleteDeploy(namespace, KubernetesUtil.name("redis-dashboard", dashboardName));
     }
 }
