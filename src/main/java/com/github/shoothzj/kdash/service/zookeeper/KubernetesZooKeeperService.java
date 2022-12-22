@@ -24,6 +24,8 @@ import com.github.shoothzj.kdash.module.zookeeper.CreateZooKeeperReq;
 import com.github.shoothzj.kdash.service.KubernetesDeployService;
 import com.github.shoothzj.kdash.service.KubernetesServiceService;
 import com.github.shoothzj.kdash.service.KubernetesStatefulSetService;
+import com.github.shoothzj.kdash.util.KubernetesUtil;
+import com.github.shoothzj.kdash.util.ZookeeperUtil;
 import io.kubernetes.client.openapi.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,14 +43,20 @@ public class KubernetesZooKeeperService {
     private KubernetesServiceService serviceService;
 
     public void createZooKeeper(String namespace, CreateZooKeeperReq req) throws ApiException {
+        serviceService.createService(namespace, ZookeeperUtil.service(req));
+        statefulSetService.createNamespacedStatefulSet(namespace, ZookeeperUtil.statefulSet(req));
     }
 
     public void deleteZooKeeper(String namespace, String name) throws ApiException {
+        serviceService.deleteService(namespace, KubernetesUtil.name("zookeeper", name));
+        statefulSetService.deleteStatefulSet(namespace, KubernetesUtil.name("zookeeper", name));
     }
 
     public void createDashboard(String namespace, CreateZooKeeperDashboardReq req) throws ApiException {
+        deployService.createNamespacedDeploy(namespace, ZookeeperUtil.dashboardDeploy(req));
     }
 
     public void deleteDashboard(String namespace, String dashboardName) throws ApiException {
+        deployService.deleteDeploy(namespace, KubernetesUtil.name("zookeeper-dashboard", dashboardName));
     }
 }

@@ -24,6 +24,8 @@ import com.github.shoothzj.kdash.module.mysql.CreateMysqlReq;
 import com.github.shoothzj.kdash.service.KubernetesDeployService;
 import com.github.shoothzj.kdash.service.KubernetesServiceService;
 import com.github.shoothzj.kdash.service.KubernetesStatefulSetService;
+import com.github.shoothzj.kdash.util.KubernetesUtil;
+import com.github.shoothzj.kdash.util.MysqlUtil;
 import io.kubernetes.client.openapi.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,14 +43,20 @@ public class KubernetesMysqlService {
     private KubernetesServiceService serviceService;
 
     public void createMysql(String namespace, CreateMysqlReq req) throws ApiException {
+        serviceService.createService(namespace, MysqlUtil.service(req));
+        statefulSetService.createNamespacedStatefulSet(namespace, MysqlUtil.statefulSet(req));
     }
 
     public void deleteMysql(String namespace, String name) throws ApiException {
+        serviceService.deleteService(namespace, KubernetesUtil.name("mysql", name));
+        statefulSetService.deleteStatefulSet(namespace, KubernetesUtil.name("mysql", name));
     }
 
     public void createDashboard(String namespace, CreateMysqlDashboardReq req) throws ApiException {
+        deployService.createNamespacedDeploy(namespace, MysqlUtil.dashboardDeploy(req));
     }
 
     public void deleteDashboard(String namespace, String dashboardName) throws ApiException {
+        deployService.deleteDeploy(namespace, KubernetesUtil.name("mysql-dashboard", dashboardName));
     }
 }

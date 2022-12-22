@@ -17,27 +17,19 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module.minio;
+package com.github.shoothzj.kdash.util;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.Map;
+@Slf4j
+public class SafeUtil {
 
-@Setter
-@Getter
-public class CreateMinioReq {
-
-    private String name;
-
-    private String image;
-
-    private Map<String, String> env;
-
-    private String cpu;
-
-    private String memory;
-
-    public CreateMinioReq() {
+    public static void safeRun(Runnable runnable) {
+        try {
+            runnable.run();
+        } catch (Throwable e) {
+            log.error("safe run error", e);
+        }
     }
+
 }

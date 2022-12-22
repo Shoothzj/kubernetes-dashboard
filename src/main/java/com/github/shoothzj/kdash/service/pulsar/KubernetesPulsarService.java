@@ -23,6 +23,8 @@ import com.github.shoothzj.kdash.module.pulsar.CreatePulsarDashboardReq;
 import com.github.shoothzj.kdash.module.pulsar.CreatePulsarReq;
 import com.github.shoothzj.kdash.service.KubernetesDeployService;
 import com.github.shoothzj.kdash.service.KubernetesServiceService;
+import com.github.shoothzj.kdash.util.KubernetesUtil;
+import com.github.shoothzj.kdash.util.PulsarUtil;
 import io.kubernetes.client.openapi.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,14 +39,20 @@ public class KubernetesPulsarService {
     private KubernetesServiceService serviceService;
 
     public void createPulsar(String namespace, CreatePulsarReq req) throws ApiException {
+        serviceService.createService(namespace, PulsarUtil.service(req));
+        deployService.createNamespacedDeploy(namespace, PulsarUtil.deploy(req));
     }
 
     public void deletePulsar(String namespace, String name) throws ApiException {
+        serviceService.deleteService(namespace, KubernetesUtil.name("pulsar", name));
+        deployService.deleteDeploy(namespace, KubernetesUtil.name("pulsar", name));
     }
 
     public void createDashboard(String namespace, CreatePulsarDashboardReq req) throws ApiException {
+        deployService.createNamespacedDeploy(namespace, PulsarUtil.dashboardDeploy(req));
     }
 
     public void deleteDashboard(String namespace, String dashboardName) throws ApiException {
+        deployService.deleteDeploy(namespace, KubernetesUtil.name("pulsar-dashboard", dashboardName));
     }
 }
