@@ -40,6 +40,8 @@ public class CreateMinioDashboardReq {
 
     private String memory;
 
+    private int replicas = 1;
+
     public CreateMinioDashboardReq() {
     }
 }

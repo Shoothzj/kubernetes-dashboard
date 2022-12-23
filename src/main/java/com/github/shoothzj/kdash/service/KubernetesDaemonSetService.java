@@ -58,7 +58,7 @@ public class KubernetesDaemonSetService {
         }
         {
             V1DaemonSetSpec v1DaemonSetSpec = new V1DaemonSetSpec();
-            v1DaemonSetSpec.setSelector(KubernetesUtil.labelSelector(param.getDaemonSetName()));
+            v1DaemonSetSpec.setSelector(KubernetesUtil.labelSelector(param.getDaemonSetName(), null));
             v1DaemonSetSpec.setTemplate(param.getTemplate());
             v1DaemonSet.setSpec(v1DaemonSetSpec);
         }

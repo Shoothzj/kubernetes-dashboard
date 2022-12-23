@@ -40,6 +40,8 @@ public class CreateMysqlDashboardReq {
 
     private String memory;
 
+    private int replicas = 1;
+
     public CreateMysqlDashboardReq() {
     }
 }

@@ -17,22 +17,32 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.util;
+package com.github.shoothzj.kdash.module.apisix;
 
-import com.github.shoothzj.kdash.module.CreateDeploymentParam;
-import com.github.shoothzj.kdash.module.nginx.CreateNginxReq;
+import lombok.Getter;
+import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 
-public class NginxUtil {
+import java.util.Map;
 
-    public static CreateDeploymentParam deploy(CreateNginxReq req) {
-        CreateDeploymentParam createDeploymentParam = new CreateDeploymentParam();
-        createDeploymentParam.setDeploymentName(KubernetesUtil.name("nginx", req.getName()));
-        createDeploymentParam.setImage(req.getImage());
-        createDeploymentParam.setEnv(req.getEnv());
-        createDeploymentParam.setResourceRequirements(
-                KubernetesUtil.resourceRequirements(req.getCpu(), req.getMemory()));
-        createDeploymentParam.setReplicas(req.getReplicas());
-        return createDeploymentParam;
+@Setter
+@Getter
+public class CreateApiSixReq {
+
+    @Nullable
+    private String name;
+
+    private String image;
+
+    private Map<String, String> env;
+
+    private String cpu;
+
+    private String memory;
+
+    private int replicas = 1;
+
+    public CreateApiSixReq(){
     }
 
 }

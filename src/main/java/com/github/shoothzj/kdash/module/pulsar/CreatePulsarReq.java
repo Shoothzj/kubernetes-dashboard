@@ -40,6 +40,8 @@ public class CreatePulsarReq {
 
     private String memory;
 
+    private int replicas = 1;
+
     public CreatePulsarReq() {
     }
 }
