@@ -29,6 +29,8 @@ public class NginxUtil {
         createDeploymentParam.setDeploymentName(KubernetesUtil.name("nginx", req.getName()));
         createDeploymentParam.setImage(req.getImage());
         createDeploymentParam.setEnv(req.getEnv());
+        createDeploymentParam.setResourceRequirements(
+                KubernetesUtil.resourceRequirements(req.getCpu(), req.getMemory()));
         return createDeploymentParam;
     }
 

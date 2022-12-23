@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
 
 public class KubernetesUtil {
 
-    public static String name(String component, @Nullable String name) {
+    public static String name(@NotNull String component, @Nullable String name) {
         if (StringUtils.isNoneEmpty(name)) {
             return component;
         } else {
@@ -106,23 +106,25 @@ public class KubernetesUtil {
 
     public static List<V1Container> singleContainerList(String image,
                                                         @Nullable String imagePullPolicy,
-                                                        Map<String, String> envMap,
+                                                        @Nullable Map<String, String> envMap,
                                                         @NotNull String name,
-                                                        ResourceRequirements resourceRequirements,
-                                                        V1Lifecycle v1Lifecycle,
-                                                        V1Probe readinessProbe,
-                                                        V1Probe livenessProbe) {
+                                                        @NotNull ResourceRequirements resourceRequirements,
+                                                        @Nullable V1Lifecycle v1Lifecycle,
+                                                        @Nullable V1Probe readinessProbe,
+                                                        @Nullable V1Probe livenessProbe) {
         List<V1Container> containers = new ArrayList<>();
         V1Container container = new V1Container();
         container.setName(name);
         container.setImage(image);
         container.setImagePullPolicy(imagePullPolicy == null ? "Always" : imagePullPolicy);
-        container.setEnv(envMap.entrySet().stream().map(entry -> {
-            V1EnvVar envVar = new V1EnvVar();
-            envVar.setName(entry.getKey());
-            envVar.setValue(entry.getValue());
-            return envVar;
-        }).collect(Collectors.toList()));
+        if (envMap != null) {
+            container.setEnv(envMap.entrySet().stream().map(entry -> {
+                V1EnvVar envVar = new V1EnvVar();
+                envVar.setName(entry.getKey());
+                envVar.setValue(entry.getValue());
+                return envVar;
+            }).collect(Collectors.toList()));
+        }
         container.setResources(resourceRequirements(resourceRequirements));
         container.setLifecycle(v1Lifecycle);
         container.setReadinessProbe(readinessProbe);
@@ -131,13 +133,13 @@ public class KubernetesUtil {
         return containers;
     }
 
-    public static List<V1Container> singleContainerList(V1Container container) {
+    public static List<V1Container> singleContainerList(@NotNull V1Container container) {
         List<V1Container> v1Containers = new ArrayList<>();
         v1Containers.add(container);
         return v1Containers;
     }
 
-    public static V1EnvVar v1EnvVar(String fieldPath, String name) {
+    public static V1EnvVar v1EnvVar(@Nullable String fieldPath, @Nullable String name) {
         V1EnvVar v1EnvVar = new V1EnvVar();
         V1EnvVarSource v1EnvVarSource = new V1EnvVarSource();
         V1ObjectFieldSelector v1ObjectFieldSelector = new V1ObjectFieldSelector();
@@ -148,7 +150,10 @@ public class KubernetesUtil {
         return v1EnvVar;
     }
 
-    public static V1Probe v1Probe(Probe probe) {
+    public static V1Probe v1Probe(@Nullable Probe probe) {
+        if (probe == null) {
+            return null;
+        }
         V1Probe v1Probe = new V1Probe();
         V1ExecAction execAction = new V1ExecAction();
         execAction.command(probe.getProbeCommand());
@@ -262,7 +267,7 @@ public class KubernetesUtil {
         return map;
     }
 
-    public static List<V1LocalObjectReference> imagePullSecrets(String imagePullSecret) {
+    public static List<V1LocalObjectReference> imagePullSecrets(@NotNull String imagePullSecret) {
         List<V1LocalObjectReference> result = new ArrayList<>();
         V1LocalObjectReference v1LocalObjectReference = new V1LocalObjectReference();
         v1LocalObjectReference.setName(imagePullSecret);
@@ -270,7 +275,7 @@ public class KubernetesUtil {
         return result;
     }
 
-    public static List<ContainerInfo> containerInfoList(List<V1Container> containers) {
+    public static List<ContainerInfo> containerInfoList(@NotNull List<V1Container> containers) {
         List<ContainerInfo> containerInfoList = new ArrayList<>(containers.size());
         for (V1Container container : containers) {
             ContainerInfo containerInfo = new ContainerInfo();
@@ -282,7 +287,18 @@ public class KubernetesUtil {
         return containerInfoList;
     }
 
-    public static V1ResourceRequirements resourceRequirements(ResourceRequirements resourceRequirements) {
+    public static ResourceRequirements resourceRequirements(String cpu, String memory) {
+        Map<String, String> resourceMap = Map.of(
+                "cpu", cpu,
+                "memory", memory
+        );
+        ResourceRequirements resourceRequirements = new ResourceRequirements();
+        resourceRequirements.setLimits(resourceMap);
+        resourceRequirements.setRequests(resourceMap);
+        return resourceRequirements;
+    }
+
+    public static V1ResourceRequirements resourceRequirements(@NotNull ResourceRequirements resourceRequirements) {
         V1ResourceRequirements v1ResourceRequirements = new V1ResourceRequirements();
         Map<String, Quantity> limitMap = new HashMap<>();
         for (Map.Entry<String, String> entry : resourceRequirements.getLimits().entrySet()) {
