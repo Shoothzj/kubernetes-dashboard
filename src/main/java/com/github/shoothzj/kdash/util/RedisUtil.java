@@ -45,6 +45,8 @@ public class RedisUtil {
         createStatefulSetParam.setStatefulSetName(KubernetesUtil.name("redis", req.getName()));
         createStatefulSetParam.setImage(req.getImage());
         createStatefulSetParam.setEnv(req.getEnv());
+        createStatefulSetParam.setResourceRequirements(
+                KubernetesUtil.resourceRequirements(req.getCpu(), req.getMemory()));
         return createStatefulSetParam;
     }
 
@@ -53,6 +55,8 @@ public class RedisUtil {
         createDeploymentParam.setDeploymentName(KubernetesUtil.name("redis-dashboard", req.getName()));
         createDeploymentParam.setImage(req.getImage());
         createDeploymentParam.setEnv(req.getEnv());
+        createDeploymentParam.setResourceRequirements(
+                KubernetesUtil.resourceRequirements(req.getCpu(), req.getMemory()));
         return createDeploymentParam;
     }
 

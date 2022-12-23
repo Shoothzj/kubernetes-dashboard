@@ -47,6 +47,8 @@ public class PulsarUtil {
         createDeploymentParam.setDeploymentName(KubernetesUtil.name("pulsar", req.getName()));
         createDeploymentParam.setImage(req.getImage());
         createDeploymentParam.setEnv(req.getEnv());
+        createDeploymentParam.setResourceRequirements(
+                KubernetesUtil.resourceRequirements(req.getCpu(), req.getMemory()));
         return createDeploymentParam;
     }
 
@@ -55,6 +57,8 @@ public class PulsarUtil {
         createDeploymentParam.setDeploymentName(KubernetesUtil.name("pulsar-dashboard", req.getName()));
         createDeploymentParam.setImage(req.getImage());
         createDeploymentParam.setEnv(req.getEnv());
+        createDeploymentParam.setResourceRequirements(
+                KubernetesUtil.resourceRequirements(req.getCpu(), req.getMemory()));
         return createDeploymentParam;
     }
 

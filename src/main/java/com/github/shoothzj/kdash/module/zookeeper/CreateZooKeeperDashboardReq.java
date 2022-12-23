@@ -36,6 +36,10 @@ public class CreateZooKeeperDashboardReq {
 
     private Map<String, String> env;
 
+    private String cpu;
+
+    private String memory;
+
     public CreateZooKeeperDashboardReq() {
     }
 }

@@ -45,6 +45,8 @@ public class MinioUtil {
         createStatefulSetParam.setStatefulSetName(KubernetesUtil.name("minio", req.getName()));
         createStatefulSetParam.setImage(req.getImage());
         createStatefulSetParam.setEnv(req.getEnv());
+        createStatefulSetParam.setResourceRequirements(
+                KubernetesUtil.resourceRequirements(req.getCpu(), req.getMemory()));
         return createStatefulSetParam;
     }
 
@@ -53,6 +55,8 @@ public class MinioUtil {
         createDeploymentParam.setDeploymentName(KubernetesUtil.name("minio-dashboard", req.getName()));
         createDeploymentParam.setImage(req.getImage());
         createDeploymentParam.setEnv(req.getEnv());
+        createDeploymentParam.setResourceRequirements(
+                KubernetesUtil.resourceRequirements(req.getCpu(), req.getMemory()));
         return createDeploymentParam;
     }
 

@@ -36,6 +36,10 @@ public class CreatePulsarDashboardReq {
 
     private Map<String, String> env;
 
+    private String cpu;
+
+    private String memory;
+
     public CreatePulsarDashboardReq() {
     }
 }

@@ -49,6 +49,8 @@ public class ZookeeperUtil {
         createStatefulSetParam.setStatefulSetName(KubernetesUtil.name("zookeeper", req.getName()));
         createStatefulSetParam.setImage(req.getImage());
         createStatefulSetParam.setEnv(req.getEnv());
+        createStatefulSetParam.setResourceRequirements(
+                KubernetesUtil.resourceRequirements(req.getCpu(), req.getMemory()));
         return createStatefulSetParam;
     }
 
@@ -57,6 +59,8 @@ public class ZookeeperUtil {
         createDeploymentParam.setDeploymentName(KubernetesUtil.name("zookeeper-dashboard", req.getName()));
         createDeploymentParam.setImage(req.getImage());
         createDeploymentParam.setEnv(req.getEnv());
+        createDeploymentParam.setResourceRequirements(
+                KubernetesUtil.resourceRequirements(req.getCpu(), req.getMemory()));
         return createDeploymentParam;
     }
 

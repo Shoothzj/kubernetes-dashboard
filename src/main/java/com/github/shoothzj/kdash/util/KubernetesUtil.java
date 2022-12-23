@@ -287,6 +287,17 @@ public class KubernetesUtil {
         return containerInfoList;
     }
 
+    public static ResourceRequirements resourceRequirements(String cpu, String memory) {
+        Map<String, String> resourceMap = Map.of(
+                "cpu", cpu,
+                "memory", memory
+        );
+        ResourceRequirements resourceRequirements = new ResourceRequirements();
+        resourceRequirements.setLimits(resourceMap);
+        resourceRequirements.setRequests(resourceMap);
+        return resourceRequirements;
+    }
+
     public static V1ResourceRequirements resourceRequirements(@NotNull ResourceRequirements resourceRequirements) {
         V1ResourceRequirements v1ResourceRequirements = new V1ResourceRequirements();
         Map<String, Quantity> limitMap = new HashMap<>();

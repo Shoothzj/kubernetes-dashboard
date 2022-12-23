@@ -21,6 +21,7 @@ package com.github.shoothzj.kdash.module.minio;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import java.util.Map;
 @Getter
 public class CreateMinioReq {
 
+    @Nullable
     private String name;
 
     private String image;
