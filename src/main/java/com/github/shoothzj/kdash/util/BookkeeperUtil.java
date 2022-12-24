@@ -48,6 +48,7 @@ public class BookkeeperUtil {
         createStatefulSetParam.setEnv(req.getEnv());
         createStatefulSetParam.setResourceRequirements(
                 KubernetesUtil.resourceRequirements(req.getCpu(), req.getMemory()));
+        createStatefulSetParam.setReplicas(req.getReplicas());
         return createStatefulSetParam;
     }
 
@@ -58,6 +59,7 @@ public class BookkeeperUtil {
         createDeploymentParam.setEnv(req.getEnv());
         createDeploymentParam.setResourceRequirements(
                 KubernetesUtil.resourceRequirements(req.getCpu(), req.getMemory()));
+        createDeploymentParam.setReplicas(req.getReplicas());
         return createDeploymentParam;
     }
 }

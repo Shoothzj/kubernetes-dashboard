@@ -40,6 +40,8 @@ public class CreateNginxDashboardReq {
 
     private String memory;
 
+    private int replicas = 1;
+
     public CreateNginxDashboardReq() {
     }
 }

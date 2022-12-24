@@ -40,6 +40,8 @@ public class CreateZooKeeperReq {
 
     private String memory;
 
+    private int replicas = 1;
+
     public CreateZooKeeperReq() {
     }
 }

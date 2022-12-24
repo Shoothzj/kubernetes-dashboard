@@ -57,6 +57,7 @@ public class MinioUtil {
         createDeploymentParam.setEnv(req.getEnv());
         createDeploymentParam.setResourceRequirements(
                 KubernetesUtil.resourceRequirements(req.getCpu(), req.getMemory()));
+        createDeploymentParam.setReplicas(req.getReplicas());
         return createDeploymentParam;
     }
 

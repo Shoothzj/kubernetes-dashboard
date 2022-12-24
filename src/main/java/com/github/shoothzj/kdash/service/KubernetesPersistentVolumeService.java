@@ -23,7 +23,6 @@ import com.github.shoothzj.kdash.module.CreatePersistentVolumeReq;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
-import io.kubernetes.client.openapi.models.V1LocalVolumeSource;
 import io.kubernetes.client.openapi.models.V1NodeSelector;
 import io.kubernetes.client.openapi.models.V1NodeSelectorRequirement;
 import io.kubernetes.client.openapi.models.V1NodeSelectorTerm;
@@ -66,9 +65,6 @@ public class KubernetesPersistentVolumeService {
         spec.setAccessModes(req.getAccessModes());
         spec.setPersistentVolumeReclaimPolicy(req.getPersistentVolumeReclaimPolicy());
         spec.setStorageClassName(req.getStorageClassName());
-        V1LocalVolumeSource local = new V1LocalVolumeSource();
-        local.setPath(req.getLocalPath());
-        spec.setLocal(local);
         // nodeAffinity convert
         Map<String, List<String>> nodeSelectorDefines = req.getNodeSelectorDefines();
         if (nodeSelectorDefines != null) {

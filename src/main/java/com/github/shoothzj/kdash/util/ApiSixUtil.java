@@ -20,13 +20,13 @@
 package com.github.shoothzj.kdash.util;
 
 import com.github.shoothzj.kdash.module.CreateDeploymentParam;
-import com.github.shoothzj.kdash.module.nginx.CreateNginxReq;
+import com.github.shoothzj.kdash.module.apisix.CreateApiSixReq;
 
-public class NginxUtil {
+public class ApiSixUtil {
 
-    public static CreateDeploymentParam deploy(CreateNginxReq req) {
+    public static CreateDeploymentParam deploy(CreateApiSixReq req) {
         CreateDeploymentParam createDeploymentParam = new CreateDeploymentParam();
-        createDeploymentParam.setDeploymentName(KubernetesUtil.name("nginx", req.getName()));
+        createDeploymentParam.setDeploymentName(KubernetesUtil.name("apisix", req.getName()));
         createDeploymentParam.setImage(req.getImage());
         createDeploymentParam.setEnv(req.getEnv());
         createDeploymentParam.setResourceRequirements(

@@ -57,7 +57,7 @@ import java.util.stream.Collectors;
 public class KubernetesUtil {
 
     public static String name(@NotNull String component, @Nullable String name) {
-        if (StringUtils.isNoneEmpty(name)) {
+        if (StringUtils.isEmpty(name)) {
             return component;
         } else {
             return component + "-" + name;
@@ -267,7 +267,7 @@ public class KubernetesUtil {
         return map;
     }
 
-    public static List<V1LocalObjectReference> imagePullSecrets(@NotNull String imagePullSecret) {
+    public static List<V1LocalObjectReference> imagePullSecrets(@Nullable String imagePullSecret) {
         List<V1LocalObjectReference> result = new ArrayList<>();
         V1LocalObjectReference v1LocalObjectReference = new V1LocalObjectReference();
         v1LocalObjectReference.setName(imagePullSecret);

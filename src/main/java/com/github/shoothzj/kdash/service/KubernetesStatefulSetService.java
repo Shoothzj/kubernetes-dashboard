@@ -52,6 +52,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -159,13 +160,17 @@ public class KubernetesStatefulSetService {
         V1StatefulSet v1StatefulSet = new V1StatefulSet();
         v1StatefulSet.setApiVersion("apps/v1");
         v1StatefulSet.setKind("StatefulSet");
+        Map<String, String> labels = KubernetesUtil.label(req.getStatefulSetName());
+        if (req.getLabels() != null) {
+            labels.putAll(req.getLabels());
+        }
 
         {
             // metadata
             V1ObjectMeta metadata = new V1ObjectMeta();
             metadata.setName(req.getStatefulSetName());
             metadata.setNamespace(namespace);
-            metadata.setLabels(KubernetesUtil.label(req.getStatefulSetName()));
+            metadata.setLabels(labels);
             v1StatefulSet.setMetadata(metadata);
         }
 
@@ -175,7 +180,7 @@ public class KubernetesStatefulSetService {
             // spec replicas
             statefulSetSpec.setReplicas(req.getReplicas());
             // spec selector
-            statefulSetSpec.setSelector(KubernetesUtil.labelSelector(req.getStatefulSetName()));
+            statefulSetSpec.setSelector(KubernetesUtil.labelSelector(req.getStatefulSetName(), labels));
             // spec template
             V1PodTemplateSpec templateSpec = new V1PodTemplateSpec();
             {
@@ -189,22 +194,22 @@ public class KubernetesStatefulSetService {
             {
                 // spec template spec containers
                 List<V1Container> v1Containers = KubernetesUtil.singleContainerList(req.getImage(), req.getEnv(),
-                        req.getStatefulSetName(), req.getResourceRequirements());
-                V1Container v1Container = v1Containers.get(0);
-                List<V1VolumeMount> volumeMounts = new ArrayList<>();
-                // spec template spec liveness probe
-                v1Container.setLivenessProbe(KubernetesUtil.v1Probe(req.getLivenessProbe()));
-                // spec template spec readiness probe
-                v1Container.setReadinessProbe(KubernetesUtil.v1Probe(req.getReadinessProbe()));
-                for (VolumeClaimTemplates persistentVolume : req.getPersistentVolumes()) {
-                    V1VolumeMount v1VolumeMount = new V1VolumeMount();
-                    v1VolumeMount.setName(persistentVolume.getVolumeName());
-                    v1VolumeMount.setMountPath(persistentVolume.getMountPath());
-                    volumeMounts.add(v1VolumeMount);
-                }
+                        req.getStatefulSetName(), req.getResourceRequirements(), null,
+                        KubernetesUtil.v1Probe(req.getLivenessProbe()),
+                        KubernetesUtil.v1Probe(req.getReadinessProbe()));
+                if (req.getPersistentVolumes() != null) {
+                    V1Container v1Container = v1Containers.get(0);
+                    List<V1VolumeMount> volumeMounts = new ArrayList<>();
+                    for (VolumeClaimTemplates persistentVolume : req.getPersistentVolumes()) {
+                        V1VolumeMount v1VolumeMount = new V1VolumeMount();
+                        v1VolumeMount.setName(persistentVolume.getVolumeName());
+                        v1VolumeMount.setMountPath(persistentVolume.getMountPath());
+                        volumeMounts.add(v1VolumeMount);
+                    }
 
-                v1Container.setVolumeMounts(volumeMounts);
-                v1PodSpec.setContainers(v1Containers);
+                    v1Container.setVolumeMounts(volumeMounts);
+                    v1PodSpec.setContainers(v1Containers);
+                }
             }
             {
                 V1Affinity v1Affinity = new V1Affinity();
@@ -218,7 +223,7 @@ public class KubernetesStatefulSetService {
             statefulSetSpec.setTemplate(templateSpec);
             v1StatefulSet.setSpec(statefulSetSpec);
 
-            {
+            if (req.getPersistentVolumes() != null) {
                 List<V1PersistentVolumeClaim> volumeClaimTemplates = new ArrayList<>();
                 for (VolumeClaimTemplates persistentVolume : req.getPersistentVolumes()) {
                     V1PersistentVolumeClaim v1PersistentVolumeClaim = new V1PersistentVolumeClaim();

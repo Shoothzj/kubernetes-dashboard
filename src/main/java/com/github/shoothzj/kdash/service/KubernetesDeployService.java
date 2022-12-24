@@ -27,6 +27,7 @@ import com.github.shoothzj.kdash.util.KubernetesUtil;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
+import io.kubernetes.client.openapi.models.V1Affinity;
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1Deployment;
 import io.kubernetes.client.openapi.models.V1DeploymentList;
@@ -83,7 +84,7 @@ public class KubernetesDeployService {
             // spec replicas
             deploySpec.setReplicas(req.getReplicas());
             // spec selector
-            deploySpec.setSelector(KubernetesUtil.labelSelector(req.getDeploymentName()));
+            deploySpec.setSelector(KubernetesUtil.labelSelector(req.getDeploymentName(), req.getLabels()));
             // spec template
             V1PodTemplateSpec templateSpec = new V1PodTemplateSpec();
             {
@@ -96,8 +97,16 @@ public class KubernetesDeployService {
             V1PodSpec v1PodSpec = new V1PodSpec();
             // spec template spec containers
             v1PodSpec.setContainers(KubernetesUtil.singleContainerList(req.getImage(), req.getEnv(),
-                    req.getDeploymentName(), req.getResourceRequirements()));
+                    req.getDeploymentName(), req.getResourceRequirements(),
+                    KubernetesUtil.v1Lifecycle(req.getPostStartCommand(), req.getPreStopCommand()),
+                    KubernetesUtil.v1Probe(req.getReadinessProbe()),
+                    KubernetesUtil.v1Probe(req.getLivenessProbe())));
             v1PodSpec.setImagePullSecrets(KubernetesUtil.imagePullSecrets(req.getImagePullSecret()));
+            V1Affinity v1Affinity = new V1Affinity();
+            v1Affinity.setPodAffinity(KubernetesUtil.v1PodAffinity(req.getPodAffinityTerms()));
+            v1Affinity.setPodAntiAffinity(KubernetesUtil.v1PodAntiAffinity(req.getPodAntiAffinityTerms()));
+            v1Affinity.setNodeAffinity(KubernetesUtil.v1NodeAffinity(req.getNodeSelectorRequirement()));
+            v1PodSpec.setAffinity(v1Affinity);
             templateSpec.setSpec(v1PodSpec);
             deploySpec.setTemplate(templateSpec);
             deployment.setSpec(deploySpec);

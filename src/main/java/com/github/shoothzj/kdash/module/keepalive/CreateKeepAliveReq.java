@@ -40,6 +40,8 @@ public class CreateKeepAliveReq {
 
     private String memory;
 
+    private int replicas = 1;
+
     public CreateKeepAliveReq() {
     }
 }

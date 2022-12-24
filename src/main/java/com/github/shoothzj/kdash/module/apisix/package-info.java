@@ -17,22 +17,4 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.util;
-
-import com.github.shoothzj.kdash.module.CreateDeploymentParam;
-import com.github.shoothzj.kdash.module.nginx.CreateNginxReq;
-
-public class NginxUtil {
-
-    public static CreateDeploymentParam deploy(CreateNginxReq req) {
-        CreateDeploymentParam createDeploymentParam = new CreateDeploymentParam();
-        createDeploymentParam.setDeploymentName(KubernetesUtil.name("nginx", req.getName()));
-        createDeploymentParam.setImage(req.getImage());
-        createDeploymentParam.setEnv(req.getEnv());
-        createDeploymentParam.setResourceRequirements(
-                KubernetesUtil.resourceRequirements(req.getCpu(), req.getMemory()));
-        createDeploymentParam.setReplicas(req.getReplicas());
-        return createDeploymentParam;
-    }
-
-}
+package com.github.shoothzj.kdash.module.apisix;
