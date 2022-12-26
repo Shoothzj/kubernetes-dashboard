@@ -19,6 +19,13 @@
 
 package com.github.shoothzj.kdash.module;
 
+import io.kubernetes.client.openapi.models.V1Container;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
+import io.kubernetes.client.openapi.models.V1PodSpec;
+import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
+import io.kubernetes.client.openapi.models.V1StatefulSetPersistentVolumeClaimRetentionPolicy;
+import io.kubernetes.client.openapi.models.V1StatefulSetStatus;
+import io.kubernetes.client.openapi.models.V1StatefulSetUpdateStrategy;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -60,6 +67,25 @@ public class CreateStatefulSetParam extends BaseParam {
     private ResourceRequirements resourceRequirements;
 
     private List<VolumeClaimTemplates> persistentVolumes;
+
+    private V1StatefulSetStatus v1StatefulSetStatus;
+
+    private V1StatefulSetUpdateStrategy v1StatefulSetUpdateStrategy; // todo
+
+    private V1StatefulSetPersistentVolumeClaimRetentionPolicy policy;
+
+    private String podManagementPolicy;
+
+    private V1PodTemplateSpec v1PodTemplateSpec;
+
+    private V1ObjectMeta specV1ObjectMeta;
+
+    private V1PodSpec v1PodSpec;
+
+    private V1Container specV1Container;
+
+    private String clusterName;
+
 
     public CreateStatefulSetParam() {
     }
