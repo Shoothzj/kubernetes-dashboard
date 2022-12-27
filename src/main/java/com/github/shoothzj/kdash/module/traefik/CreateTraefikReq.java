@@ -16,51 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-package com.github.shoothzj.kdash.module;
+package com.github.shoothzj.kdash.module.traefik;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Map;
 
-@Setter
 @Getter
-public class CreateDeploymentParam extends BaseParam {
+@Setter
+public class CreateTraefikReq {
 
-    private String deploymentName;
-
-    private Map<String, String> labels;
-
-    private int replicas;
+    @Nullable
+    private String name;
 
     private String image;
 
-    private String imagePullSecret;
-
     private Map<String, String> env;
 
-    private ResourceRequirements resourceRequirements;
+    private String cpu;
 
-    private NodeSelectorRequirement nodeSelectorRequirement;
+    private String memory;
 
-    private PodAffinityTerms podAffinityTerms;
+    private int replicas = 1;
 
-    private PodAffinityTerms podAntiAffinityTerms;
-
-    private List<String> preStopCommand;
-
-    private List<String> postStartCommand;
-
-    private Probe livenessProbe;
-
-    private Probe readinessProbe;
-
-    private List<String> command;
-
-    private Boolean hostNetwork;
-
-    public CreateDeploymentParam() {
-    }
 }

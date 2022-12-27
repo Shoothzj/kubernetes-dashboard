@@ -20,6 +20,7 @@
 package com.github.shoothzj.kdash.util;
 
 import com.github.shoothzj.kdash.module.CreateDeploymentParam;
+import com.github.shoothzj.kdash.module.apisix.CreateApiSixDashboardReq;
 import com.github.shoothzj.kdash.module.apisix.CreateApiSixReq;
 
 public class ApiSixUtil {
@@ -35,4 +36,14 @@ public class ApiSixUtil {
         return createDeploymentParam;
     }
 
+    public static CreateDeploymentParam dashboardDeploy(CreateApiSixDashboardReq req) {
+        CreateDeploymentParam createDeploymentParam = new CreateDeploymentParam();
+        createDeploymentParam.setDeploymentName(KubernetesUtil.name("apisix-dashboard", req.getName()));
+        createDeploymentParam.setImage(req.getImage());
+        createDeploymentParam.setEnv(req.getEnv());
+        createDeploymentParam.setResourceRequirements(
+                KubernetesUtil.resourceRequirements(req.getCpu(), req.getMemory()));
+        createDeploymentParam.setReplicas(req.getReplicas());
+        return createDeploymentParam;
+    }
 }
