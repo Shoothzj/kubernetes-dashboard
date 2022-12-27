@@ -34,7 +34,7 @@ public class CreateReplicaReq {
 
     private String image;
 
-    private int replica;
+    private int replicas;
 
     private String imagePullSecret;
 

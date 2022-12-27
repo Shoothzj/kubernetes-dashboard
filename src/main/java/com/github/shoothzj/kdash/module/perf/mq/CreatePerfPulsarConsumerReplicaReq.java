@@ -30,7 +30,7 @@ public class CreatePerfPulsarConsumerReplicaReq {
 
     private String name;
 
-    private int replica;
+    private int replicas;
 
     private Map<String, String> env;
 

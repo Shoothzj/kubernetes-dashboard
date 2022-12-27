@@ -68,7 +68,7 @@ public class KubernetesReplicaControllerService {
         {
             // add spec
             V1ReplicationControllerSpec controllerSpec = new V1ReplicationControllerSpec();
-            controllerSpec.setReplicas(req.getReplica());
+            controllerSpec.setReplicas(req.getReplicas());
 
             controllerSpec.setSelector(KubernetesUtil.label(req.getReplicaName()));
             // spec template

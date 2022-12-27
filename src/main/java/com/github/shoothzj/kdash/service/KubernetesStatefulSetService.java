@@ -67,9 +67,6 @@ public class KubernetesStatefulSetService {
         V1StatefulSet v1StatefulSet = new V1StatefulSet();
         v1StatefulSet.setApiVersion("apps/v1");
         v1StatefulSet.setKind("StatefulSet");
-        if (req.getV1StatefulSetStatus() != null) {
-            v1StatefulSet.setStatus(req.getV1StatefulSetStatus());
-        }
         Map<String, String> labels = KubernetesUtil.label(req.getStatefulSetName());
         if (req.getLabels() != null) {
             labels.putAll(req.getLabels());
@@ -77,15 +74,11 @@ public class KubernetesStatefulSetService {
 
         {
             // meta
-            V1ObjectMeta v1ObjectMeta = req.getSpecV1ObjectMeta() == null
-                    ? new V1ObjectMeta() : req.getSpecV1ObjectMeta();
+            V1ObjectMeta v1ObjectMeta = new V1ObjectMeta();
             v1ObjectMeta.setName(req.getStatefulSetName());
             v1ObjectMeta.setNamespace(namespace);
             if (req.getLabels().size() != 0) {
                 v1ObjectMeta.setLabels(req.getLabels());
-            }
-            if (req.getClusterName() != null) {
-                v1ObjectMeta.setClusterName(req.getClusterName());
             }
             if (req.getAnnotations() != null && req.getAnnotations().size() != 0) {
                 v1ObjectMeta.setAnnotations(req.getAnnotations());
@@ -98,18 +91,14 @@ public class KubernetesStatefulSetService {
             V1StatefulSetSpec statefulSetSpec = new V1StatefulSetSpec();
             // spec replicas
             statefulSetSpec.setReplicas(req.getReplicas());
-            if (req.getPolicy() != null) {
-                statefulSetSpec.setPersistentVolumeClaimRetentionPolicy(req.getPolicy());
-            }
 
-            if (req.getV1StatefulSetUpdateStrategy() != null) {
-                statefulSetSpec.setUpdateStrategy(req.getV1StatefulSetUpdateStrategy());
+            if (req.getStatefulSetUpdateStrategy() != null) {
+                statefulSetSpec.setUpdateStrategy(req.getStatefulSetUpdateStrategy());
             }
             // spec selector
             statefulSetSpec.setSelector(KubernetesUtil.labelSelector(req.getStatefulSetName(), labels));
             // spec template
-            V1PodTemplateSpec templateSpec = req.getV1PodTemplateSpec() == null ? new V1PodTemplateSpec() :
-                    req.getV1PodTemplateSpec();
+            V1PodTemplateSpec templateSpec = new V1PodTemplateSpec();
             {
                 // object metadata
                 V1ObjectMeta objectMeta = new V1ObjectMeta();
@@ -117,15 +106,13 @@ public class KubernetesStatefulSetService {
                 templateSpec.setMetadata(objectMeta);
             }
             // spec template spec
-            V1PodSpec v1PodSpec = req.getV1PodSpec() == null
-                    ? new V1PodSpec() : req.getV1PodSpec();
+            V1PodSpec v1PodSpec = new V1PodSpec();
             {
                 // spec template spec containers
-                List<V1Container> v1Containers = req.getSpecV1Container() != null ? List.of(req.getSpecV1Container()) :
-                        KubernetesUtil.singleContainerList(req.getImage(), req.getEnv(),
-                                req.getStatefulSetName(), req.getResourceRequirements(), null,
-                                KubernetesUtil.v1Probe(req.getLivenessProbe()),
-                                KubernetesUtil.v1Probe(req.getReadinessProbe()));
+                List<V1Container> v1Containers = KubernetesUtil.singleContainerList(req.getImage(), req.getEnv(),
+                        req.getStatefulSetName(), req.getResourceRequirements(), null,
+                        KubernetesUtil.v1Probe(req.getLivenessProbe()),
+                        KubernetesUtil.v1Probe(req.getReadinessProbe()));
                 if (req.getPersistentVolumes() != null) {
                     V1Container v1Container = v1Containers.get(0);
                     List<V1VolumeMount> volumeMounts = new ArrayList<>();
