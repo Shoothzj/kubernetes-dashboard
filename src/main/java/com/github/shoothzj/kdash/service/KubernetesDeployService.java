@@ -101,6 +101,8 @@ public class KubernetesDeployService {
                     KubernetesUtil.v1Lifecycle(req.getPostStartCommand(), req.getPreStopCommand()),
                     KubernetesUtil.v1Probe(req.getReadinessProbe()),
                     KubernetesUtil.v1Probe(req.getLivenessProbe())));
+            v1PodSpec.getContainers().get(0).setCommand(req.getCommand());
+            v1PodSpec.setHostNetwork(req.getHostNetwork());
             v1PodSpec.setImagePullSecrets(KubernetesUtil.imagePullSecrets(req.getImagePullSecret()));
             V1Affinity v1Affinity = new V1Affinity();
             v1Affinity.setPodAffinity(KubernetesUtil.v1PodAffinity(req.getPodAffinityTerms()));

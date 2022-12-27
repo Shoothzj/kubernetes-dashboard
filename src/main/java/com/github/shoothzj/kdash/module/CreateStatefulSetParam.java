@@ -22,7 +22,6 @@ package com.github.shoothzj.kdash.module;
 import io.kubernetes.client.openapi.models.V1StatefulSetUpdateStrategy;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,6 @@ import java.util.Map;
 @Getter
 public class CreateStatefulSetParam extends BaseParam {
 
-    @NotNull
     private String statefulSetName;
 
     private Map<String, String> labels;

@@ -17,36 +17,26 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.service.apisix;
+package com.github.shoothzj.kdash.service.traefik;
 
-import com.github.shoothzj.kdash.module.apisix.CreateApiSixReq;
-import com.github.shoothzj.kdash.module.apisix.CreateApiSixDashboardReq;
+import com.github.shoothzj.kdash.module.traefik.CreateTraefikReq;
 import com.github.shoothzj.kdash.service.KubernetesDeployService;
-import com.github.shoothzj.kdash.util.ApiSixUtil;
+import com.github.shoothzj.kdash.util.TraefikUtil;
 import io.kubernetes.client.openapi.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class KubernetesApiSixService {
+public class KubernetesTraefikService {
 
     @Autowired
     private KubernetesDeployService deployService;
 
-    public void createApiSix(String namespace, CreateApiSixReq req) throws ApiException {
-        deployService.createNamespacedDeploy(namespace, ApiSixUtil.deploy(req));
+    public void createTraefik(String namespace, CreateTraefikReq req) throws ApiException {
+        deployService.createNamespacedDeploy(namespace, TraefikUtil.deploy(req));
     }
 
-    public void deleteApiSix(String namespace, String name) throws ApiException {
-        deployService.deleteDeploy(namespace, name);
+    public void deleteTraefik(String namespace, String dashboardName) throws ApiException {
+        deployService.deleteDeploy(namespace, dashboardName);
     }
-
-    public void createDashboard(String namespace, CreateApiSixDashboardReq req) throws ApiException {
-        deployService.createNamespacedDeploy(namespace, ApiSixUtil.dashboardDeploy(req));
-    }
-
-    public void deleteDashboard(String namespace, String name) throws ApiException {
-        deployService.deleteDeploy(namespace, name);
-    }
-
 }
