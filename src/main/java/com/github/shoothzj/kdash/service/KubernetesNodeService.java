@@ -20,7 +20,9 @@
 package com.github.shoothzj.kdash.service;
 
 import com.github.shoothzj.kdash.module.GetNodeResp;
+import io.kubernetes.client.custom.V1Patch;
 import io.kubernetes.client.openapi.ApiClient;
+import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1Node;
 import io.kubernetes.client.openapi.models.V1NodeList;
@@ -34,11 +36,15 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class KubernetesNodeService {
 
     private final CoreV1Api k8sClient;
+
+    private static final String labelTemplate =
+            "{\"op\":\"replace\",\"path\":\"/metadata/labels/%s\",\"value\":\"%s\"}";
 
     public KubernetesNodeService(@Autowired ApiClient apiClient) {
         this.k8sClient = new CoreV1Api(apiClient);
@@ -71,6 +77,15 @@ public class KubernetesNodeService {
             getNodeResps.add(getNodeResp);
         }
         return getNodeResps;
+    }
+
+    public void label(String nodeName, Map<String, String> labels) throws ApiException {
+        List<String> body = new ArrayList<>();
+        for (Map.Entry<String, String> label : labels.entrySet()) {
+            body.add(String.format(labelTemplate, label.getKey(), label.getValue()));
+        }
+        k8sClient.patchNode(nodeName, new V1Patch(body.toString()), "true",
+                null, null, null, null);
     }
 
 }
