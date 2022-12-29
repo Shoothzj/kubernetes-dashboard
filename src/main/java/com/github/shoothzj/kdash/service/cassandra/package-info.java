@@ -17,18 +17,4 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module.redis;
-
-import com.github.shoothzj.kdash.module.common.CommonCreateStatefulSetReq;
-import lombok.Getter;
-import lombok.Setter;
-
-@Setter
-@Getter
-public class CreateRedisReq extends CommonCreateStatefulSetReq {
-
-    private int replicas = 1;
-
-    public CreateRedisReq() {
-    }
-}
+package com.github.shoothzj.kdash.service.cassandra;

@@ -17,18 +17,9 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module.redis;
+package com.github.shoothzj.kdash.module;
 
-import com.github.shoothzj.kdash.module.common.CommonCreateStatefulSetReq;
-import lombok.Getter;
-import lombok.Setter;
-
-@Setter
-@Getter
-public class CreateRedisReq extends CommonCreateStatefulSetReq {
-
-    private int replicas = 1;
-
-    public CreateRedisReq() {
-    }
+public enum PvType {
+    LOCAL_DISK,
+    HC_EVS,
 }

@@ -19,26 +19,13 @@
 
 package com.github.shoothzj.kdash.module.bookkeeper;
 
+import com.github.shoothzj.kdash.module.common.CommonCreateDeployReq;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 @Setter
 @Getter
-public class CreateBookkeeperDashboardReq {
-
-    @Nullable
-    private String name;
-
-    private String image;
-
-    private Map<String, String> env;
-
-    private String cpu;
-
-    private String memory;
+public class CreateBookkeeperDashboardReq extends CommonCreateDeployReq {
 
     private int replicas = 1;
 
