@@ -19,26 +19,13 @@
 
 package com.github.shoothzj.kdash.module.mysql;
 
+import com.github.shoothzj.kdash.module.common.CommonCreateStatefulSetReq;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 @Setter
 @Getter
-public class CreateMysqlReq {
-
-    @Nullable
-    private String name;
-
-    private String image;
-
-    private Map<String, String> env;
-
-    private String cpu;
-
-    private String memory;
+public class CreateMysqlReq extends CommonCreateStatefulSetReq {
 
     private int replicas = 1;
 

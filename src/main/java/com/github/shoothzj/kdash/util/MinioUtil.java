@@ -47,6 +47,7 @@ public class MinioUtil {
         createStatefulSetParam.setEnv(req.getEnv());
         createStatefulSetParam.setResourceRequirements(
                 KubernetesUtil.resourceRequirements(req.getCpu(), req.getMemory()));
+        createStatefulSetParam.setReplicas(req.getReplicas());
         return createStatefulSetParam;
     }
 

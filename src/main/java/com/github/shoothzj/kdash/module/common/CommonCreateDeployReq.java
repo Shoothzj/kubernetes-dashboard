@@ -17,18 +17,27 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module.redis;
+package com.github.shoothzj.kdash.module.common;
 
-import com.github.shoothzj.kdash.module.common.CommonCreateStatefulSetReq;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+
 @Setter
 @Getter
-public class CreateRedisReq extends CommonCreateStatefulSetReq {
+public class CommonCreateDeployReq {
 
-    private int replicas = 1;
+    protected String name;
 
-    public CreateRedisReq() {
+    protected String image;
+
+    protected Map<String, String> env;
+
+    protected String cpu;
+
+    protected String memory;
+
+    public CommonCreateDeployReq() {
     }
 }

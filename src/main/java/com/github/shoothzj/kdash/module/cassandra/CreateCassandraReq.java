@@ -19,26 +19,15 @@
 
 package com.github.shoothzj.kdash.module.cassandra;
 
+import com.github.shoothzj.kdash.module.common.CommonCreateStatefulSetReq;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 @Setter
 @Getter
-public class CreateCassandraReq {
+public class CreateCassandraReq extends CommonCreateStatefulSetReq {
 
-    @Nullable
-    private String name;
-
-    private String image;
-
-    private Map<String, String> env;
-
-    private String cpu;
-
-    private String memory;
+    private int replicas = 1;
 
     public CreateCassandraReq() {
     }
