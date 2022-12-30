@@ -17,31 +17,21 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module.common;
+package com.github.shoothzj.kdash.module;
 
-import com.github.shoothzj.kdash.module.PvDesc;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-import java.util.Map;
-
-@Setter
 @Getter
-public class CommonCreateStatefulSetReq {
+@Setter
+public class PvDesc {
 
-    protected String name;
+    private PvType pvType;
 
-    protected String image;
+    private HcParam hcParam;
 
-    protected Map<String, String> env;
+    private LocalParam localParam;
 
-    protected String cpu;
+    private String path;
 
-    protected String memory;
-
-    protected List<PvDesc> pvDesc;
-
-    public CommonCreateStatefulSetReq() {
-    }
 }

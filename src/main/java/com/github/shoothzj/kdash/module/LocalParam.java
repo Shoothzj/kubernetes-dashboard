@@ -17,31 +17,25 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module.common;
+package com.github.shoothzj.kdash.module;
 
-import com.github.shoothzj.kdash.module.PvDesc;
+import com.huaweicloud.sdk.evs.v2.model.CreateVolumeOption;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-import java.util.Map;
-
-@Setter
 @Getter
-public class CommonCreateStatefulSetReq {
+@Setter
+public class LocalParam {
 
-    protected String name;
+    private String az;
 
-    protected String image;
+    private String storageSize;
 
-    protected Map<String, String> env;
+    private String name;
 
-    protected String cpu;
+    private CreateVolumeOption.VolumeTypeEnum volumeType;
 
-    protected String memory;
-
-    protected List<PvDesc> pvDesc;
-
-    public CommonCreateStatefulSetReq() {
+    public LocalParam() {
     }
+
 }
