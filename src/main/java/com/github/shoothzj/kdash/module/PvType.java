@@ -22,4 +22,5 @@ package com.github.shoothzj.kdash.module;
 public enum PvType {
     LOCAL_DISK,
     HC_EVS,
+    HOST_PATH
 }
