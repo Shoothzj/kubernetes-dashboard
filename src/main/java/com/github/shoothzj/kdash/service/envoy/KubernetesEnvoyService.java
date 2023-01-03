@@ -17,33 +17,28 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.service.etcd;
+package com.github.shoothzj.kdash.service.envoy;
 
-import com.github.shoothzj.kdash.module.etcd.CreateEtcdDashboardReq;
+import com.github.shoothzj.kdash.module.envoy.CreateEnvoyReq;
 import com.github.shoothzj.kdash.service.KubernetesDeployService;
-import com.github.shoothzj.kdash.service.KubernetesServiceService;
-import com.github.shoothzj.kdash.util.EtcdUtil;
+import com.github.shoothzj.kdash.util.EnvoyUtil;
 import com.github.shoothzj.kdash.util.KubernetesUtil;
 import io.kubernetes.client.openapi.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class KubernetesEtcdDashboardService {
+public class KubernetesEnvoyService {
 
     @Autowired
-    private KubernetesDeployService kubernetesDeployService;
+    private KubernetesDeployService deployService;
 
-    @Autowired
-    private KubernetesServiceService serviceService;
-
-    public void createEtcdDashboard(String namespace, CreateEtcdDashboardReq req) throws ApiException {
-        serviceService.createService(namespace, EtcdUtil.dashboardService(req));
-        kubernetesDeployService.createNamespacedDeploy(namespace, EtcdUtil.dashboard(req));
+    public void createEnvoy(String namespace, CreateEnvoyReq req) throws ApiException {
+        deployService.createNamespacedDeploy(namespace, EnvoyUtil.deploy(req));
     }
 
-    public void deleteDashboard(String namespace, String dashboardName) throws ApiException {
-        serviceService.deleteService(namespace, KubernetesUtil.name("etcd-dashboard", dashboardName));
-        kubernetesDeployService.deleteDeploy(namespace, KubernetesUtil.name("etcd-dashboard", dashboardName));
+    public void deleteEnvoy(String namespace, String name) throws ApiException {
+        deployService.deleteDeploy(namespace, KubernetesUtil.name("envoy", name));
     }
+
 }

@@ -53,10 +53,12 @@ public class KubernetesMysqlService {
     }
 
     public void createDashboard(String namespace, CreateMysqlDashboardReq req) throws ApiException {
+        serviceService.createService(namespace, MysqlUtil.dashboardService(req));
         deployService.createNamespacedDeploy(namespace, MysqlUtil.dashboardDeploy(req));
     }
 
     public void deleteDashboard(String namespace, String dashboardName) throws ApiException {
+        serviceService.deleteService(namespace, KubernetesUtil.name("mysql-dashboard", dashboardName));
         deployService.deleteDeploy(namespace, KubernetesUtil.name("mysql-dashboard", dashboardName));
     }
 }

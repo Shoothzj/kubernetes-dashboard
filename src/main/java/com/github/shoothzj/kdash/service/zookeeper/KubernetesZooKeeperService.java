@@ -53,10 +53,12 @@ public class KubernetesZooKeeperService {
     }
 
     public void createDashboard(String namespace, CreateZooKeeperDashboardReq req) throws ApiException {
+        serviceService.createService(namespace, ZookeeperUtil.dashboardService(req));
         deployService.createNamespacedDeploy(namespace, ZookeeperUtil.dashboardDeploy(req));
     }
 
     public void deleteDashboard(String namespace, String dashboardName) throws ApiException {
+        serviceService.deleteService(namespace, KubernetesUtil.name("zookeeper-dashboard", dashboardName));
         deployService.deleteDeploy(namespace, KubernetesUtil.name("zookeeper-dashboard", dashboardName));
     }
 }

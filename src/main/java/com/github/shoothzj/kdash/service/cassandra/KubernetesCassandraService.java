@@ -55,10 +55,12 @@ public class KubernetesCassandraService {
     }
 
     public void createDashboard(String namespace, CreateCassandraDashboardReq req) throws ApiException {
+        serviceService.createService(namespace, CassandraUtil.dashboardService(req));
         deployService.createNamespacedDeploy(namespace, CassandraUtil.dashboardDeploy(req));
     }
 
     public void deleteDashboard(String namespace, String dashboardName) throws ApiException {
+        serviceService.deleteService(namespace, KubernetesUtil.name("cassandra-dashboard", dashboardName));
         deployService.deleteDeploy(namespace, KubernetesUtil.name("cassandra-dashboard", dashboardName));
     }
 }

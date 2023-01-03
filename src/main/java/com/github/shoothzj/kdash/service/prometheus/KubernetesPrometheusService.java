@@ -17,33 +17,34 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.service.etcd;
+package com.github.shoothzj.kdash.service.prometheus;
 
-import com.github.shoothzj.kdash.module.etcd.CreateEtcdDashboardReq;
+import com.github.shoothzj.kdash.module.prometheus.CreatePrometheusReq;
 import com.github.shoothzj.kdash.service.KubernetesDeployService;
 import com.github.shoothzj.kdash.service.KubernetesServiceService;
-import com.github.shoothzj.kdash.util.EtcdUtil;
 import com.github.shoothzj.kdash.util.KubernetesUtil;
+import com.github.shoothzj.kdash.util.PrometheusUtil;
 import io.kubernetes.client.openapi.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class KubernetesEtcdDashboardService {
+public class KubernetesPrometheusService {
 
     @Autowired
-    private KubernetesDeployService kubernetesDeployService;
+    private KubernetesDeployService deployService;
 
     @Autowired
     private KubernetesServiceService serviceService;
 
-    public void createEtcdDashboard(String namespace, CreateEtcdDashboardReq req) throws ApiException {
-        serviceService.createService(namespace, EtcdUtil.dashboardService(req));
-        kubernetesDeployService.createNamespacedDeploy(namespace, EtcdUtil.dashboard(req));
+    public void createPrometheus(String namespace, CreatePrometheusReq req) throws Exception {
+        serviceService.createService(namespace, PrometheusUtil.service(req));
+        deployService.createNamespacedDeploy(namespace, PrometheusUtil.deploy(req));
     }
 
-    public void deleteDashboard(String namespace, String dashboardName) throws ApiException {
-        serviceService.deleteService(namespace, KubernetesUtil.name("etcd-dashboard", dashboardName));
-        kubernetesDeployService.deleteDeploy(namespace, KubernetesUtil.name("etcd-dashboard", dashboardName));
+    public void deletePrometheus(String namespace, String name) throws ApiException {
+        serviceService.deleteService(namespace, KubernetesUtil.name("prometheus", name));
+        deployService.deleteDeploy(namespace, KubernetesUtil.name("prometheus", name));
     }
+
 }

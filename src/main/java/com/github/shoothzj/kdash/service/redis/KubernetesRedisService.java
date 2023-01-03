@@ -53,10 +53,12 @@ public class KubernetesRedisService {
     }
 
     public void createDashboard(String namespace, CreateRedisDashboardReq req) throws ApiException {
+        serviceService.createService(namespace, RedisUtil.dashboardService(req));
         deployService.createNamespacedDeploy(namespace, RedisUtil.dashboardDeploy(req));
     }
 
     public void deleteDashboard(String namespace, String dashboardName) throws ApiException {
+        serviceService.deleteService(namespace, KubernetesUtil.name("redis-dashboard", dashboardName));
         deployService.deleteDeploy(namespace, KubernetesUtil.name("redis-dashboard", dashboardName));
     }
 }

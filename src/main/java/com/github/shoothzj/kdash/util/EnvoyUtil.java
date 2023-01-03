@@ -20,33 +20,20 @@
 package com.github.shoothzj.kdash.util;
 
 import com.github.shoothzj.kdash.module.CreateDeploymentParam;
-import com.github.shoothzj.kdash.module.CreateServiceParam;
-import com.github.shoothzj.kdash.module.etcd.CreateEtcdDashboardReq;
-import io.kubernetes.client.custom.IntOrString;
-import io.kubernetes.client.openapi.models.V1ServicePort;
+import com.github.shoothzj.kdash.module.envoy.CreateEnvoyReq;
 
-import java.util.ArrayList;
+public class EnvoyUtil {
 
-public class EtcdUtil {
-
-    public static CreateServiceParam dashboardService(CreateEtcdDashboardReq req) {
-        CreateServiceParam createServiceParam = new CreateServiceParam();
-        createServiceParam.setServiceName(KubernetesUtil.name("etcd-dashboard", req.getName()));
-        ArrayList<V1ServicePort> ports = new ArrayList<>();
-        ports.add(new V1ServicePort().name("client").port(10001).targetPort(new IntOrString(10001)));
-        createServiceParam.setPorts(ports);
-        createServiceParam.setClusterIp("None");
-        return createServiceParam;
-    }
-
-    public static CreateDeploymentParam dashboard(CreateEtcdDashboardReq req) {
+    public static CreateDeploymentParam deploy(CreateEnvoyReq req) {
         CreateDeploymentParam createDeploymentParam = new CreateDeploymentParam();
-        createDeploymentParam.setDeploymentName(KubernetesUtil.name("etcd-dashboard", req.getName()));
+        createDeploymentParam.setDeploymentName(KubernetesUtil.name("envoy", req.getName()));
         createDeploymentParam.setImage(req.getImage());
         createDeploymentParam.setEnv(req.getEnv());
         createDeploymentParam.setResourceRequirements(
                 KubernetesUtil.resourceRequirements(req.getCpu(), req.getMemory()));
         createDeploymentParam.setReplicas(req.getReplicas());
+        createDeploymentParam.setHostNetwork(true);
         return createDeploymentParam;
     }
+
 }
