@@ -44,14 +44,14 @@ public class KubernetesServiceAccountController {
         this.kubernetesServiceAccountService = kubernetesServiceAccountService;
     }
 
-    @PutMapping("/namespace/{namespace}/service-account")
+    @PutMapping("/namespace/{namespace}/service-accounts")
     public ResponseEntity<Void> createServiceAccount(@PathVariable String namespace,
                                                      @RequestBody CreateServiceAccountReq req) throws ApiException {
         kubernetesServiceAccountService.createServiceAccount(namespace, req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/namespace/{namespace}/service-account")
+    @DeleteMapping("/namespace/{namespace}/service-accounts")
     public ResponseEntity<Void> deleteServiceAccount(@PathVariable String namespace,
                                                      @RequestBody DeleteServiceAccountReq req) throws ApiException {
         kubernetesServiceAccountService.deleteServiceAccount(namespace, req.getServiceAccountName());
