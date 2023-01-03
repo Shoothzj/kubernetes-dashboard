@@ -49,10 +49,12 @@ public class KubernetesPulsarService {
     }
 
     public void createDashboard(String namespace, CreatePulsarDashboardReq req) throws ApiException {
+        serviceService.createService(namespace, PulsarUtil.dashboardService(req));
         deployService.createNamespacedDeploy(namespace, PulsarUtil.dashboardDeploy(req));
     }
 
     public void deleteDashboard(String namespace, String dashboardName) throws ApiException {
+        serviceService.deleteService(namespace, KubernetesUtil.name("pulsar-dashboard", dashboardName));
         deployService.deleteDeploy(namespace, KubernetesUtil.name("pulsar-dashboard", dashboardName));
     }
 }

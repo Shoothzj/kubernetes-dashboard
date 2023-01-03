@@ -55,6 +55,16 @@ public class ZookeeperUtil {
         return createStatefulSetParam;
     }
 
+    public static CreateServiceParam dashboardService(CreateZooKeeperDashboardReq req) {
+        CreateServiceParam createServiceParam = new CreateServiceParam();
+        createServiceParam.setServiceName(KubernetesUtil.name("zookeeper-dashboard", req.getName()));
+        ArrayList<V1ServicePort> ports = new ArrayList<>();
+        ports.add(new V1ServicePort().name("client").port(10002).targetPort(new IntOrString(10002)));
+        createServiceParam.setPorts(ports);
+        createServiceParam.setClusterIp("None");
+        return createServiceParam;
+    }
+
     public static CreateDeploymentParam dashboardDeploy(CreateZooKeeperDashboardReq req) {
         CreateDeploymentParam createDeploymentParam = new CreateDeploymentParam();
         createDeploymentParam.setDeploymentName(KubernetesUtil.name("zookeeper-dashboard", req.getName()));

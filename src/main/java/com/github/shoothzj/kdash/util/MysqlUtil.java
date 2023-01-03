@@ -51,6 +51,16 @@ public class MysqlUtil {
         return createStatefulSetParam;
     }
 
+    public static CreateServiceParam dashboardService(CreateMysqlDashboardReq req) {
+        CreateServiceParam createServiceParam = new CreateServiceParam();
+        createServiceParam.setServiceName(KubernetesUtil.name("mysql-dashboard", req.getName()));
+        ArrayList<V1ServicePort> ports = new ArrayList<>();
+        ports.add(new V1ServicePort().name("client").port(10008).targetPort(new IntOrString(10008)));
+        createServiceParam.setPorts(ports);
+        createServiceParam.setClusterIp("None");
+        return createServiceParam;
+    }
+
     public static CreateDeploymentParam dashboardDeploy(CreateMysqlDashboardReq req) {
         CreateDeploymentParam createDeploymentParam = new CreateDeploymentParam();
         createDeploymentParam.setDeploymentName(KubernetesUtil.name("mysql-dashboard", req.getName()));

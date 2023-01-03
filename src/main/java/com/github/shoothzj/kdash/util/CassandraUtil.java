@@ -52,6 +52,16 @@ public class CassandraUtil {
         return createStatefulSetParam;
     }
 
+    public static CreateServiceParam dashboardService(CreateCassandraDashboardReq req) {
+        CreateServiceParam createServiceParam = new CreateServiceParam();
+        createServiceParam.setServiceName(KubernetesUtil.name("cassandra-dashboard", req.getName()));
+        ArrayList<V1ServicePort> ports = new ArrayList<>();
+        ports.add(new V1ServicePort().name("client").port(10010).targetPort(new IntOrString(10010)));
+        createServiceParam.setPorts(ports);
+        createServiceParam.setClusterIp("None");
+        return createServiceParam;
+    }
+
     public static CreateDeploymentParam dashboardDeploy(CreateCassandraDashboardReq req) {
         CreateDeploymentParam createDeploymentParam = new CreateDeploymentParam();
         createDeploymentParam.setDeploymentName(KubernetesUtil.name("cassandra-dashboard", req.getName()));

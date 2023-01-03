@@ -21,27 +21,27 @@ package com.github.shoothzj.kdash.util;
 
 import com.github.shoothzj.kdash.module.CreateDeploymentParam;
 import com.github.shoothzj.kdash.module.CreateServiceParam;
-import com.github.shoothzj.kdash.module.etcd.CreateEtcdDashboardReq;
+import com.github.shoothzj.kdash.module.grafana.CreateGrafanaReq;
 import io.kubernetes.client.custom.IntOrString;
 import io.kubernetes.client.openapi.models.V1ServicePort;
 
 import java.util.ArrayList;
 
-public class EtcdUtil {
+public class GrafanaUtil {
 
-    public static CreateServiceParam dashboardService(CreateEtcdDashboardReq req) {
+    public static CreateServiceParam service(CreateGrafanaReq req) {
         CreateServiceParam createServiceParam = new CreateServiceParam();
-        createServiceParam.setServiceName(KubernetesUtil.name("etcd-dashboard", req.getName()));
-        ArrayList<V1ServicePort> ports = new ArrayList<>();
-        ports.add(new V1ServicePort().name("client").port(10001).targetPort(new IntOrString(10001)));
-        createServiceParam.setPorts(ports);
+        createServiceParam.setServiceName(KubernetesUtil.name("grafana", req.getName()));
         createServiceParam.setClusterIp("None");
+        ArrayList<V1ServicePort> ports = new ArrayList<>();
+        ports.add(new V1ServicePort().name("client").port(3000).targetPort(new IntOrString(3000)));
+        createServiceParam.setPorts(ports);
         return createServiceParam;
     }
 
-    public static CreateDeploymentParam dashboard(CreateEtcdDashboardReq req) {
+    public static CreateDeploymentParam deploy(CreateGrafanaReq req) {
         CreateDeploymentParam createDeploymentParam = new CreateDeploymentParam();
-        createDeploymentParam.setDeploymentName(KubernetesUtil.name("etcd-dashboard", req.getName()));
+        createDeploymentParam.setDeploymentName(KubernetesUtil.name("grafana", req.getName()));
         createDeploymentParam.setImage(req.getImage());
         createDeploymentParam.setEnv(req.getEnv());
         createDeploymentParam.setResourceRequirements(

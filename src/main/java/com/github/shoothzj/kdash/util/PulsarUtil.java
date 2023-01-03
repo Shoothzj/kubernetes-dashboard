@@ -54,6 +54,16 @@ public class PulsarUtil {
         return createDeploymentParam;
     }
 
+    public static CreateServiceParam dashboardService(CreatePulsarDashboardReq req) {
+        CreateServiceParam createServiceParam = new CreateServiceParam();
+        createServiceParam.setServiceName(KubernetesUtil.name("mysql-dashboard", req.getName()));
+        ArrayList<V1ServicePort> ports = new ArrayList<>();
+        ports.add(new V1ServicePort().name("client").port(10006).targetPort(new IntOrString(10006)));
+        createServiceParam.setPorts(ports);
+        createServiceParam.setClusterIp("None");
+        return createServiceParam;
+    }
+
     public static CreateDeploymentParam dashboardDeploy(CreatePulsarDashboardReq req) {
         CreateDeploymentParam createDeploymentParam = new CreateDeploymentParam();
         createDeploymentParam.setDeploymentName(KubernetesUtil.name("pulsar-dashboard", req.getName()));

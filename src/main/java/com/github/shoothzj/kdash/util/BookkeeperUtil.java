@@ -52,6 +52,16 @@ public class BookkeeperUtil {
         return createStatefulSetParam;
     }
 
+    public static CreateServiceParam dashboardService(CreateBookkeeperDashboardReq req) {
+        CreateServiceParam createServiceParam = new CreateServiceParam();
+        createServiceParam.setServiceName(KubernetesUtil.name("bookkeeper-dashboard", req.getName()));
+        ArrayList<V1ServicePort> ports = new ArrayList<>();
+        ports.add(new V1ServicePort().name("client").port(10007).targetPort(new IntOrString(10007)));
+        createServiceParam.setPorts(ports);
+        createServiceParam.setClusterIp("None");
+        return createServiceParam;
+    }
+
     public static CreateDeploymentParam dashboardDeploy(CreateBookkeeperDashboardReq req) {
         CreateDeploymentParam createDeploymentParam = new CreateDeploymentParam();
         createDeploymentParam.setDeploymentName(KubernetesUtil.name("bookkeeper-dashboard", req.getName()));

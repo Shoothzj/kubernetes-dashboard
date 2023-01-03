@@ -21,27 +21,27 @@ package com.github.shoothzj.kdash.util;
 
 import com.github.shoothzj.kdash.module.CreateDeploymentParam;
 import com.github.shoothzj.kdash.module.CreateServiceParam;
-import com.github.shoothzj.kdash.module.etcd.CreateEtcdDashboardReq;
+import com.github.shoothzj.kdash.module.prometheus.CreatePrometheusReq;
 import io.kubernetes.client.custom.IntOrString;
 import io.kubernetes.client.openapi.models.V1ServicePort;
 
 import java.util.ArrayList;
 
-public class EtcdUtil {
+public class PrometheusUtil {
 
-    public static CreateServiceParam dashboardService(CreateEtcdDashboardReq req) {
+    public static CreateServiceParam service(CreatePrometheusReq req) {
         CreateServiceParam createServiceParam = new CreateServiceParam();
-        createServiceParam.setServiceName(KubernetesUtil.name("etcd-dashboard", req.getName()));
-        ArrayList<V1ServicePort> ports = new ArrayList<>();
-        ports.add(new V1ServicePort().name("client").port(10001).targetPort(new IntOrString(10001)));
-        createServiceParam.setPorts(ports);
+        createServiceParam.setServiceName(KubernetesUtil.name("prometheus", req.getName()));
         createServiceParam.setClusterIp("None");
+        ArrayList<V1ServicePort> ports = new ArrayList<>();
+        ports.add(new V1ServicePort().name("client").port(9090).targetPort(new IntOrString(9090)));
+        createServiceParam.setPorts(ports);
         return createServiceParam;
     }
 
-    public static CreateDeploymentParam dashboard(CreateEtcdDashboardReq req) {
+    public static CreateDeploymentParam deploy(CreatePrometheusReq req) {
         CreateDeploymentParam createDeploymentParam = new CreateDeploymentParam();
-        createDeploymentParam.setDeploymentName(KubernetesUtil.name("etcd-dashboard", req.getName()));
+        createDeploymentParam.setDeploymentName(KubernetesUtil.name("prometheus", req.getName()));
         createDeploymentParam.setImage(req.getImage());
         createDeploymentParam.setEnv(req.getEnv());
         createDeploymentParam.setResourceRequirements(
@@ -49,4 +49,5 @@ public class EtcdUtil {
         createDeploymentParam.setReplicas(req.getReplicas());
         return createDeploymentParam;
     }
+
 }

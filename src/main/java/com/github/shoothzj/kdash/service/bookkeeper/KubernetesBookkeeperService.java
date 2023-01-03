@@ -55,6 +55,7 @@ public class KubernetesBookkeeperService {
     }
 
     public void createDashboard(String namespace, CreateBookkeeperDashboardReq req) throws ApiException {
+        serviceService.createService(namespace, BookkeeperUtil.dashboardService(req));
         deployService.createNamespacedDeploy(namespace, BookkeeperUtil.dashboardDeploy(req));
     }
 

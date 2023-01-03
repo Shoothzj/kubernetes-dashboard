@@ -53,10 +53,12 @@ public class KubernetesMinioService {
     }
 
     public void createDashboard(String namespace, CreateMinioDashboardReq req) throws ApiException {
+        serviceService.createService(namespace, MinioUtil.dashboardService(req));
         deployService.createNamespacedDeploy(namespace, MinioUtil.dashboardDeploy(req));
     }
 
     public void deleteDashboard(String namespace, String dashboardName) throws ApiException {
+        serviceService.deleteService(namespace, KubernetesUtil.name("minio-dashboard", dashboardName));
         deployService.deleteDeploy(namespace, KubernetesUtil.name("minio-dashboard", dashboardName));
     }
 }
