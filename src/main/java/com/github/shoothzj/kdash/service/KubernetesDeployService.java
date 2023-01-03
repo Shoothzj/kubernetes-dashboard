@@ -38,6 +38,8 @@ import io.kubernetes.client.openapi.models.V1PodSpec;
 import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
 import io.kubernetes.client.openapi.models.V1Scale;
 import io.kubernetes.client.openapi.models.V1ScaleSpec;
+import io.kubernetes.client.openapi.models.V1Volume;
+import io.kubernetes.client.openapi.models.V1VolumeMount;
 import io.kubernetes.client.util.Yaml;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -96,13 +98,29 @@ public class KubernetesDeployService {
             // spec template spec
             V1PodSpec v1PodSpec = new V1PodSpec();
             // spec template spec containers
-            v1PodSpec.setContainers(KubernetesUtil.singleContainerList(req.getImage(), req.getEnv(),
+            List<V1Container> v1Containers = KubernetesUtil.singleContainerList(req.getImage(), req.getEnv(),
                     req.getDeploymentName(), req.getResourceRequirements(),
                     KubernetesUtil.v1Lifecycle(req.getPostStartCommand(), req.getPreStopCommand()),
                     KubernetesUtil.v1Probe(req.getReadinessProbe()),
-                    KubernetesUtil.v1Probe(req.getLivenessProbe())));
+                    KubernetesUtil.v1Probe(req.getLivenessProbe()));
+            V1Container v1Container = v1Containers.get(0);
+            List<V1VolumeMount> v1VolumeMounts = new ArrayList<>();
+            if (req.getHostPathVolume() != null) {
+                for (V1Volume v1Volume : req.getHostPathVolume()) {
+                    V1VolumeMount v1VolumeMount = new V1VolumeMount();
+                    v1VolumeMount.setName(v1Volume.getName());
+                    if (v1Volume.getHostPath() != null) {
+                        v1VolumeMount.setMountPath(v1Volume.getHostPath().getPath());
+                    }
+                    v1VolumeMounts.add(v1VolumeMount);
+                }
+                v1Container.setVolumeMounts(v1VolumeMounts);
+            }
+            v1PodSpec.setContainers(v1Containers);
             v1PodSpec.getContainers().get(0).setCommand(req.getCommand());
+            v1PodSpec.setDnsPolicy(req.getDnsPolicy());
             v1PodSpec.setHostNetwork(req.getHostNetwork());
+            v1PodSpec.setVolumes(req.getHostPathVolume());
             v1PodSpec.setImagePullSecrets(KubernetesUtil.imagePullSecrets(req.getImagePullSecret()));
             V1Affinity v1Affinity = new V1Affinity();
             v1Affinity.setPodAffinity(KubernetesUtil.v1PodAffinity(req.getPodAffinityTerms()));
