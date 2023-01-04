@@ -17,19 +17,18 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.service.apisix;
+package com.github.shoothzj.kdash.service.kong;
 
-import com.github.shoothzj.kdash.module.apisix.CreateApiSixReq;
-import com.github.shoothzj.kdash.module.apisix.CreateApiSixDashboardReq;
+import com.github.shoothzj.kdash.module.kong.CreateKongReq;
 import com.github.shoothzj.kdash.service.KubernetesDeployService;
 import com.github.shoothzj.kdash.service.KubernetesServiceService;
-import com.github.shoothzj.kdash.util.ApiSixUtil;
+import com.github.shoothzj.kdash.util.KongUtil;
 import io.kubernetes.client.openapi.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class KubernetesApiSixService {
+public class KubernetesKongService {
 
     @Autowired
     private KubernetesDeployService deployService;
@@ -37,22 +36,13 @@ public class KubernetesApiSixService {
     @Autowired
     private KubernetesServiceService serviceService;
 
-    public void createApiSix(String namespace, CreateApiSixReq req) throws ApiException {
-        deployService.createNamespacedDeploy(namespace, ApiSixUtil.deploy(req));
+    public void createKong(String namespace, CreateKongReq req) throws ApiException {
+        serviceService.createService(namespace, KongUtil.service(req));
+        deployService.createNamespacedDeploy(namespace, KongUtil.deploy(req));
     }
 
-    public void deleteApiSix(String namespace, String name) throws ApiException {
-        deployService.deleteDeploy(namespace, name);
+    public void deleteKong(String namespace, String kongName) throws ApiException {
+        serviceService.deleteService(namespace, kongName);
+        deployService.deleteDeploy(namespace, kongName);
     }
-
-    public void createDashboard(String namespace, CreateApiSixDashboardReq req) throws ApiException {
-        serviceService.createService(namespace, ApiSixUtil.dashboardService(req));
-        deployService.createNamespacedDeploy(namespace, ApiSixUtil.dashboardDeploy(req));
-    }
-
-    public void deleteDashboard(String namespace, String name) throws ApiException {
-        serviceService.deleteService(namespace, "apisix-dashboard");
-        deployService.deleteDeploy(namespace, "apisix-dashboard");
-    }
-
 }

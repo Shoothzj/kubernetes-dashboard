@@ -20,7 +20,6 @@
 package com.github.shoothzj.kdash.controller;
 
 import com.github.shoothzj.kdash.module.CreateRoleBindingReq;
-import com.github.shoothzj.kdash.module.DeleteRoleBindingReq;
 import com.github.shoothzj.kdash.service.KubernetesRoleBindingService;
 import io.kubernetes.client.openapi.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,10 +49,10 @@ public class KubernetesRoleBindingController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/namespace/{namespace}/role-bindings")
+    @DeleteMapping("/namespace/{namespace}/role-bindings/{roleBindingName}")
     public ResponseEntity<Void> deleteRoleBinding(@PathVariable String namespace,
-                                                  @RequestBody DeleteRoleBindingReq req) throws ApiException {
-        kubernetesRoleBindingService.deleteRoleBinding(namespace, req.getRoleBindingName());
+                                                  @PathVariable String roleBindingName) throws ApiException {
+        kubernetesRoleBindingService.deleteRoleBinding(namespace, roleBindingName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

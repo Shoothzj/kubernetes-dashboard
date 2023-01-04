@@ -21,7 +21,6 @@ package com.github.shoothzj.kdash.controller;
 
 import com.github.shoothzj.kdash.module.BaseReqType;
 import com.github.shoothzj.kdash.module.CreateServiceReq;
-import com.github.shoothzj.kdash.module.DeleteServiceReq;
 import com.github.shoothzj.kdash.module.GetServiceResp;
 import com.github.shoothzj.kdash.service.KubernetesServiceService;
 import io.kubernetes.client.openapi.ApiException;
@@ -61,10 +60,10 @@ public class KubernetesServiceController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/namespace/{namespace}/services")
+    @DeleteMapping("/namespace/{namespace}/services/{serviceName}")
     public ResponseEntity<Void> deleteService(@PathVariable String namespace,
-                                              @RequestBody DeleteServiceReq req) throws ApiException {
-        kubernetesServiceService.deleteService(namespace, req);
+                                              @PathVariable String serviceName) throws ApiException {
+        kubernetesServiceService.deleteService(namespace, serviceName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

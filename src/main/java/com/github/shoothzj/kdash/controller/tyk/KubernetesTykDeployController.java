@@ -17,10 +17,10 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.controller;
+package com.github.shoothzj.kdash.controller.tyk;
 
-import com.github.shoothzj.kdash.module.CreateClusterRoleReq;
-import com.github.shoothzj.kdash.service.KubernetesClusterRoleService;
+import com.github.shoothzj.kdash.module.tyk.CreateTykReq;
+import com.github.shoothzj.kdash.service.tyk.KubernetesTykService;
 import io.kubernetes.client.openapi.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,25 +33,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/kubernetes")
-public class KubernetesClusterRoleController {
+@RequestMapping("/api/kubernetes/tyk")
+public class KubernetesTykDeployController {
 
-    private final KubernetesClusterRoleService kubernetesClusterRoleService;
+    private final KubernetesTykService tykService;
 
-    public KubernetesClusterRoleController(@Autowired KubernetesClusterRoleService kubernetesClusterRoleService) {
-        this.kubernetesClusterRoleService = kubernetesClusterRoleService;
+    public KubernetesTykDeployController(@Autowired KubernetesTykService tykService) {
+        this.tykService = tykService;
     }
 
-    @PutMapping("/namespace/{namespace}/cluster-roles")
-    public ResponseEntity<Void> createClusterRole(@PathVariable String namespace,
-                                                  @RequestBody CreateClusterRoleReq req) throws ApiException {
-        kubernetesClusterRoleService.createClusterRole(namespace, req);
+    @PutMapping("/namespace/{namespace}/deployments")
+    public ResponseEntity<Void> createTyk(@PathVariable String namespace,
+                                          @RequestBody CreateTykReq req) throws ApiException {
+        tykService.createTyk(namespace, req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/cluster-roles/{clusterRoleName}")
-    public ResponseEntity<Void> deleteClusterRole(@PathVariable String clusterRoleName) throws ApiException {
-        kubernetesClusterRoleService.deleteClusterRole(clusterRoleName);
+    @DeleteMapping("/namespace/{namespace}/deployments/{deployName}")
+    public ResponseEntity<Void> deleteTyk(@PathVariable String namespace,
+                                          @PathVariable String deployName) throws ApiException {
+        tykService.deleteTyk(namespace, deployName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -17,17 +17,4 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module;
-
-import lombok.Getter;
-import lombok.Setter;
-
-@Setter
-@Getter
-public class DeleteServiceReq {
-
-    private String serviceName;
-
-    public DeleteServiceReq() {
-    }
-}
+package com.github.shoothzj.kdash.service.tyk;

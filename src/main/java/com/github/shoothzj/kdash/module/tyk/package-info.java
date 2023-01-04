@@ -17,14 +17,4 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module;
-
-import lombok.Getter;
-import lombok.Setter;
-
-@Setter
-@Getter
-public class DeleteClusterRoleReq {
-
-    private String clusterRoleName;
-}
+package com.github.shoothzj.kdash.module.tyk;
