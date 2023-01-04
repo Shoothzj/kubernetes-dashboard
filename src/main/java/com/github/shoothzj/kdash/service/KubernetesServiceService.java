@@ -20,7 +20,6 @@
 package com.github.shoothzj.kdash.service;
 
 import com.github.shoothzj.kdash.module.CreateServiceParam;
-import com.github.shoothzj.kdash.module.DeleteServiceReq;
 import com.github.shoothzj.kdash.module.GetServiceResp;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
@@ -72,10 +71,6 @@ public class KubernetesServiceService {
     public void createServiceByYaml(String namespace, String yamlContent) throws IOException, ApiException {
         V1Service v1Service = (V1Service) Yaml.load(yamlContent);
         coreV1Api.createNamespacedService(namespace, v1Service, "true", null, null, null);
-    }
-
-    public void deleteService(String namespace, DeleteServiceReq req) throws ApiException {
-        this.deleteService(namespace, req.getServiceName());
     }
 
     public void deleteService(String namespace, String serviceName) throws ApiException {

@@ -20,13 +20,13 @@
 package com.github.shoothzj.kdash.controller;
 
 import com.github.shoothzj.kdash.module.CreateClusterRoleBindingReq;
-import com.github.shoothzj.kdash.module.DeleteClusterRoleBindingReq;
 import com.github.shoothzj.kdash.service.KubernetesClusterRoleBindingService;
 import io.kubernetes.client.openapi.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,10 +50,10 @@ public class KubernetesClusterRoleBindingController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/cluster-role-bindings")
-    public ResponseEntity<Void> deleteClusterRoleBinding(@RequestBody DeleteClusterRoleBindingReq req)
+    @DeleteMapping("/cluster-role-bindings/{clusterRoleBindingName}")
+    public ResponseEntity<Void> deleteClusterRoleBinding(@PathVariable String clusterRoleBindingName)
             throws ApiException {
-        kubernetesClusterRoleBindingService.deleteClusterRoleBinding(req.getClusterRoleBindingName());
+        kubernetesClusterRoleBindingService.deleteClusterRoleBinding(clusterRoleBindingName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

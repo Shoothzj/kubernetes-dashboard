@@ -20,7 +20,6 @@
 package com.github.shoothzj.kdash.controller;
 
 import com.github.shoothzj.kdash.module.CreateServiceAccountReq;
-import com.github.shoothzj.kdash.module.DeleteServiceAccountReq;
 import com.github.shoothzj.kdash.service.KubernetesServiceAccountService;
 import io.kubernetes.client.openapi.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,10 +50,10 @@ public class KubernetesServiceAccountController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/namespace/{namespace}/service-accounts")
+    @DeleteMapping("/namespace/{namespace}/service-accounts/{serviceAccountName}")
     public ResponseEntity<Void> deleteServiceAccount(@PathVariable String namespace,
-                                                     @RequestBody DeleteServiceAccountReq req) throws ApiException {
-        kubernetesServiceAccountService.deleteServiceAccount(namespace, req.getServiceAccountName());
+                                                     @PathVariable String serviceAccountName) throws ApiException {
+        kubernetesServiceAccountService.deleteServiceAccount(namespace, serviceAccountName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

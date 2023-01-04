@@ -17,11 +17,12 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.controller;
+package com.github.shoothzj.kdash.controller.kong;
 
-import com.github.shoothzj.kdash.module.CreateClusterRoleReq;
-import com.github.shoothzj.kdash.service.KubernetesClusterRoleService;
+import com.github.shoothzj.kdash.module.kong.CreateKongReq;
+import com.github.shoothzj.kdash.service.kong.KubernetesKongService;
 import io.kubernetes.client.openapi.ApiException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,26 +33,30 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
-@RequestMapping("/api/kubernetes")
-public class KubernetesClusterRoleController {
+@RequestMapping("/api/kubernetes/kong")
+public class KubernetesKongDeployController {
 
-    private final KubernetesClusterRoleService kubernetesClusterRoleService;
+    private final KubernetesKongService kongService;
 
-    public KubernetesClusterRoleController(@Autowired KubernetesClusterRoleService kubernetesClusterRoleService) {
-        this.kubernetesClusterRoleService = kubernetesClusterRoleService;
+    public KubernetesKongDeployController(@Autowired KubernetesKongService kongService) {
+        this.kongService = kongService;
     }
 
-    @PutMapping("/namespace/{namespace}/cluster-roles")
-    public ResponseEntity<Void> createClusterRole(@PathVariable String namespace,
-                                                  @RequestBody CreateClusterRoleReq req) throws ApiException {
-        kubernetesClusterRoleService.createClusterRole(namespace, req);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    @PutMapping("/namespace/{namespace}/deployments")
+    public ResponseEntity<Void> createKong(@PathVariable String namespace,
+                                           @RequestBody CreateKongReq req) throws ApiException {
+        kongService.createKong(namespace, req);
+    return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/cluster-roles/{clusterRoleName}")
-    public ResponseEntity<Void> deleteClusterRole(@PathVariable String clusterRoleName) throws ApiException {
-        kubernetesClusterRoleService.deleteClusterRole(clusterRoleName);
+    @DeleteMapping("/namespace/{namespace}/deployments/{deployName}")
+    public ResponseEntity<Void> deleteKong(@PathVariable String namespace,
+                                           @PathVariable String deployName) throws ApiException {
+        kongService.deleteKong(namespace, deployName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+
 }

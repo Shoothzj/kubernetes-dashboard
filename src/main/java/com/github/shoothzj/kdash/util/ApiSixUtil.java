@@ -20,8 +20,15 @@
 package com.github.shoothzj.kdash.util;
 
 import com.github.shoothzj.kdash.module.CreateDeploymentParam;
+import com.github.shoothzj.kdash.module.CreateServiceParam;
 import com.github.shoothzj.kdash.module.apisix.CreateApiSixDashboardReq;
 import com.github.shoothzj.kdash.module.apisix.CreateApiSixReq;
+import io.kubernetes.client.custom.IntOrString;
+import io.kubernetes.client.openapi.models.V1ServicePort;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ApiSixUtil {
 
@@ -45,5 +52,18 @@ public class ApiSixUtil {
                 KubernetesUtil.resourceRequirements(req.getCpu(), req.getMemory()));
         createDeploymentParam.setReplicas(req.getReplicas());
         return createDeploymentParam;
+    }
+
+    public static CreateServiceParam dashboardService(CreateApiSixDashboardReq req) {
+        CreateServiceParam createServiceParam = new CreateServiceParam();
+        createServiceParam.setServiceName(KubernetesUtil.name("apisix-dashboard", req.getName()));
+        ArrayList<V1ServicePort> ports = new ArrayList<>();
+        ports.add(new V1ServicePort().name("apisix-dashboard").port(9000).targetPort(new IntOrString(9000)));
+        createServiceParam.setPorts(ports);
+        Map<String, String> serviceSelector = new HashMap<>();
+        serviceSelector.put("app", "apisix-dashboard");
+        createServiceParam.setServiceSelector(serviceSelector);
+        createServiceParam.setClusterIp("None");
+        return createServiceParam;
     }
 }

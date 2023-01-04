@@ -17,14 +17,31 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.module;
+package com.github.shoothzj.kdash.module.kong;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 @Setter
 @Getter
-public class DeleteRoleBindingReq {
+public class CreateKongReq {
 
-    private String roleBindingName;
+    @Nullable
+    private String name;
+
+    private String image;
+
+    private Map<String, String> env;
+
+    private String cpu;
+
+    private String memory;
+
+    private int replicas = 1;
+
+    public CreateKongReq() {
+    }
 }
