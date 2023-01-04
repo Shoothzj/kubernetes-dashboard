@@ -58,7 +58,7 @@ public class ApiSixUtil {
         CreateServiceParam createServiceParam = new CreateServiceParam();
         createServiceParam.setServiceName(KubernetesUtil.name("apisix-dashboard", req.getName()));
         ArrayList<V1ServicePort> ports = new ArrayList<>();
-        ports.add(new V1ServicePort().name("apisix-dashboard-0").port(9000).targetPort(new IntOrString(9000)));
+        ports.add(new V1ServicePort().name("apisix-dashboard").port(9000).targetPort(new IntOrString(9000)));
         createServiceParam.setPorts(ports);
         Map<String, String> serviceSelector = new HashMap<>();
         serviceSelector.put("app", "apisix-dashboard");
