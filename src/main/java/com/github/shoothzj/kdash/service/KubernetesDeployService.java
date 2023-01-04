@@ -22,6 +22,7 @@ package com.github.shoothzj.kdash.service;
 import com.github.shoothzj.kdash.module.ContainerInfo;
 import com.github.shoothzj.kdash.module.CreateDeploymentParam;
 import com.github.shoothzj.kdash.module.GetDeploymentResp;
+import com.github.shoothzj.kdash.module.HostPathVolume;
 import com.github.shoothzj.kdash.module.ScaleReq;
 import com.github.shoothzj.kdash.util.KubernetesUtil;
 import io.kubernetes.client.openapi.ApiClient;
@@ -33,6 +34,10 @@ import io.kubernetes.client.openapi.models.V1Deployment;
 import io.kubernetes.client.openapi.models.V1DeploymentList;
 import io.kubernetes.client.openapi.models.V1DeploymentSpec;
 import io.kubernetes.client.openapi.models.V1DeploymentStatus;
+import io.kubernetes.client.openapi.models.V1EnvVar;
+import io.kubernetes.client.openapi.models.V1EnvVarSource;
+import io.kubernetes.client.openapi.models.V1HostPathVolumeSource;
+import io.kubernetes.client.openapi.models.V1ObjectFieldSelector;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1PodSpec;
 import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
@@ -104,29 +109,53 @@ public class KubernetesDeployService {
                     KubernetesUtil.v1Probe(req.getReadinessProbe()),
                     KubernetesUtil.v1Probe(req.getLivenessProbe()));
             V1Container v1Container = v1Containers.get(0);
-            List<V1VolumeMount> v1VolumeMounts = new ArrayList<>();
-            if (req.getHostPathVolume() != null) {
-                for (V1Volume v1Volume : req.getHostPathVolume()) {
-                    V1VolumeMount v1VolumeMount = new V1VolumeMount();
-                    v1VolumeMount.setName(v1Volume.getName());
-                    if (v1Volume.getHostPath() != null) {
-                        v1VolumeMount.setMountPath(v1Volume.getHostPath().getPath());
+            {
+                for (Map.Entry<String, String> entry : req.getValueFromEnv().entrySet()) {
+                    V1EnvVar envVar = new V1EnvVar();
+                    envVar.setName(entry.getKey());
+                    V1ObjectFieldSelector fieldPath = new V1ObjectFieldSelector().fieldPath(entry.getValue());
+                    envVar.setValueFrom(new V1EnvVarSource().fieldRef(fieldPath));
+                    if (v1Container.getEnv() == null) {
+                        v1Container.setEnv(new ArrayList<>());
                     }
-                    v1VolumeMounts.add(v1VolumeMount);
+                    v1Container.getEnv().add(envVar);
+                }
+            }
+            if (req.getHostPathVolume() != null) {
+                List<V1VolumeMount> v1VolumeMounts = new ArrayList<>();
+                for (HostPathVolume hostPathVolume : req.getHostPathVolume()) {
+                    v1VolumeMounts.add(new V1VolumeMount()
+                            .name(hostPathVolume.getName())
+                            .mountPath(hostPathVolume.getVolumeMountPath()));
                 }
                 v1Container.setVolumeMounts(v1VolumeMounts);
             }
+            v1Container.setSecurityContext(req.getSecurityContext());
             v1PodSpec.setContainers(v1Containers);
             v1PodSpec.getContainers().get(0).setCommand(req.getCommand());
-            v1PodSpec.setDnsPolicy(req.getDnsPolicy());
+            if (req.getDnsPolicy() != null) {
+                v1PodSpec.setDnsPolicy(req.getDnsPolicy());
+            }
             v1PodSpec.setHostNetwork(req.getHostNetwork());
-            v1PodSpec.setVolumes(req.getHostPathVolume());
+            {
+                if (req.getHostPathVolume() != null) {
+                    List<V1Volume> volumes = new ArrayList<>();
+                    for (HostPathVolume hostPathVolume : req.getHostPathVolume()) {
+                        V1Volume v1Volume = new V1Volume();
+                        v1Volume.setName(hostPathVolume.getName());
+                        v1Volume.setHostPath(new V1HostPathVolumeSource().path(hostPathVolume.getVolumePath()));
+                        volumes.add(v1Volume);
+                    }
+                    v1PodSpec.setVolumes(volumes);
+                }
+            }
             v1PodSpec.setImagePullSecrets(KubernetesUtil.imagePullSecrets(req.getImagePullSecret()));
             V1Affinity v1Affinity = new V1Affinity();
             v1Affinity.setPodAffinity(KubernetesUtil.v1PodAffinity(req.getPodAffinityTerms()));
             v1Affinity.setPodAntiAffinity(KubernetesUtil.v1PodAntiAffinity(req.getPodAntiAffinityTerms()));
             v1Affinity.setNodeAffinity(KubernetesUtil.v1NodeAffinity(req.getNodeSelectorRequirement()));
             v1PodSpec.setAffinity(v1Affinity);
+            v1PodSpec.setDnsConfig(req.getDnsConfig());
             templateSpec.setSpec(v1PodSpec);
             deploySpec.setTemplate(templateSpec);
             deployment.setSpec(deploySpec);

@@ -19,7 +19,8 @@
 
 package com.github.shoothzj.kdash.module;
 
-import io.kubernetes.client.openapi.models.V1Volume;
+import io.kubernetes.client.openapi.models.V1PodDNSConfig;
+import io.kubernetes.client.openapi.models.V1SecurityContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,6 +43,8 @@ public class CreateDeploymentParam extends BaseParam {
 
     private Map<String, String> env;
 
+    private Map<String, String> valueFromEnv;
+
     private ResourceRequirements resourceRequirements;
 
     private NodeSelectorRequirement nodeSelectorRequirement;
@@ -62,9 +65,13 @@ public class CreateDeploymentParam extends BaseParam {
 
     private Boolean hostNetwork;
 
-    private List<V1Volume> hostPathVolume;
+    private List<HostPathVolume> hostPathVolume;
 
     private String dnsPolicy;
+
+    private V1PodDNSConfig dnsConfig;
+
+    private V1SecurityContext securityContext;
 
     public CreateDeploymentParam() {
     }
