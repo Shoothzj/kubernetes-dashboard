@@ -53,6 +53,10 @@ public class CreateStatefulSetParam extends BaseParam {
 
     private Probe readinessProbe;
 
+    private List<String> postStartCommand;
+
+    private List<String> preStopCommand;
+
     private NodeSelectorRequirement nodeSelectorRequirement;
 
     private PodAffinityTerms podAffinityTerms;

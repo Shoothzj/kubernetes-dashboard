@@ -118,7 +118,8 @@ public class KubernetesStatefulSetService {
             {
                 // spec template spec containers
                 List<V1Container> v1Containers = KubernetesUtil.singleContainerList(req.getImage(), req.getEnv(),
-                        req.getStatefulSetName(), req.getResourceRequirements(), null,
+                        req.getStatefulSetName(), req.getResourceRequirements(),
+                        KubernetesUtil.v1Lifecycle(req.getPreStopCommand(), req.getPostStartCommand()),
                         KubernetesUtil.v1Probe(req.getReadinessProbe()),
                         KubernetesUtil.v1Probe(req.getLivenessProbe()));
                 V1Container v1Container = v1Containers.get(0);
