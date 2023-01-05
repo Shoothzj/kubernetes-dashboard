@@ -30,6 +30,10 @@ import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.models.V1Affinity;
 import io.kubernetes.client.openapi.models.V1Container;
+import io.kubernetes.client.openapi.models.V1EnvVar;
+import io.kubernetes.client.openapi.models.V1EnvVarSource;
+import io.kubernetes.client.openapi.models.V1HostPathVolumeSource;
+import io.kubernetes.client.openapi.models.V1ObjectFieldSelector;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1PersistentVolumeClaim;
 import io.kubernetes.client.openapi.models.V1PodSpec;
@@ -40,6 +44,7 @@ import io.kubernetes.client.openapi.models.V1StatefulSet;
 import io.kubernetes.client.openapi.models.V1StatefulSetList;
 import io.kubernetes.client.openapi.models.V1StatefulSetSpec;
 import io.kubernetes.client.openapi.models.V1StatefulSetStatus;
+import io.kubernetes.client.openapi.models.V1Volume;
 import io.kubernetes.client.openapi.models.V1VolumeMount;
 import io.kubernetes.client.util.Yaml;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,6 +102,9 @@ public class KubernetesStatefulSetService {
             }
             // spec selector
             statefulSetSpec.setSelector(KubernetesUtil.labelSelector(req.getStatefulSetName(), labels));
+            if (req.getServiceName() != null) {
+                statefulSetSpec.setServiceName(req.getServiceName());
+            }
             // spec template
             V1PodTemplateSpec templateSpec = new V1PodTemplateSpec();
             {
@@ -111,21 +119,67 @@ public class KubernetesStatefulSetService {
                 // spec template spec containers
                 List<V1Container> v1Containers = KubernetesUtil.singleContainerList(req.getImage(), req.getEnv(),
                         req.getStatefulSetName(), req.getResourceRequirements(), null,
-                        KubernetesUtil.v1Probe(req.getLivenessProbe()),
-                        KubernetesUtil.v1Probe(req.getReadinessProbe()));
-                if (req.getPersistentVolumes() != null) {
-                    V1Container v1Container = v1Containers.get(0);
-                    List<V1VolumeMount> volumeMounts = new ArrayList<>();
-                    for (VolumeClaimTemplates persistentVolume : req.getPersistentVolumes()) {
-                        V1VolumeMount v1VolumeMount = new V1VolumeMount();
-                        v1VolumeMount.setName(persistentVolume.getVolumeName());
-                        v1VolumeMount.setMountPath(persistentVolume.getMountPath());
-                        volumeMounts.add(v1VolumeMount);
-                    }
-
-                    v1Container.setVolumeMounts(volumeMounts);
-                    v1PodSpec.setContainers(v1Containers);
+                        KubernetesUtil.v1Probe(req.getReadinessProbe()),
+                        KubernetesUtil.v1Probe(req.getLivenessProbe()));
+                V1Container v1Container = v1Containers.get(0);
+                if (req.getValueFroms() != null) {
+                    List<V1EnvVar> env = v1Container.getEnv() != null ? v1Container.getEnv() : new ArrayList<>();
+                    env.addAll(req.getValueFroms().stream().map(valueFrom -> {
+                        V1EnvVarSource v1EnvVarSource = new V1EnvVarSource()
+                                .fieldRef(new V1ObjectFieldSelector().fieldPath(valueFrom.getFieldPath()));
+                        return new V1EnvVar().name(valueFrom.getName()).valueFrom(v1EnvVarSource);
+                    }).toList());
+                    v1Container.setEnv(env);
                 }
+
+                if (req.getPorts() != null) {
+                    v1Container.setPorts(req.getPorts());
+                }
+
+                List<V1VolumeMount> volumeMounts = new ArrayList<>();
+                List<V1Volume> volumes = new ArrayList<>();
+                if (req.getPersistentVolumes() != null) {
+                    volumeMounts.addAll(req.getPersistentVolumes().stream().filter(Objects::nonNull)
+                            .map(persistentVolume -> new V1VolumeMount()
+                                    .name(persistentVolume.getVolumeName())
+                                    .mountPath(persistentVolume.getMountPath())).toList());
+
+                }
+                if (req.getHostPathVolumes() != null) {
+                    volumeMounts.addAll(req.getHostPathVolumes().stream().filter(Objects::nonNull)
+                            .map(hostPathVolume -> new V1VolumeMount()
+                                    .name(hostPathVolume.getName())
+                                    .mountPath(hostPathVolume.getVolumeMountPath())).toList());
+                    volumes.addAll(req.getHostPathVolumes().stream()
+                            .map(hostPathVolume -> new V1Volume()
+                                    .name(hostPathVolume.getName())
+                                    .hostPath(new V1HostPathVolumeSource().path(hostPathVolume.getVolumePath())))
+                            .toList());
+                }
+                if (req.getV1SecretVolumeSources() != null) {
+                    volumeMounts.addAll(req.getV1SecretVolumeSources().stream().filter(Objects::nonNull)
+                            .map(secretVolumeSource -> new V1VolumeMount().name(secretVolumeSource.getName())
+                                    .mountPath(secretVolumeSource.getMountPath())
+                                    .subPath(secretVolumeSource.getSubPath())
+                                    .readOnly(secretVolumeSource.isReadOnly())).toList());
+                    volumes.addAll(req.getV1SecretVolumeSources().stream()
+                            .filter(secretVolumeSource -> secretVolumeSource.getV1SecretVolumeSource() != null)
+                            .map(secretVolumeSource -> new V1Volume()
+                                    .secret(secretVolumeSource.getV1SecretVolumeSource())
+                                    .name(secretVolumeSource.getName())).toList());
+                    volumes.addAll(req.getV1SecretVolumeSources().stream()
+                            .filter(secretVolumeSource -> secretVolumeSource.getV1ConfigMapVolumeSource() != null)
+                            .map(configMapVolumeSource -> new V1Volume()
+                                    .configMap(configMapVolumeSource.getV1ConfigMapVolumeSource())
+                                    .name(configMapVolumeSource.getName())).toList());
+                }
+                if (volumeMounts.size() != 0) {
+                    v1Container.setVolumeMounts(volumeMounts);
+                }
+                if (volumes.size() != 0) {
+                    v1PodSpec.setVolumes(volumes);
+                }
+                v1PodSpec.setContainers(v1Containers);
             }
             {
                 V1Affinity v1Affinity = new V1Affinity();

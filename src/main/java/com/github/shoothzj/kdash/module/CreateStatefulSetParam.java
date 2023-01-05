@@ -19,6 +19,7 @@
 
 package com.github.shoothzj.kdash.module;
 
+import io.kubernetes.client.openapi.models.V1ContainerPort;
 import io.kubernetes.client.openapi.models.V1StatefulSetUpdateStrategy;
 import lombok.Getter;
 import lombok.Setter;
@@ -61,6 +62,12 @@ public class CreateStatefulSetParam extends BaseParam {
     private ResourceRequirements resourceRequirements;
 
     private List<VolumeClaimTemplates> persistentVolumes;
+
+    private List<HostPathVolume> hostPathVolumes;
+
+    private List<SecretVolumeSource> v1SecretVolumeSources;
+
+    private List<V1ContainerPort> ports;
 
     private V1StatefulSetUpdateStrategy statefulSetUpdateStrategy;
 
