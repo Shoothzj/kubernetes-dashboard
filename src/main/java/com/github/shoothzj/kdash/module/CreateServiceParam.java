@@ -32,7 +32,7 @@ public class CreateServiceParam extends BaseParam{
 
     private String serviceName;
 
-    private String serviceClusterName;
+    private String type;
 
     private Map<String, String> serviceLabels;
 

@@ -65,7 +65,9 @@ public class CreateDeploymentParam extends BaseParam {
 
     private Boolean hostNetwork;
 
-    private List<HostPathVolume> hostPathVolume;
+    private List<HostPathVolume> hostPathVolumes;
+
+    private List<SecretVolumeSource> v1SecretVolumeSources;
 
     private String dnsPolicy;
 

@@ -53,7 +53,6 @@ public class KubernetesServiceService {
             v1ObjectMeta.setNamespace(namespace);
             v1ObjectMeta.setName(req.getServiceName());
             v1ObjectMeta.setLabels(req.getServiceLabels());
-            v1ObjectMeta.setClusterName(req.getServiceClusterName());
             v1Service.setMetadata(v1ObjectMeta);
         }
         {
@@ -62,6 +61,9 @@ public class KubernetesServiceService {
             v1ServiceSpec.setClusterIP(req.getClusterIp());
             v1ServiceSpec.setSelector(req.getServiceSelector());
             v1ServiceSpec.setPublishNotReadyAddresses(req.isPublishNotReadyAddresses());
+            if (req.getType() != null) {
+                v1ServiceSpec.setType(req.getType());
+            }
             v1Service.setSpec(v1ServiceSpec);
         }
         coreV1Api.createNamespacedService(namespace, v1Service, "true",

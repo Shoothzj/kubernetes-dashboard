@@ -22,7 +22,6 @@ package com.github.shoothzj.kdash.service;
 import com.github.shoothzj.kdash.module.ContainerInfo;
 import com.github.shoothzj.kdash.module.CreateDeploymentParam;
 import com.github.shoothzj.kdash.module.GetDeploymentResp;
-import com.github.shoothzj.kdash.module.HostPathVolume;
 import com.github.shoothzj.kdash.module.ScaleReq;
 import com.github.shoothzj.kdash.util.KubernetesUtil;
 import io.kubernetes.client.openapi.ApiClient;
@@ -121,14 +120,41 @@ public class KubernetesDeployService {
                     v1Container.getEnv().add(envVar);
                 }
             }
-            if (req.getHostPathVolume() != null) {
-                List<V1VolumeMount> v1VolumeMounts = new ArrayList<>();
-                for (HostPathVolume hostPathVolume : req.getHostPathVolume()) {
-                    v1VolumeMounts.add(new V1VolumeMount()
-                            .name(hostPathVolume.getName())
-                            .mountPath(hostPathVolume.getVolumeMountPath()));
-                }
-                v1Container.setVolumeMounts(v1VolumeMounts);
+            List<V1VolumeMount> volumeMounts = new ArrayList<>();
+            List<V1Volume> volumes = new ArrayList<>();
+            if (req.getHostPathVolumes() != null) {
+                volumeMounts.addAll(req.getHostPathVolumes().stream().filter(Objects::nonNull)
+                        .map(hostPathVolume -> new V1VolumeMount()
+                                .name(hostPathVolume.getName())
+                                .mountPath(hostPathVolume.getVolumeMountPath())).toList());
+                volumes.addAll(req.getHostPathVolumes().stream()
+                        .map(hostPathVolume -> new V1Volume()
+                                .name(hostPathVolume.getName())
+                                .hostPath(new V1HostPathVolumeSource().path(hostPathVolume.getVolumePath())))
+                        .toList());
+            }
+            if (req.getV1SecretVolumeSources() != null) {
+                volumeMounts.addAll(req.getV1SecretVolumeSources().stream().filter(Objects::nonNull)
+                        .map(secretVolumeSource -> new V1VolumeMount().name(secretVolumeSource.getName())
+                                .mountPath(secretVolumeSource.getMountPath())
+                                .subPath(secretVolumeSource.getSubPath())
+                                .readOnly(secretVolumeSource.isReadOnly())).toList());
+                volumes.addAll(req.getV1SecretVolumeSources().stream()
+                        .filter(secretVolumeSource -> secretVolumeSource.getV1SecretVolumeSource() != null)
+                        .map(secretVolumeSource -> new V1Volume()
+                                .secret(secretVolumeSource.getV1SecretVolumeSource())
+                                .name(secretVolumeSource.getName())).toList());
+                volumes.addAll(req.getV1SecretVolumeSources().stream()
+                        .filter(secretVolumeSource -> secretVolumeSource.getV1ConfigMapVolumeSource() != null)
+                        .map(configMapVolumeSource -> new V1Volume()
+                                .configMap(configMapVolumeSource.getV1ConfigMapVolumeSource())
+                                .name(configMapVolumeSource.getName())).toList());
+            }
+            if (volumeMounts.size() != 0) {
+                v1Container.setVolumeMounts(volumeMounts);
+            }
+            if (volumes.size() != 0) {
+                v1PodSpec.setVolumes(volumes);
             }
             v1Container.setSecurityContext(req.getSecurityContext());
             v1PodSpec.setContainers(v1Containers);
@@ -137,18 +163,6 @@ public class KubernetesDeployService {
                 v1PodSpec.setDnsPolicy(req.getDnsPolicy());
             }
             v1PodSpec.setHostNetwork(req.getHostNetwork());
-            {
-                if (req.getHostPathVolume() != null) {
-                    List<V1Volume> volumes = new ArrayList<>();
-                    for (HostPathVolume hostPathVolume : req.getHostPathVolume()) {
-                        V1Volume v1Volume = new V1Volume();
-                        v1Volume.setName(hostPathVolume.getName());
-                        v1Volume.setHostPath(new V1HostPathVolumeSource().path(hostPathVolume.getVolumePath()));
-                        volumes.add(v1Volume);
-                    }
-                    v1PodSpec.setVolumes(volumes);
-                }
-            }
             v1PodSpec.setImagePullSecrets(KubernetesUtil.imagePullSecrets(req.getImagePullSecret()));
             V1Affinity v1Affinity = new V1Affinity();
             v1Affinity.setPodAffinity(KubernetesUtil.v1PodAffinity(req.getPodAffinityTerms()));
