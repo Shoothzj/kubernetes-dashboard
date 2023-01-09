@@ -17,10 +17,10 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.controller.postgresql;
+package com.github.shoothzj.kdash.controller.docusaurus;
 
-import com.github.shoothzj.kdash.module.postgresql.CreatePostgresqlReq;
-import com.github.shoothzj.kdash.service.postgresql.KubernetesPostgresqlService;
+import com.github.shoothzj.kdash.module.docusaurus.CreateDocusaurusReq;
+import com.github.shoothzj.kdash.service.docusaurus.KubernetesDocusaurusService;
 import io.kubernetes.client.openapi.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,27 +33,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/kubernetes/postgresql")
-public class KubernetesPostgresqlController {
+@RequestMapping("/api/kubernetes/docusaurus")
+public class KubernetesDocusaurusController {
 
-    private final KubernetesPostgresqlService postgresqlService;
+    private final KubernetesDocusaurusService docusaurusService;
 
-    public KubernetesPostgresqlController(@Autowired KubernetesPostgresqlService postgresqlService) {
-        this.postgresqlService = postgresqlService;
+    public KubernetesDocusaurusController(@Autowired KubernetesDocusaurusService docusaurusService) {
+        this.docusaurusService = docusaurusService;
     }
 
     @PutMapping("/namespace/{namespace}/stateful-sets")
-    public ResponseEntity<Void> createPostgresql(@PathVariable String namespace,
-                                                 @RequestBody CreatePostgresqlReq req) throws ApiException {
-        postgresqlService.createPostgresql(namespace, req);
+    public ResponseEntity<Void> createDocusaurus(@PathVariable String namespace,
+                                                 @RequestBody CreateDocusaurusReq req) throws ApiException {
+        docusaurusService.createDocusaurus(namespace, req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-
     @DeleteMapping("/namespace/{namespace}/stateful-sets/{statefulSetName}")
-    public ResponseEntity<Void> deletePostgresql(@PathVariable String namespace,
+    public ResponseEntity<Void> deleteDocusaurus(@PathVariable String namespace,
                                                  @PathVariable String statefulSetName) throws ApiException {
-        postgresqlService.deletePostgresql(namespace, statefulSetName);
+        docusaurusService.deleteDocusaurus(namespace, statefulSetName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 }
