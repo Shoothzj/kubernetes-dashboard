@@ -17,10 +17,10 @@
  * under the License.
  */
 
-package com.github.shoothzj.kdash.controller.postgresql;
+package com.github.shoothzj.kdash.controller.kafka;
 
-import com.github.shoothzj.kdash.module.postgresql.CreatePostgresqlReq;
-import com.github.shoothzj.kdash.service.postgresql.KubernetesPostgresqlService;
+import com.github.shoothzj.kdash.module.kafka.CreateKafkaReq;
+import com.github.shoothzj.kdash.service.kafka.KubernetesKafkaService;
 import io.kubernetes.client.openapi.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,27 +33,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/kubernetes/postgresql")
-public class KubernetesPostgresqlController {
+@RequestMapping("/api/kubernetes/kafka")
+public class KubernetesKafkaController {
 
-    private final KubernetesPostgresqlService postgresqlService;
+    private final KubernetesKafkaService kafkaService;
 
-    public KubernetesPostgresqlController(@Autowired KubernetesPostgresqlService postgresqlService) {
-        this.postgresqlService = postgresqlService;
+    public KubernetesKafkaController(@Autowired KubernetesKafkaService kafkaService) {
+        this.kafkaService = kafkaService;
     }
 
     @PutMapping("/namespace/{namespace}/stateful-sets")
-    public ResponseEntity<Void> createPostgresql(@PathVariable String namespace,
-                                                 @RequestBody CreatePostgresqlReq req) throws ApiException {
-        postgresqlService.createPostgresql(namespace, req);
+    public ResponseEntity<Void> createKafka(@PathVariable String namespace,
+                                            @RequestBody CreateKafkaReq req) throws ApiException {
+        kafkaService.createKafka(namespace, req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-
     @DeleteMapping("/namespace/{namespace}/stateful-sets/{statefulSetName}")
-    public ResponseEntity<Void> deletePostgresql(@PathVariable String namespace,
-                                                 @PathVariable String statefulSetName) throws ApiException {
-        postgresqlService.deletePostgresql(namespace, statefulSetName);
+    public ResponseEntity<Void> deleteKafka(@PathVariable String namespace,
+                                            @PathVariable String statefulSetName) throws ApiException {
+        kafkaService.deleteKafka(namespace, statefulSetName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 }
