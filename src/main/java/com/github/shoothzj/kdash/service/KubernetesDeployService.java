@@ -108,7 +108,7 @@ public class KubernetesDeployService {
                     KubernetesUtil.v1Probe(req.getReadinessProbe()),
                     KubernetesUtil.v1Probe(req.getLivenessProbe()));
             V1Container v1Container = v1Containers.get(0);
-            {
+            if (req.getValueFromEnv() != null) {
                 for (Map.Entry<String, String> entry : req.getValueFromEnv().entrySet()) {
                     V1EnvVar envVar = new V1EnvVar();
                     envVar.setName(entry.getKey());

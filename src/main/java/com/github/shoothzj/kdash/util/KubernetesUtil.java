@@ -169,17 +169,17 @@ public class KubernetesUtil {
     public static V1Lifecycle v1Lifecycle(@Nullable List<String> postStartCommand,
                                           @Nullable List<String> preStopCommand) {
         V1Lifecycle v1Lifecycle = new V1Lifecycle();
-        if (postStartCommand != null) {
+        if (preStopCommand != null) {
             V1LifecycleHandler preStopHandler = new V1LifecycleHandler();
             V1ExecAction preStopExecAction = new V1ExecAction();
-            preStopExecAction.command(postStartCommand);
+            preStopExecAction.command(preStopCommand);
             preStopHandler.setExec(preStopExecAction);
             v1Lifecycle.setPreStop(preStopHandler);
         }
-        if (preStopCommand != null) {
+        if (postStartCommand != null) {
             V1LifecycleHandler postStartHandler = new V1LifecycleHandler();
             V1ExecAction postStartExecAction = new V1ExecAction();
-            postStartExecAction.command(preStopCommand);
+            postStartExecAction.command(postStartCommand);
             postStartHandler.setExec(postStartExecAction);
             v1Lifecycle.setPostStart(postStartHandler);
         }
